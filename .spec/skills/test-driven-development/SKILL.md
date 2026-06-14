@@ -7,8 +7,6 @@ metadata:
   license: MIT
   category: software-development
   tags: [testing, tdd, quality]
-  related_skills:
-    - code-review
 ---
 
 # Test-Driven Development（测试驱动开发）

@@ -22,7 +22,7 @@ metadata:
 
 ## 前置条件
 
-- 拿到原始目标和相关上下文（`AGENTS.md`、`CONTEXT.md`、相关源码）。
+- 拿到原始目标和相关上下文（`AGENTS.md`、`knowledge/`、相关源码）。
 
 ## 操作步骤
 
