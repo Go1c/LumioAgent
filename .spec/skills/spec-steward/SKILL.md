@@ -13,7 +13,7 @@ metadata:
 # Spec Steward（仓库管家）
 
 保证对 `.spec/` 的任何改动都「放对位置、格式合规、索引与名册同步」，并在开发完成后把「改了什么、为什么」沉淀回知识库。
-本技能**不复述**那些规矩（权威在 `AGENTS.md` 和各目录 README），只在改动发生时把规矩**用起来**，并指回对应处。
+本技能**不复述**那些规矩（权威在 `AGENTS.md` 索引指向的各文件和各目录 README），只在改动发生时把规矩**用起来**，并指回对应处。
 
 ## 何时使用
 
@@ -23,7 +23,7 @@ metadata:
 
 ## 前置条件
 
-- 能随时查阅 `AGENTS.md` 与各目录 `README.md`（本技能指回它们，不重复）。
+- 能随时查阅 `AGENTS.md` 索引及其指向的各规范文件 / 目录 `README.md`（本技能指回它们，不重复）。
 - 改动目标明确（知道要加 / 改什么）。
 
 ## 操作步骤
@@ -34,9 +34,9 @@ metadata:
    - 禁止碰什么（护栏）→ `rules/`（见 `rules/README.md`）
    - 怎么做（流程 / 规范）→ `knowledge/standards/`（见 `knowledge/README.md`）
    - 某功能的设计 / 记录 → `knowledge/features/<领域>/…`（见 `knowledge/README.md`）
-   - 一个职能角色 → `agents/`（见 `AGENTS.md` §7）
+   - 一个职能角色 → `agents/`（照 `planner` / `coder` 范例写，正文承载判断；frontmatter 见下面第 3 步，禁令见 `rules/agent-collaboration.md`）
    - 可复用方法 → `skills/`（见 `skills/README.md`）
-2. **放对位置 + 命名**（见 `AGENTS.md` §9 命名规约）。
+2. **放对位置 + 命名**（agent 文件 `<name>.agent.md`、kebab、全局唯一；skill 命名见 `skills/README.md`）。
 3. **写 frontmatter**：
    - agents：仅 `name` + `description`
    - skills：`name` + `description`，扩展进 `metadata`（见 `skills/README.md`）
