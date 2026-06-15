@@ -24,16 +24,18 @@ description: 用于有明确任务卡时，编写和修改代码并自测
 1. 标记任务开始：
    - **Claude Code**：用 `TaskUpdate` 把当前任务标记为 `in_progress`。
    - **Codex**：更新 `.spec/tasks/<slug>.md` frontmatter 的 `status: in_progress`。
-2. 读任务卡 + 相关文件，确认理解一致。
-3. 用 `test-driven-development`：先写失败测试，再实现到测试通过。
-4. 跑项目的构建 / 测试，确认没破坏现有行为。
-5. 若改动引入了新设计决策、新模式或值得记录的行为，用 `spec-steward` 沉淀进 `knowledge/`；纯修复 / 文档微调 / 已有模式的套用可跳过。
-6. 标记任务完成，交回主 loop：
+2. 用 `before-you-code`：加载相关 knowledge / skill 上下文，校准执行深度，规划输出策略。
+3. 读任务卡 + 相关文件，确认理解一致。
+4. 用 `test-driven-development`：先写失败测试，再实现到测试通过。
+5. 跑项目的构建 / 测试，确认没破坏现有行为。
+6. 若改动引入了新设计决策、新模式或值得记录的行为，用 `spec-steward` 沉淀进 `knowledge/`；纯修复 / 文档微调 / 已有模式的套用可跳过。
+7. 标记任务完成，交回主 loop：
    - **Claude Code**：用 `TaskUpdate` 把任务标记为 `completed`。
    - **Codex**：更新 `.spec/tasks/<slug>.md` frontmatter 的 `status: completed`。
 
 ## 使用的技能
 
+- `before-you-code`：动手前加载上下文、校准深度、规划输出——每次必须先跑。
 - `test-driven-development`：写代码前先写失败测试。
 - `spec-steward`：改完把信息沉淀进知识库、并保证结构 / 索引同步。
 
