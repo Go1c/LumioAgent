@@ -1,12 +1,6 @@
 ---
 name: test-driven-development
-description: 用于实现新功能或修 bug 时，先写失败测试再写实现的开发方法
-metadata:
-  version: 1.0.0
-  author: LumioAgent
-  license: MIT
-  category: software-development
-  tags: [testing, tdd, quality]
+description: 先写失败测试、再写最小实现使其通过、最后重构的开发方法（红 → 绿 → 重构）。当实现新功能、修 bug（先写能复现的失败测试）、或改动没有测试保护的关键逻辑时使用。
 ---
 
 # Test-Driven Development（测试驱动开发）

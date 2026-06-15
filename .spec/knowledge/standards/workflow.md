@@ -14,25 +14,24 @@ metadata:
 
 ## 分支策略
 
-- 分支命名：`<TODO: 约定，如 feat/xxx、fix/xxx>`
-- 从哪开、往哪合：`<TODO>`
-- 受保护分支：`<TODO>`（其“禁止直接 push”这条护栏写在 `rules/`，这里只说流程）
+- 直接在 `main` 开发提交，不开功能分支。
+- 无受保护分支限制。
 
 ## 提交规范
 
-- 提交信息格式：`<TODO: 如 type(scope): subject>`
-- 一次提交的粒度：`<TODO>`
-- 提交前自检：`<TODO: 如本地测试通过、无调试残留>`
+- 格式：`type(scope): subject`，例如 `feat(agents): 新增 reviewer`、`fix(coder): 修复 TDD 步骤`。
+- 常用 type：`feat` / `fix` / `refactor` / `chore` / `docs`。
+- scope 可省略（如 `chore: initial setup`）。
+- 粒度：一次提交解决一件事；不把无关改动混在一起。
+- 提交前：测试通过、无调试残留、知识已同步（见下节）。
 
 ## 合并 / PR 流程
 
-1. `<TODO: 开 PR 前要做什么>`
-2. `<TODO: 合并前的检查 / 把关由谁做、看什么>`
-3. `<TODO: 合并方式：squash / merge / rebase？>`
+- 无 PR 流程，直接 push `main`。
 
 ## 改动完成 = 知识已同步
 
-一处改动只有在**知识沉淀完成**后才算 Done：用 `spec-steward` 技能更新对应 `knowledge/` 文档、`status` 和所在目录 README 索引。未同步的改动不得提交 / 合并。
+一处改动只有在**知识沉淀完成**后才算 Done：用 `spec-steward` 技能更新对应 `knowledge/` 文档、`status` 和 `knowledge/README.md` 导航。未同步的改动不得提交 / 合并。
 
 ## 相关
 

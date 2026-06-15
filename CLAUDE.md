@@ -1,18 +1,22 @@
 # CLAUDE.md
 
-Claude Code 入口。下面的 `@import` 行把内容**强制加载**进每次会话上下文——权威源是 `.spec/`，本文件只负责加载，不另立规则。
+Claude Code entrypoint. The `@import` lines below **force-load** their content into every session context. The authoritative source is `.spec/`; this file only loads, it defines no rules of its own.
 
-中心文档（概念 + 原则 + 调度）：
+Central doc (项目介绍 + Agent 调度):
 
 @.spec/AGENTS.md
 
-硬性禁令 / 护栏（**始终在场，不走渐进式披露**——它们是硬红线，必须一上来就在上下文里）：
+Knowledge navigation (force-loaded so the agent always knows what knowledge exists and where):
 
-@.spec/rules/agent-collaboration.md
+@.spec/knowledge/README.md
 
-> **维护**：`rules/` 下每新增一个具体规则文件，都要在上面补一行 `@.spec/rules/<file>.md`，否则它不会被强制加载。`README.md` 是说明文档，不导入。
+System rules (**force-loaded at every agent init, no progressive disclosure** — hard red lines that must be in context from the start):
 
-Claude 特有：
+@.spec/rules/system.md
 
-- 子 Agent、技能、护栏通过软链接暴露：`.claude/agents -> ../.spec/agents`、`.claude/skills -> ../.spec/skills`、`.claude/rules -> ../.spec/rules`。
-- 不要在此维护任何 Claude 专属规则。行为变了就改 `.spec/`，本文件只当指针。
+> **Maintenance:** every force-loaded file needs a matching `@.spec/<path>.md` line above, or it won't load at init. This applies to every rule file under `rules/` and to `knowledge/README.md`.
+
+Claude-specific:
+
+- Sub-agents and skills are exposed via symlinks: `.claude/agents -> ../.spec/agents`, `.claude/skills -> ../.spec/skills`. Rules reach context via the `@import` lines above, not via a symlink.
+- Do not maintain any Claude-only rules here. When behavior changes, edit `.spec/`; this file is just a pointer.

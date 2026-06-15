@@ -21,11 +21,16 @@ description: 用于有明确任务卡时，编写和修改代码并自测
 
 ## 工作流程
 
-1. 读任务卡 + 相关文件，确认理解一致。
-2. 用 `test-driven-development`：先写失败测试，再实现到测试通过。
-3. 跑项目的构建 / 测试，确认没破坏现有行为。
-4. 用 `spec-steward` 把这次改动沉淀进 `knowledge/`（更新文档 + status + 所在目录 README 索引）。
-5. 交回主 loop 收口。
+1. 标记任务开始：
+   - **Claude Code**：用 `TaskUpdate` 把当前任务标记为 `in_progress`。
+   - **Codex**：更新 `.spec/tasks/<slug>.md` frontmatter 的 `status: in_progress`。
+2. 读任务卡 + 相关文件，确认理解一致。
+3. 用 `test-driven-development`：先写失败测试，再实现到测试通过。
+4. 跑项目的构建 / 测试，确认没破坏现有行为。
+5. 若改动引入了新设计决策、新模式或值得记录的行为，用 `spec-steward` 沉淀进 `knowledge/`；纯修复 / 文档微调 / 已有模式的套用可跳过。
+6. 标记任务完成，交回主 loop：
+   - **Claude Code**：用 `TaskUpdate` 把任务标记为 `completed`。
+   - **Codex**：更新 `.spec/tasks/<slug>.md` frontmatter 的 `status: completed`。
 
 ## 使用的技能
 
@@ -37,4 +42,5 @@ description: 用于有明确任务卡时，编写和修改代码并自测
 - 满足任务卡的全部验收标准。
 - 新增 / 修改都有测试覆盖，且全部通过。
 - 没有引入任务外的改动。
-- **改动已沉淀进 `knowledge/`**：相关文档与所在目录 README 索引、`status` 均已更新。
+- 任务已标记为 `completed`（Claude Code：`TaskUpdate`；Codex：更新 `.spec/tasks/<slug>.md`）。
+- 若适用：改动已沉淀进 `knowledge/`（新设计决策 / 新模式时必须；纯修复可豁免）。

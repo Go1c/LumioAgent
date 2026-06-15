@@ -1,88 +1,32 @@
 # LumioAgent — 中心文档
 
-> **主 Agent 调度，子 Agent 执行，Skill 是方法，.md 是规则。**
-> 本文件是唯一中心文档：放全局、稳定、常读的内容（概念、原则、调度）。各类文件的**详细格式规范**和**硬性禁令**在对应目录，见末尾索引。
-> **硬性禁令不在这里**——「不得 / 禁止」那类红线统一在 [`rules/`](rules/)；它们经 `CLAUDE.md` 的 `@import` **强制载入上下文、始终在场**，不靠按需加载。本文只讲「是什么 / 怎么做」。
+通用的开发项目管理 Agent。**主 Agent 调度,子 Agent 执行,Skill 是方法,.md 是规则。**
+主 Agent(= 宿主主 loop)理解目标、拆任务、调度、收口,自己不写代码;把活分给职能化的子 Agent,子 Agent 用 Skill 执行可复用流程,所有人共享 `.spec/` 下的 .md 作为规则与知识。
 
-## 核心概念
+> 项目知识(`knowledge/README.md` 导航)、硬性禁令(`rules/system.md`)都经 `CLAUDE.md` 的 `@import` 每次 init 强制载入,本文件不再复述。子 Agent 规范在 `agents/`,技能在 `skills/`;沉淀 / 同步任何能力 → 用 `spec-steward` 技能。
 
-### LumioAgent 是什么
+## 调度核心
 
-一个**通用的开发项目管理 Agent**。工作方式：
-
-- **主 Agent**（= 宿主主对话循环 / 主 loop 本身）负责理解目标、拆任务、调度、收口；它自己不写代码（拆解 / 实现交给子 Agent）。
-- 主 Agent 把活分派给不同职能的**子 Agent**；
-- 子 Agent 用**技能（Skill）**执行可复用流程；
-- 所有人共享一套 **上下文 .md** 作为规则与知识。
-
-### 四个核心概念
-
-| 概念 | 是什么 | 载体 | 类比 |
-|------|--------|------|------|
-| **主 Agent** | 总入口与调度者，即主 loop 本身 | `AGENTS.md` | 项目负责人 |
-| **子 Agent** | 单一职责的专职角色，被主 Agent 调度 | `agents/<name>.agent.md` | 专职成员 |
-| **Skill** | 可复用的标准化流程 / 方法 | `skills/<name>/SKILL.md` | 岗位 SOP |
-| **上下文 .md** | 规则、背景、知识 | `AGENTS.md`、`rules/`、`knowledge/` | 公司制度 + 知识库 |
-
-上下文 .md 分两档：**结构化（带 frontmatter：`agents/`、`skills/`、`knowledge/`）** 与 **纯文本（无 frontmatter：本文件、`rules/`）**。局部知识统一进 `knowledge/`，不另设就近上下文文件。
-
-### 渐进式披露（核心机制）
-
-任何 Skill / SubAgent / 治理文档按三阶段加载：
-
-1. **发现** — 启动时只读 `name` + `description`（一行）。
-2. **激活** — 任务匹配某个 `description` 时，才读它的全文。
-3. **执行** — 按正文操作，按需再加载附属文件。
-
-**铁律：`description` 决定一切。** 写清「什么场景下用它」（句式：`用于<什么情况>，做<什么事>`），不要写「它是什么」。含糊的 description = 这个能力对 Agent 不可见。
-
-## 全局原则
-
-1. **能力长在边缘，不长在核心。** 新增能力优先做成 Skill 或 SubAgent，把改主 loop 核心当最后手段。核心保持「窄腰」。
-2. **规则即文档。** 行为由 `.md` 定义，不靠隐藏约定。读这些 `.md` 就能完整理解系统。
-3. **渐进式披露。** 默认只看 `name` + `description`，任务匹配时才加载全文（见上节）。
-4. **先验证再断言。** 把某事称为缺陷并动手改之前，先读相关文件确认它不是有意设计。
-5. **约定靠遵守，不靠强制。** 这些流程与原则是主 loop 和子 Agent 自觉遵守的工作约定，宿主不会替我们硬性执行——所以要写得清楚、可执行。
-
-## 维护准则
-
-> 原则不在此复述（见上）。这里只列维护**动作**。
-
-1. **单一权威。** 同一条规则只在一处定义，发现重复就合并。「哪类格式 / 禁令住在哪」见末尾索引。
-2. **名册与实际一致。** 下面的名册是 `agents/` 的镜像，权威是 `.agent.md` 文件本身。
-3. **怎么创建 / 沉淀 / 同步** → 用 `skills/spec-steward` 技能。
-
-## 子 Agent 名册
-
-> 此表是 `agents/*.agent.md` 的**便利镜像**——权威是各 `.agent.md` 文件本身，宿主从软链接目录自动发现它们（按 `name` + `description`）。新增 / 删除职能时顺手更新此表即可。
+**子 Agent 名册**(便利镜像;权威是各 `.agent.md`):
 
 | 名称 | 职责 | 何时调度 |
 |------|------|----------|
-| `planner` | 把模糊目标转成清晰、可执行、带验收标准的任务卡 | 任务开始、需求不清时 |
-| `coder` | 根据任务卡编写和修改代码 | 有明确任务卡时 |
+| `planner` | 把模糊目标转成清晰、可执行、带验收标准的任务卡 | 需求不清时 |
+| `coder` | 根据任务卡编写 / 修改代码 | 有明确任务卡时 |
 
-## 调度策略
+- **默认流程:** `planner`(拆解)→ `coder`(实现)→ 主 loop 收口。需求清晰且简单 → 跳过 planner,直接派 coder。
+- **谁来调度:** 只有主 loop 调度子 Agent;被调用的子 Agent 只执行、不再派活。
+- **失败处理:** coder 不达标退回重做;同一问题三次仍不过,停下质疑方案本身。
+- **上下文隔离:** 每个子 Agent 在自己的上下文里只拿任务卡 + 相关文件。
 
-- **默认流程：** `planner`（拆解）→ `coder`（实现）→ 主 loop 收口。
-- **判断复杂度选流程：** 需求模糊 → 先派 `planner`；需求清晰、任务简单 → 跳过 `planner`，直接派 `coder`。
-- **谁来调度：** 只有主 loop 调度子 Agent；被调用的子 Agent 只执行、不再派活。
-- **失败处理：** coder 产出不达标时退回重做；同一问题修三次仍不过，停下来质疑方案本身。
-- **上下文隔离：** 每个子 Agent 在自己的上下文里工作，只拿到完成任务所需的信息（任务卡 + 相关文件）。
+## 宿主差异
 
-> 调度 / 协作的**硬性禁令**（不得再派生子 Agent、frontmatter 限制、调度变更须同步等）统一在 [`rules/agent-collaboration.md`](rules/agent-collaboration.md)，本文不复述。
+| 能力 | Claude Code | Codex |
+|------|-------------|-------|
+| 任务持久化 | `TaskCreate` / `TaskUpdate` / `TaskList` | `.spec/tasks/<slug>.md`（frontmatter `status`）|
+| 子 Agent 发现 | `.claude/agents/` 自动发现 `.agent.md` | 主 loop 手动读 `.spec/agents/*.agent.md` |
+| 技能加载 | `.claude/skills/` 自动发现 | `.agents/skills/` 索引，手动调用 |
 
-## 各类规范在哪（索引）
+Codex 主 loop 本地执行角色规范:需求不清时读 `planner.agent.md` 并用 `task-breakdown`;任务明确时读 `coder.agent.md` 并按需用 `test-driven-development` / `spec-steward`。只有用户明确要求并行时,才用 Codex 多代理工具。
 
-本文之外的内容，按需去对应处加载：
-
-| 想做什么 / 哪类内容 | 权威落点 |
-|----------|----------|
-| 硬性禁令（不得 / 禁止）：协作调度禁令 + 文件 / 资源护栏 | [`rules/README.md`](rules/README.md) |
-| 怎么写 / 改技能（格式） | [`skills/README.md`](skills/README.md)；方法正文在 `skills/<name>/SKILL.md` |
-| 用 / 维护知识库 | [`knowledge/README.md`](knowledge/README.md) |
-| 怎么写子 Agent | 照 `agents/` 范例 + 用 `skills/spec-steward` 技能 |
-| 创建 / 沉淀 / 同步任何能力的操作流程 | `skills/spec-steward` 技能 |
-
----
-
-*单一权威：每条规则、每类格式只有一个落点（全局机制在本文件，禁令在 `rules/`，各类格式在对应 README）。发现重复就合并；任何改动先符合对应处。*
+> 调度 / 协作的**硬性禁令**(不得再派生子 Agent、frontmatter 限制、调度变更须同步)在 [`rules/system.md`](rules/system.md)。
