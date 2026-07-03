@@ -32,7 +32,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 2. **放对位置 + 命名**（agent 文件 `<name>.agent.md`、skill 目录 `skills/<name>/`；均 kebab、全局唯一，且目录 / 文件名与 frontmatter `name` 一致）。
 3. **写 frontmatter**：
    - agents：仅 `name` + `description`
-   - skills：**仅** `name` + `description`（`version` / `license` / `metadata` 等非规范字段会被忽略，别加）
+   - skills：**仅** `name` + `description`（Agent Skills 开放标准允许 `license` 等可选字段，但**本仓约定**只用这两个，spec-lint 强制）
    - knowledge：`name` + `description` + `metadata`（type / level / status）
    - rules：**无** frontmatter
 4. **同步登记**（漏一处，能力就隐身）：
@@ -58,6 +58,13 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 - `.spec/tasks/` 根目录只留**未完成 / 进行中**的卡。
 - 任务完成后移入 `.spec/tasks/archive/`（历史在 git，归档只为让根目录反映在途状态）。
 
+### 流程 D · 跨仓回填（下游项目 → 种子）
+
+- **准入**：在至少一个下游真实项目里验证过的**通用机制**（角色 / 流程 / 校验 / 模板 / 红线）。
+- **不收**：项目名词、技术栈绑定、业务规则——这些留在下游自己的 `.spec/`。
+- 回填时：同步更新种子 `CHANGELOG.md` 并打新版本 tag（契约见 [`decisions/0005`](../../decisions/0005-seed-downstream-contract.md)）。
+- 反方向（种子更新 → 下游吸收）见根 `ADOPTING.md`，不在本技能内。
+
 ## 快速参考
 
 | 内容 | 去处 | frontmatter |
@@ -79,7 +86,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 
 ## 验证
 
-- [ ] `node tools/spec-lint.mjs` 通过（frontmatter / status 枚举 / 导航覆盖 / @import 完整性 / 链接可达 / 名册一致，机器兜底）。
+- [ ] `node tools/spec-lint.mjs` 通过（完整校验项清单以该脚本头部注释为准，机器兜底）。
 - [ ] 内容在正确目录、命名合规。
 - [ ] `AGENTS.md` 名册、宿主差异表、调度核心与实际一致。
 - [ ] knowledge 文档 `status` 与现状一致；本次交付已追加进「变更记录」。

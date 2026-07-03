@@ -14,3 +14,4 @@
 | [0002](0002-dispatch-and-review.md) | 主 loop 只调度不实现;planner / coder / reviewer 三角色与交回物格式 | 生效 |
 | [0003](0003-knowledge-anti-bloat.md) | 导航一句话 + 变更记录下沉 + status 枚举 + spec-lint 机械校验 | 生效 |
 | [0004](0004-ai-capability-boundary.md) | 产品 AI 能力的边界基线:不写库、可溯源、可关闭、外发受控 | 生效 |
+| [0005](0005-seed-downstream-contract.md) | 种子↔下游契约:tag 发版、编号空间独立、回填走流程 D、冲突以下游为准 | 生效 |
