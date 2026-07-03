@@ -4,12 +4,12 @@ description: 开发工作流——分支/提交/合并·PR 流程；动手改代
 metadata:
   type: doc
   level: L1
-  status: 草稿
+  status: 设计中
 ---
 
 # 开发工作流（分支 / 提交 / 合并）
 
-> 本文是“开发这件事**怎么做**”的手册。注意区分：Agent 之间**怎么协作**（planner → coder → 收口）在 [`AGENTS.md`](../../AGENTS.md) 的「调度策略」里，不在这里。
+> 本文是“开发这件事**怎么做**”的手册。注意区分：Agent 之间**怎么协作**（planner → coder → reviewer → 收口）在 [`AGENTS.md`](../../AGENTS.md) 的「调度核心」里，不在这里。
 > “禁止碰什么”的硬性护栏（如禁止直接 push 受保护分支）在 [`rules/`](../../rules/)；本文只描述流程，遇到护栏处**引用**它，不重复定义。
 
 ## 分支策略

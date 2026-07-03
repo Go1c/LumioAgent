@@ -4,7 +4,7 @@ description: 测试与验收——何时走 TDD、验收标准 DoD；实现功�
 metadata:
   type: doc
   level: L1
-  status: 草稿
+  status: 设计中
 ---
 
 # 测试与验收（含 TDD 政策）
