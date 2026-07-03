@@ -13,7 +13,7 @@ metadata:
 
 ## 语言与文件命名（通用）
 
-- **规范主体使用中文**（`.spec/` 下全部文档）；唯一例外是根 `CLAUDE.md`（宿主入口惯例，英文）。落地项目若改用其他语言，需全仓一致并同步 `tools/spec-lint.mjs` 里的中文枚举值。
+- **规范主体使用中文**（`.spec/` 下全部文档）；唯一例外是根 `CLAUDE.md`（宿主入口惯例，英文）。落地项目若改用其他语言，需全仓一致并同步 `.spec/tools/spec-lint.mjs` 里的中文枚举值。
 - 文件与目录命名一律 **kebab-case**；agent 文件 `<name>.agent.md`、skill 目录 `skills/<name>/`、ADR `NNNN-<slug>.md`。
 
 ## 注释原则（通用）
@@ -29,4 +29,4 @@ metadata:
 ## 语言 / 框架特定风格（**落地必填**）
 
 <!-- 落地项目在此填写：语言版本、formatter / linter 配置指向、目录分层约定、框架惯例。 -->
-种子仓自身为纯文档 + 单个 Node 脚本（`tools/spec-lint.mjs`：零依赖、Node 22 内置模块、ESM）。
+种子仓自身为纯文档 + 单个 Node 脚本（`.spec/tools/spec-lint.mjs`：零依赖、Node 22 内置模块、ESM）。

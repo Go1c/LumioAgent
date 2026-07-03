@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * spec-lint — .spec/ 结构一致性机械校验。改完 .spec/ 必须跑一次;CI 里随 workflow 执行。
- * 用法:node tools/spec-lint.mjs [仓库根目录]   (省略参数时取本脚本上级目录)
+ * 用法:node .spec/tools/spec-lint.mjs [仓库根目录]   (省略参数时取本脚本上级目录)
  *
  * 校验项清单(本注释是全仓「lint 能力清单」的单一权威,其他文档只指回这里):
  *  1. 核心文件存在:CLAUDE.md、.spec/AGENTS.md、.spec/knowledge/README.md 缺失时给可读报错,不崩栈。
@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = process.argv[2]
   ? resolve(process.argv[2])
-  : resolve(dirname(fileURLToPath(import.meta.url)), '..')
+  : resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const SPEC = join(ROOT, '.spec')
 const STATUS_ENUM = new Set(['设计中', '实施中', '已交付', '历史归档'])
 const errors = []

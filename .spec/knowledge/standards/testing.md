@@ -28,7 +28,7 @@ metadata:
 
 ## 验收标准（Definition of Done）
 
-- [ ] 收口门槛命令全绿（种子默认 `node tools/spec-lint.mjs` + `node --test tools/spec-lint.test.mjs`）。
+- [ ] 收口门槛命令全绿（种子默认 `node .spec/tools/spec-lint.mjs` + `node --test .spec/tools/spec-lint.test.mjs`）。
 - [ ] 新增 / 修改行为有测试覆盖；bug 修复留有回归测试。
 - [ ] 无 lint / 类型错误、无调试残留。
 - [ ] 相关知识文档已更新（见 [`workflow.md`](./workflow.md)）。
@@ -36,4 +36,4 @@ metadata:
 ## 项目测试栈与命令（**落地必填**）
 
 <!-- 落地项目在此填写：测试框架、各层运行命令、集成/E2E 的开关方式与环境要求。 -->
-种子仓自身：`node --test tools/spec-lint.test.mjs`（spec-lint 的 fixture 自测）。
+种子仓自身：`node --test .spec/tools/spec-lint.test.mjs`（spec-lint 的 fixture 自测）。

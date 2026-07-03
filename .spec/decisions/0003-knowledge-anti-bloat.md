@@ -12,7 +12,7 @@
 - **导航行来源于 frontmatter `description`,同一句话口径**(是什么 + 何时查,≤120 字符、spec-lint 强制),不含交付历史;允许排版差异,不得出现 description 没有的事实。
 - **交付历史唯一落点是各文档的「变更记录」节**(`_TEMPLATE.md` 固定小节),按时间倒序。
 - **`status` 收敛为枚举**:`设计中` / `实施中` / `已交付` / `历史归档`。
-- **一致性由 `tools/spec-lint.mjs` 机械校验**(frontmatter / status 枚举 / description 长度 / 导航覆盖 / 链接可达 / @import 完整性 / 名册一致);改完 `.spec/` 必须跑,有 CI 的项目挂进验证命令。
+- **一致性由 `.spec/tools/spec-lint.mjs` 机械校验**(frontmatter / status 枚举 / description 长度 / 导航覆盖 / 链接可达 / @import 完整性 / 名册一致);改完 `.spec/` 必须跑,有 CI 的项目挂进验证命令。
 
 ## 后果
 

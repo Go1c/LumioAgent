@@ -62,8 +62,8 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 
 - **准入**：在至少一个下游真实项目里验证过的**通用机制**（角色 / 流程 / 校验 / 模板 / 红线）。
 - **不收**：项目名词、技术栈绑定、业务规则——这些留在下游自己的 `.spec/`。
-- 回填时：同步更新种子 `CHANGELOG.md` 并打新版本 tag（契约见 [`decisions/0005`](../../decisions/0005-seed-downstream-contract.md)）。
-- 反方向（种子更新 → 下游吸收）见根 `ADOPTING.md`，不在本技能内。
+- 回填时：打新版本 tag，变更写进 tag message（契约见 [`decisions/0005`](../../decisions/0005-seed-downstream-contract.md)）。
+- 反方向（种子更新 → 下游吸收）见根 `README`，不在本技能内。
 
 ## 快速参考
 
@@ -86,7 +86,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 
 ## 验证
 
-- [ ] `node tools/spec-lint.mjs` 通过（完整校验项清单以该脚本头部注释为准，机器兜底）。
+- [ ] `node .spec/tools/spec-lint.mjs` 通过（完整校验项清单以该脚本头部注释为准，机器兜底）。
 - [ ] 内容在正确目录、命名合规。
 - [ ] `AGENTS.md` 名册、宿主差异表、调度核心与实际一致。
 - [ ] knowledge 文档 `status` 与现状一致；本次交付已追加进「变更记录」。

@@ -16,4 +16,4 @@
 ## 后果
 
 - 接受无 `@import` 机制的宿主(Codex)依赖「主动读三份」的君子协定——已知不对称。
-- `@import` 行与软链接成为需要守护的基础设施——由 `tools/spec-lint.mjs` 校验 @import 完整性兜底。
+- `@import` 行与软链接成为需要守护的基础设施——由 `.spec/tools/spec-lint.mjs` 校验 @import 完整性兜底。
