@@ -1,0 +1,18 @@
+# 种子仓自己的一致性门槛:spec-lint + 其自测。零依赖,不需要 install。
+name: spec-lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/spec-lint.mjs
+      - run: node --test tools/spec-lint.test.mjs
