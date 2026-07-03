@@ -15,9 +15,9 @@ metadata:
 
 | 文档 | 一句话 |
 |------|--------|
-| [`standards/workflow.md`](standards/workflow.md) | 开发工作流:分支 / 提交 / 合并 · PR——动手改代码、开 PR 前查 |
-| [`standards/code-style.md`](standards/code-style.md) | 代码风格:注释 / 命名等需判断的约定——写代码时查 |
-| [`standards/testing.md`](standards/testing.md) | 测试与验收:何时走 TDD、验收标准 DoD——实现功能 / 修 bug 时查 |
+| [`standards/workflow.md`](standards/workflow.md) | 开发工作流:分支/提交/合并·PR 与知识同步义务——动手改代码、开 PR 前查 |
+| [`standards/code-style.md`](standards/code-style.md) | 代码与文档风格:语言约定、命名、注释原则、生成物纪律——写代码/建文档时查 |
+| [`standards/testing.md`](standards/testing.md) | 测试与验收:测试分层政策、TDD 时机、验收 DoD 与验证证据——实现功能/修 bug 时查 |
 | [`standards/ai.md`](standards/ai.md) | AI 能力接入规范:LLM 端口边界、数据外发受控例外、密钥/prompt/评测——做产品 AI 能力/接外部 LLM 前查 |
 
 ## features/(功能设计与记录 · 供了解)
