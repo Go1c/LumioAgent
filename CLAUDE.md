@@ -14,7 +14,7 @@ System rules (**force-loaded at every agent init, no progressive disclosure** â€
 
 @.spec/rules/system.md
 
-> **Maintenance:** every force-loaded file needs a matching `@.spec/<path>.md` line above, or it won't load at init. This applies to every rule file under `rules/` and to `knowledge/README.md`.
+> **Maintenance:** every force-loaded file needs a matching `@.spec/<path>.md` line above, or it won't load at init. This applies to every rule file under `rules/` and to `knowledge/README.md`. This completeness is machine-checked by `node tools/spec-lint.mjs` â€” run it after any `.spec/` change.
 
 Claude-specific:
 
