@@ -11,10 +11,10 @@
 - **主 Agent**（`.spec/AGENTS.md`）是系统宪法与总调度者，即宿主的主对话循环（主 loop）本身。
 - **子 Agent**（`.spec/agents/*.agent.md`）是有单一职责的专职角色（planner / coder / reviewer），由主 loop 调用、只执行、不再派活。实质改动必过 `reviewer` 对抗审查——写的人和审的人是两个上下文。
 - **技能**（`.spec/skills/<name>/SKILL.md`）是可复用的标准化流程，任何子 Agent 都能调用。
-- **决策**（`.spec/decisions/`）用 ADR 记录框架自身的取舍——为什么这样调度、为什么这种结构。
+- **决策**（`.spec/decisions/`）是记录框架级决策的 ADR 目录（空模板，给你的项目用）。
 - **一致性**由 `node .spec/tools/spec-lint.mjs` 机械校验（完整校验项清单见该脚本头部注释），不靠人肉清单。
 
-能力按**渐进式披露**加载：三份核心（中心文档 / 知识导航 / 硬红线）每次 init 强制载入（Claude Code 经 `@import`；无此机制的宿主靠主动读三份核心，见 ADR 0001），其余按需下钻。Skill 格式**兼容 [Agent Skills 开放标准](https://agentskills.io)** 的必填子集（本仓约定只用 name + description）。
+能力按**渐进式披露**加载：三份核心（中心文档 / 知识导航 / 硬红线）每次 init 强制载入（Claude Code 经 `@import`；无此机制的宿主靠主动读三份核心），其余按需下钻。Skill 格式**兼容 [Agent Skills 开放标准](https://agentskills.io)** 的必填子集（本仓约定只用 name + description）。
 
 ## 仓库地图
 
@@ -25,7 +25,7 @@ LumioAgent/
 │   ├── agents/               # 子 Agent 定义（planner / coder / reviewer）
 │   ├── rules/                # Agent 护栏 / 禁令（跨工具、跨 Agent，强制载入）
 │   ├── knowledge/            # 项目知识库（standards 规范支 + features 功能支）
-│   ├── decisions/            # 框架决策记录（ADR）
+│   ├── decisions/            # ADR 决策目录（空模板，从 0001 开始写）
 │   ├── tasks/                # 离线任务卡（无内置任务工具的宿主用；archive/ 归档）
 │   ├── skills/               # 技能库，扁平结构，一个技能一个目录
 │   └── tools/                # spec-lint 结构校验脚本 + fixture 自测
@@ -42,7 +42,6 @@ LumioAgent/
 1. **[.spec/AGENTS.md](.spec/AGENTS.md)** —— 中心文档：调度核心（默认流程 / 交回物格式 / 失败升级）+ 子 Agent 名册。**先读它，再按需下钻。**
 2. **[.spec/knowledge/README.md](.spec/knowledge/README.md)** —— 知识导航：有哪些规范和功能记录、在哪。
 3. **[.spec/rules/system.md](.spec/rules/system.md)** —— 硬红线：协作禁令与安全护栏。
-4. **[.spec/decisions/README.md](.spec/decisions/README.md)** —— 框架为什么长这样：核心决策与代价。
 
 ## 怎么用到你的项目
 
@@ -50,7 +49,7 @@ LumioAgent/
 
 1. **填空**：`.spec/AGENTS.md` 顶部有「项目是什么 / 收口门槛」两处占位，填上你项目的定位和验证命令。
 2. **改写规范骨架**：`.spec/knowledge/standards/` 里三份文档标了「落地必填」的段落，换成你项目的真实约定；其余通用部分可保留。
-3. **保留框架资产**：`.spec/decisions/` 的 ADR 和 `.spec/rules/` 的红线原样保留，你自己的新决策从编号往后续。
+3. **保留框架资产**：`.spec/rules/` 的红线原样保留；`.spec/decisions/` 是空 ADR 模板，你的决策从 0001 开始写。
 4. **老项目也能用**：不必一步到位，先只搬 `.spec/rules/` + `.spec/AGENTS.md`，其余分批接入。
 
 > 每次收尾跑一下 `node .spec/tools/spec-lint.mjs`，结构不一致会被当场指出。版本历史见 git tags；后续从下游项目验证过的通用经验会以打 tag 的方式回流到这里。

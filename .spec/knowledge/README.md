@@ -9,7 +9,7 @@ metadata:
 
 本文件是 `knowledge/` 下所有 .md 的导航 meta:一行描述 + 路径,按需下钻。
 
-> **导航行与各文档 frontmatter `description` 同一句话口径,只写「是什么 + 何时查」。** 交付历史在各文档的「变更记录」节,此处不堆([决策 0003](../decisions/0003-knowledge-anti-bloat.md));长度 / status 枚举 / 登记覆盖 / 链接可达由 `node .spec/tools/spec-lint.mjs` 机械校验。
+> **导航行与各文档 frontmatter `description` 同一句话口径,只写「是什么 + 何时查」。** 交付历史在各文档的「变更记录」节,此处不堆;长度 / status 枚举 / 登记覆盖 / 链接可达由 `node .spec/tools/spec-lint.mjs` 机械校验。
 
 ## standards/(开发规范 · 要遵守的「怎么做」)
 
