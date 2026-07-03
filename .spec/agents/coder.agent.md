@@ -29,9 +29,7 @@ description: 用于有明确任务卡时，编写和修改代码并自测
 4. 用 `test-driven-development`：先写失败测试，再实现到测试通过。
 5. 跑项目的构建 / 测试，确认没破坏现有行为。
 6. 若改动引入了新设计决策、新模式或值得记录的行为，用 `spec-steward` 沉淀进 `knowledge/`；纯修复 / 文档微调 / 已有模式的套用可跳过。
-7. 标记任务完成，交回主 loop：
-   - **Claude Code**：用 `TaskUpdate` 把任务标记为 `completed`。
-   - **Codex**：更新 `.spec/tasks/<slug>.md` frontmatter 的 `status: completed`。
+7. 交回主 loop **待审**：改动留在工作区不提交，交回物按 `AGENTS.md`「交回物格式」。是否标记 `completed` 由主 loop 在 `reviewer` 通过（或按豁免跳过审查）后决定——coder 不自标完成。
 
 ## 使用的技能
 
@@ -44,6 +42,5 @@ description: 用于有明确任务卡时，编写和修改代码并自测
 - 交回物符合 `AGENTS.md`「交回物格式」：改动清单、验证证据（命令 + 关键输出，不得只声称通过）、known gaps、知识沉淀落点。
 - 满足任务卡的全部验收标准。
 - 新增 / 修改都有测试覆盖，且全部通过。
-- 没有引入任务外的改动。
-- 任务已标记为 `completed`（Claude Code：`TaskUpdate`；Codex：更新 `.spec/tasks/<slug>.md`）。
-- 若适用：改动已沉淀进 `knowledge/`（新设计决策 / 新模式时必须；纯修复可豁免）。
+- 没有引入任务外的改动；改动留在工作区未提交（提交由主 loop 在审查通过后收口）。
+- 若适用：改动已沉淀进 `knowledge/`（新设计决策 / 新模式时必须；纯修复可豁免，豁免要在交回物里声明）。
