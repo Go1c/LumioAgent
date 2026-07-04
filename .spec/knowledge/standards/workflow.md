@@ -3,7 +3,6 @@ name: workflow
 description: 开发工作流——分支/提交/合并·PR 与知识同步义务;动手改代码、开 PR 前查
 metadata:
   type: doc
-  level: L1
   status: 已交付
 ---
 
@@ -23,6 +22,7 @@ metadata:
 - 常用 type：`feat` / `fix` / `refactor` / `chore` / `docs` / `ci`。scope 可省略。
 - **一次提交只做一类事**；文档、脚手架、功能、测试修复不混在一起。
 - 提交前自检：验证命令通过（见 `AGENTS.md`「收口门槛」与 `rules/system.md`）、无调试残留、知识已同步（见下节）。
+- 机器兜底：Claude Code 宿主经入库的 `.claude/settings.json` hooks 在 `git commit` 前自动跑结构校验，未过即阻断（known gap：仅 Claude Code 生效，Codex 等宿主无机器兜底，依赖上一条自检自觉执行；「reviewer 通过前不得提交」机器不可判，同属自觉项，红线见 `rules/system.md`）。
 
 ## 合并 / PR 流程（**落地必填**）
 
