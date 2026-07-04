@@ -20,7 +20,7 @@
 > **agents/ 准入门槛:只收「隔离本身即是产出价值」的角色**(当前仅 `reviewer`)。编码 / 拆解不设角色,规程见「编码约定」与 `task-breakdown`。
 
 - **调度取向:快 > 稳 > 好。** 默认并行:文件集互不重叠即并行扇出;能继承上下文的 fork 优先于冷启动 worker;串行只留给有依赖或文件重叠的工作。
-- **默认流程:** 需求不清 → `task-breakdown`;实现 → 主 loop 直编或派 worker;**实质改动(新功能 / 行为变更 / 安全相关)整体完成后必过 `reviewer`**(纯文档微调 / 机械套用既有模式可跳过)→ 主 loop 收口。清单见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
+- **默认流程:** 需求不清 → `task-breakdown`;实现 → 主 loop 直编或派 worker;交付 → 收口门槛机器验证;**仅高风险改动(代码逻辑 / 安全面 / 跨模块重构)过 `reviewer`**,默认快审、显式要求才深审,其余(文档 / 配置 / 机械套用)lint + 测试直接收口并声明豁免 → 主 loop 收口。分级见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
 - **审查闭环:** 交付即待审;completed 由主 loop 在 reviewer 通过(或按豁免跳过)后标记;实质改动审查通过前**不得提交**。
 - **派 worker 三选一:** ① 多个互不依赖任务可并行 ② 改动大到撑爆编排上下文 ③ 需要隔离的干净实现环境。
 - **收口门槛:** <!-- 落地项目替换为自己的验证命令,如 pnpm verify --> 种子默认 `node .spec/tools/spec-lint.mjs` + `node --test .spec/tools/spec-lint.test.mjs`;交付前必须通过。
