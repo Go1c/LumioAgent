@@ -30,7 +30,7 @@ description: 用于功能 / 任务整体完成后，对照任务卡与项目规�
 3. **安全**：注入、越权、密钥 / 敏感数据泄露、不受控的对外请求；新增对外暴露面必须有访问控制。
 4. **护栏与规范**（[`rules/system.md`](../rules/system.md) 全部护栏、[`knowledge/standards/`](../knowledge/README.md) 各规范）：护栏是红线，任何一条被绕过即 `blocker`；规范违背按严重度定级。
 5. **测试**（[`standards/testing.md`](../knowledge/standards/testing.md)）：新增 / 修改行为有测试覆盖且是真断言（不是空转）；修 bug 有能复现的测试。
-6. **提交卫生**（[`standards/workflow.md`](../knowledge/standards/workflow.md)）：一次提交只做一类事；无任务外夹带（顺手重构 / 未要求的功能 / 任务外新依赖）。
+6. **提交卫生**（[`standards/workflow.md`](../knowledge/standards/workflow.md)）：一次提交只做一类事；无任务外夹带（口径见 `AGENTS.md`「编码约定·不夹带」）。
 7. **知识沉淀**：新设计决策 / 新模式已按 `spec-steward` 落进 `knowledge/` 且索引同步；纯修复 / 套用既有模式可豁免，但豁免须在交回物里声明。
 
 > 落地项目可在此清单上**叠加自己的维度**（如合同真值、租户隔离、可观测性），叠加处以该项目 `knowledge/` 为准。

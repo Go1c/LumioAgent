@@ -3,7 +3,6 @@ name: testing
 description: 测试与验收——测试分层政策、TDD 时机、验收 DoD 与验证证据;实现功能/修 bug 时查
 metadata:
   type: doc
-  level: L1
   status: 已交付
 ---
 
@@ -24,7 +23,7 @@ metadata:
 
 ## 验证证据
 
-测试跑没跑、结果如何，**必须以「命令 + 关键输出」形式进交回物**（见 `AGENTS.md`「交回物格式」）——「已通过」三个字不是证据。
+形式要求以 `AGENTS.md`「交回物格式」为单一权威——「已通过」三个字不是证据。
 
 ## 验收标准（Definition of Done）
 
