@@ -3,7 +3,6 @@ name: code-style
 description: 代码与文档风格——语言约定、命名、注释原则、生成物纪律;写代码/建文档时查
 metadata:
   type: doc
-  level: L1
   status: 已交付
 ---
 

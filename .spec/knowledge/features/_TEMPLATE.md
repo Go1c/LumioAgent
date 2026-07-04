@@ -3,7 +3,6 @@ name: <功能名>
 description: <一句话——这个功能是什么 / 何时查这篇;≤120 字符,不含交付历史>
 metadata:
   type: doc            # doc = 内容文档;index = 导航/索引文档
-  level: L2            # L1 = 全局规范级(standards/全局定位);L2 = 功能级
   status: 设计中        # 枚举,只能取:设计中 / 实施中 / 已交付 / 历史归档
 ---
 
