@@ -1,5 +1,25 @@
-# 离线任务卡目录（Codex 侧任务持久化）
+# 任务卡目录（多宿主共享任务真值）
 
-Claude Code 用宿主内置 `TaskCreate` / `TaskUpdate`；无内置任务工具的宿主（Codex）把任务卡落在本目录：一张卡 = 一个 `<slug>.md`，frontmatter 带 `status`（pending / in_progress / completed），正文为验收标准。
+多宿主 / 多人并存时，跨宿主共享的任务真值落在本目录，宿主内置任务工具（如 Claude Code 的 `TaskCreate` / `TaskUpdate`）只作个人草稿；单宿主场景直接用宿主内置工具即可（口径见 `AGENTS.md`「并行边界」）。
+**本文件是任务卡格式的单一权威**——`task-breakdown` 技能的模板与任何写卡处都指回这里，不另行定义字段。
 
-- **根目录只放在途卡**。任务完成后移入 `archive/`（归档流程见 `spec-steward` 流程 C；历史在 git）。
+## 格式契约
+
+一张卡 = 一个 `<slug>.md`（kebab-case，目录内唯一）。
+
+**frontmatter（仅此一个字段）：**
+
+- `status`：枚举，只能取 `pending` / `in_progress` / `completed`。
+
+**正文必含节（按序）：**
+
+1. `# <一句话目标>`——做什么，一句话说清（H1 即标题，可跟 1–2 句补充背景）。
+2. `## 涉及范围`——**文件集口径**：逐一列出本卡要改的文件路径（供并行调度判断重叠，见 `AGENTS.md`「并行调度」）。
+3. `## 验收标准`——checklist（`- [ ]`），每条可客观验证。
+4. `## 依赖`——前置卡 slug 列表，或「无」。
+
+## 目录纪律
+
+- **根目录只放在途卡**（pending / in_progress）。
+- 任务完成后移入 `archive/`（归档流程见 `spec-steward` 流程 C；历史在 git）。
+- **种子仓自身不落卡**：本目录机制供落地项目使用；种子自己的改进过程属过程记录，不入库（历史在 git）。
