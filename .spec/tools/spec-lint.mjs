@@ -18,6 +18,9 @@
  *  7. 名册一致(双向):agents/ 下每个角色必须出现在 AGENTS.md 名册表;名册表每行也必须有
  *     对应的 .agent.md 文件(幽灵行)。
  *  8. 软链接存活:.claude/agents、.claude/skills、.agents/skills 必须存在且解析进 .spec/。
+ *  9. 任务卡 frontmatter:.spec/tasks/ 根目录每张卡(README 除外)必须有 frontmatter,
+ *     且只允许 status 字段,枚举 pending / in_progress / completed(契约见 tasks/README.md);
+ *     archive/ 下历史卡不校验。
  */
 import { readFileSync, readdirSync, existsSync, statSync, lstatSync, realpathSync } from 'node:fs'
 import { join, dirname, basename, resolve, relative } from 'node:path'
@@ -212,6 +215,23 @@ for (const rel of ['.claude/agents', '.claude/skills', '.agents/skills']) {
     if (!real.startsWith(realpathSync(SPEC))) err(link, `软链接未解析进 .spec/(实际指向 ${real})`)
   } catch {
     err(link, '软链接悬空(目标不存在)')
+  }
+}
+
+// ── 9. tasks/ 任务卡 frontmatter(格式契约见 .spec/tasks/README.md) ────────
+const tasksDir = join(SPEC, 'tasks')
+const TASK_STATUS_ENUM = new Set(['pending', 'in_progress', 'completed'])
+if (existsSync(tasksDir)) {
+  for (const name of readdirSync(tasksDir)) {
+    const p = join(tasksDir, name)
+    if (statSync(p).isDirectory() || !name.endsWith('.md') || name === 'README.md') continue
+    const fm = parseFrontmatter(p)
+    if (!fm) { err(p, '任务卡缺少 frontmatter(格式契约见 tasks/README.md)'); continue }
+    const keys = fm.__keys.filter((k) => k !== '__keys')
+    if (keys.join(',') !== 'status') err(p, `任务卡 frontmatter 只允许 status,实际:${keys.join(',')}`)
+    if (!TASK_STATUS_ENUM.has(fm.status)) {
+      err(p, `status「${fm.status ?? ''}」不在枚举(${[...TASK_STATUS_ENUM].join(' / ')})`)
+    }
   }
 }
 

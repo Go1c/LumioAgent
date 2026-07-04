@@ -121,6 +121,39 @@ test('缺 CLAUDE.md 给可读报错而非崩栈', () => {
   assert.doesNotMatch(output, /at .*spec-lint\.mjs:\d/) // 无堆栈
 })
 
+test('任务卡 status 非枚举被抓', () => {
+  const { code, output } = lint(fixture({
+    '.spec/tasks/demo-card.md': '---\nstatus: done\n---\n\n# 演示卡\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /status「done」不在枚举/)
+})
+
+test('任务卡缺 frontmatter 被抓', () => {
+  const { code, output } = lint(fixture({
+    '.spec/tasks/demo-card.md': '# 裸卡\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /任务卡缺少 frontmatter/)
+})
+
+test('任务卡多余 frontmatter 字段被抓', () => {
+  const { code, output } = lint(fixture({
+    '.spec/tasks/demo-card.md': '---\nstatus: pending\nowner: me\n---\n\n# 卡\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /只允许 status/)
+})
+
+test('合法任务卡通过,archive/ 与 README 不校验', () => {
+  const { code, output } = lint(fixture({
+    '.spec/tasks/demo-card.md': '---\nstatus: in_progress\n---\n\n# 卡\n',
+    '.spec/tasks/README.md': '# 任务卡目录\n',
+    '.spec/tasks/archive/old-card.md': '---\nstatus: whatever\n---\n\n# 老卡\n',
+  }))
+  assert.equal(code, 0, output)
+})
+
 test('软链接缺失被抓', () => {
   const root = fixture()
   rmSync(join(root, '.claude/agents'))
