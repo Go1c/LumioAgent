@@ -8,10 +8,7 @@
 
 ## 它怎么工作
 
-- **主 Agent**（`.spec/AGENTS.md`）是系统宪法与总调度者，即宿主的主对话循环（主 loop）本身。
-- **子 Agent**（`.spec/agents/*.agent.md`）是有单一职责的专职角色，由主 loop 调用、只执行、不再派活。准入门槛：**只收「隔离本身即是产出价值」的角色**（当前仅 `reviewer`）——实质改动必过 `reviewer` 对抗审查，写的人和审的人是两个上下文；写代码与拆解不设角色，规程见 `.spec/AGENTS.md` 的「编码约定」。
-- **技能**（`.spec/skills/<name>/SKILL.md`）是可复用的标准化流程，任何子 Agent 都能调用。
-- **决策**（`.spec/decisions/`）是记录框架级决策的 ADR 目录（空模板，给你的项目用）。
+- 调度、编码约定、并行与审查闭环的**权威定义在 [.spec/AGENTS.md](.spec/AGENTS.md)**，本节不复述：主 loop 调度一切，唯一职能子 Agent 是 `reviewer`（写的人 ≠ 审的人），技能（`.spec/skills/`）是可复用方法，框架级决策走 `.spec/decisions/` ADR（空模板，给你的项目用）。
 - **一致性**由 `node .spec/tools/spec-lint.mjs` 机械校验（完整校验项清单见该脚本头部注释），不靠人肉清单。
 
 能力按**渐进式披露**加载：三份核心（中心文档 / 知识导航 / 硬红线）每次 init 强制载入（Claude Code 经 `@import`；无此机制的宿主靠主动读三份核心），其余按需下钻。Skill 格式**兼容 [Agent Skills 开放标准](https://agentskills.io)** 的必填子集（本仓约定只用 name + description）。
@@ -24,7 +21,7 @@ LumioAgent/
 │   ├── AGENTS.md             # ★ 中心文档：项目槽位 + 调度核心 + 名册，先读它
 │   ├── agents/               # 子 Agent 定义（仅 reviewer；准入门槛见 AGENTS.md）
 │   ├── rules/                # Agent 护栏 / 禁令（跨工具、跨 Agent，强制载入）
-│   ├── knowledge/            # 项目知识库（standards 规范支 + features 功能支）
+│   ├── knowledge/            # 项目知识库（standards 规范 + features 功能 + lessons 经验池）
 │   ├── decisions/            # ADR 决策目录（空模板，从 0001 开始写）
 │   ├── tasks/                # 离线任务卡（无内置任务工具的宿主用；archive/ 归档）
 │   ├── skills/               # 技能库，扁平结构，一个技能一个目录
@@ -49,7 +46,7 @@ LumioAgent/
 
 1. **填空**：`.spec/AGENTS.md` 顶部有「项目是什么 / 收口门槛」两处占位，填上你项目的定位和验证命令。
 2. **改写规范骨架**：`.spec/knowledge/standards/` 里三份文档标了「落地必填」的段落，换成你项目的真实约定；其余通用部分可保留。
-3. **保留框架资产**：`.spec/rules/` 的红线原样保留；`.spec/decisions/` 是空 ADR 模板，你的决策从 0001 开始写。
+3. **保留框架资产**：`.spec/rules/` 的红线原样保留；`.spec/decisions/` 是空 ADR 模板，你的决策从 0001 开始写；`.claude/settings.json` 的提交前 lint 兜底随仓生效（Claude Code 启动会话时加载）。
 4. **老项目也能用**：不必一步到位，先只搬 `.spec/rules/` + `.spec/AGENTS.md`，其余分批接入。
 
 > 每次收尾跑一下 `node .spec/tools/spec-lint.mjs`，结构不一致会被当场指出。版本历史见 git tags；后续从下游项目验证过的通用经验会以打 tag 的方式回流到这里。

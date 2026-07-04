@@ -24,7 +24,8 @@
 - **审查闭环:** 交付即待审;completed 由主 loop 在 reviewer 通过(或按豁免跳过)后标记;实质改动审查通过前**不得提交**。
 - **派 worker 三选一:** ① 多个互不依赖任务可并行 ② 改动大到撑爆编排上下文 ③ 需要隔离的干净实现环境。
 - **收口门槛:** <!-- 落地项目替换为自己的验证命令,如 pnpm verify --> 种子默认 `node .spec/tools/spec-lint.mjs` + `node --test .spec/tools/spec-lint.test.mjs`;交付前必须通过。
-- **并行边界:** 任务文件集**互不重叠**才可并行,重叠必串行。多宿主并存时共享任务真值是 `.spec/tasks/`,宿主内置任务工具只作个人草稿。
+- **并行边界与合入:** 任务文件集**互不重叠**才可并行(最小化冲突),重叠必串行;拆解产物按 wave 分批扇出,批间串行。并行 worker 各在独立 git worktree 实现(Claude Code 用 Agent 工具的 worktree 隔离),reviewer 审 worktree 相对基线的完整 diff,通过后主 loop 合入主工作区,未过审不合入,冲突退回实现方。多宿主并存时共享任务真值是 `.spec/tasks/`,宿主内置任务工具只作个人草稿。
+- **派活模板:** worker 派遣与 reviewer 触发的 prompt 骨架见 [`knowledge/standards/dispatch.md`](knowledge/standards/dispatch.md)。
 - **交回物格式(全仓单一权威):** ① 改动清单;② **验证证据**——命令与关键输出,不得只声称「已通过」;③ known gaps;④ 知识沉淀落点(或声明无需沉淀)。拆解类交任务卡集合,②以自检结论 + 待澄清项代替;reviewer 交审查报告(见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md))。
 - **谁来调度:** 只有主 loop 派活;子 Agent 只执行,各自上下文只拿任务卡 + 相关文件。
 - **失败处理:** blocker / major → 附审查报告退回重做;同一问题三次不过 → 质疑方案:拆解问题重修卡,方向问题升级用户。
@@ -49,7 +50,7 @@
 | 子 Agent 发现 | `.claude/agents/` 自动发现 | 主 loop 手动读 `.spec/agents/` |
 | 技能加载 | `.claude/skills/` 自动发现 | `.agents/skills/` 索引,手动调用 |
 
-Codex 主 loop 本地执行:拆解用 `task-breakdown`,实现按「编码约定」,实质改动交付后读 `reviewer.agent.md` 本地对抗审查;仅用户明确要求并行时用 Codex 多代理工具。宿主能力演进快,以官方文档为准,偏差时更新本表。
+Codex 主 loop 本地执行:拆解用 `task-breakdown`,实现按「编码约定」,实质改动交付后读 `reviewer.agent.md` 本地对抗审查——同上下文自审丧失「写 ≠ 审」独立性,**属已知降级**;fork(继承上下文的子代理)与 worktree 隔离是 Claude Code 侧能力,Codex 无对应物时并行退化为串行,仅用户明确要求并行时用 Codex 多代理工具。宿主能力演进快,以官方文档为准,偏差时更新本表。
 
 ## 框架自身的决策与校验
 
