@@ -27,6 +27,12 @@ metadata:
 
 > 暂无正式功能文档。
 
+## lessons(经验教训 · 复发问题暂存区)
+
+| 文档 | 一句话 |
+|------|--------|
+| [`lessons.md`](lessons.md) | 经验教训:reviewer 反复退回的同类问题与 Agent 常犯坑——开工前与复盘沉淀时查 |
+
 ---
 
 新增 / 修改 / 维护知识文档(放哪、frontmatter、同步本导航)→ 用 `spec-steward` 技能;框架级决策记录 → [`../decisions/`](../decisions/README.md)。

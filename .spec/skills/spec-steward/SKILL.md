@@ -33,7 +33,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 3. **写 frontmatter**：
    - agents：仅 `name` + `description`
    - skills：**仅** `name` + `description`（Agent Skills 开放标准允许 `license` 等可选字段，但**本仓约定**只用这两个，spec-lint 强制）
-   - knowledge：`name` + `description` + `metadata`（type / level / status）
+   - knowledge：`name` + `description` + `metadata`（type / status）
    - rules：**无** frontmatter
 4. **同步登记**（漏一处，能力就隐身）：
    - 加 / 删子 Agent → 更新 `AGENTS.md` 子 Agent 名册 **+** 宿主差异表
@@ -48,6 +48,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
    - 影响**开发流程 / 规范**（workflow / 测试策略 / 代码风格等）→ 更新 `knowledge/standards/` 对应文件。
    - 影响**功能设计**（新功能、行为变更、架构决策）→ 找 `knowledge/features/` 对应文档：有就更新，没有就从 `_TEMPLATE.md` 新建（放对领域 / 模块）。
    - **框架级 / 跨功能决策**（调度方式、真值选型、结构约定）→ `decisions/` 新增 ADR（见 `decisions/README.md`）。
+   - **复发问题 / 踩坑经验**（reviewer 退回报告、known gaps 中第二次出现的同类问题）→ 追加进 `knowledge/lessons.md`（收录准入与条目格式见该文档）。
 3. 更新正文；本次交付追加到该文档的 **`## 变更记录`** 节（交付历史的唯一落点）。
 4. frontmatter `status` 只能取枚举：`设计中` / `实施中` / `已交付` / `历史归档`；`description` 保持一句话（是什么 + 何时查，≤120 字符，spec-lint 强制），**不得**把交付历史写进 description / status。
 5. `knowledge/README.md` 导航行**来源于** frontmatter `description`：同一句话口径，允许排版差异，但不得出现 description 没有的事实、不含交付历史（行文一致性靠本步骤自觉，spec-lint 只机械校验长度 / 枚举 / 覆盖 / 链接）——**导航是每次 init 的强制税，一行膨胀 = 所有会话永久付费**。
@@ -73,6 +74,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 | 怎么开发（流程 / 规范） | `knowledge/standards/` | 有 |
 | 某功能的设计 / 记录 | `knowledge/features/…` | 有 |
 | 框架级 / 跨功能决策 | `decisions/`（ADR） | 无（见其 README 模板） |
+| 复发问题 / 踩坑经验 | `knowledge/lessons.md` | 有 |
 | 职能角色 | `agents/` | 仅 name+description |
 | 可复用方法 | `skills/<name>/SKILL.md` | 仅 name+description |
 
