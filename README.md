@@ -1,6 +1,6 @@
 # LumioAgent
 
-一个**通用的开发项目管理 Agent 框架**。主 Agent 负责理解目标、拆解任务、调度、收口；不同职能的子 Agent 负责执行；技能（Skill）是可复用的方法；`.md` 文件是规则。
+一个**通用的开发项目管理 Agent 框架**。主 Agent 负责理解目标、拆解任务、调度、收口，对清晰小改动直接编码；唯一职能子 Agent `reviewer` 负责对抗审查；技能（Skill）是可复用的方法；`.md` 文件是规则。
 
 `.spec/` 是唯一权威目录。Codex、Claude 和根目录入口都只是指针，最终都指向 `.spec/` 里的同一套规范。
 
@@ -9,7 +9,7 @@
 ## 它怎么工作
 
 - **主 Agent**（`.spec/AGENTS.md`）是系统宪法与总调度者，即宿主的主对话循环（主 loop）本身。
-- **子 Agent**（`.spec/agents/*.agent.md`）是有单一职责的专职角色（planner / coder / reviewer），由主 loop 调用、只执行、不再派活。实质改动必过 `reviewer` 对抗审查——写的人和审的人是两个上下文。
+- **子 Agent**（`.spec/agents/*.agent.md`）是有单一职责的专职角色，由主 loop 调用、只执行、不再派活。准入门槛：**只收「隔离本身即是产出价值」的角色**（当前仅 `reviewer`）——实质改动必过 `reviewer` 对抗审查，写的人和审的人是两个上下文；写代码与拆解不设角色，规程见 `.spec/AGENTS.md` 的「编码约定」。
 - **技能**（`.spec/skills/<name>/SKILL.md`）是可复用的标准化流程，任何子 Agent 都能调用。
 - **决策**（`.spec/decisions/`）是记录框架级决策的 ADR 目录（空模板，给你的项目用）。
 - **一致性**由 `node .spec/tools/spec-lint.mjs` 机械校验（完整校验项清单见该脚本头部注释），不靠人肉清单。
@@ -22,7 +22,7 @@
 LumioAgent/
 ├── .spec/                    # 唯一权威源
 │   ├── AGENTS.md             # ★ 中心文档：项目槽位 + 调度核心 + 名册，先读它
-│   ├── agents/               # 子 Agent 定义（planner / coder / reviewer）
+│   ├── agents/               # 子 Agent 定义（仅 reviewer；准入门槛见 AGENTS.md）
 │   ├── rules/                # Agent 护栏 / 禁令（跨工具、跨 Agent，强制载入）
 │   ├── knowledge/            # 项目知识库（standards 规范支 + features 功能支）
 │   ├── decisions/            # ADR 决策目录（空模板，从 0001 开始写）

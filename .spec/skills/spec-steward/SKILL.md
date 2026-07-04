@@ -27,7 +27,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
    - 禁止碰什么（护栏）→ `rules/`（系统级硬规则在 `rules/system.md`，无 frontmatter）
    - 怎么做（流程 / 规范）→ `knowledge/standards/`（见 `knowledge/README.md`）
    - 某功能的设计 / 记录 → `knowledge/features/<领域>/…`（见 `knowledge/README.md`）
-   - 一个职能角色 → `agents/`（照 `planner` / `coder` 范例写，正文承载判断；frontmatter 见下面第 3 步，禁令见 `rules/system.md`）
+   - 一个职能角色 → `agents/`（先过 `AGENTS.md` 的准入门槛「隔离本身即是产出价值」，再照 `reviewer` 范例写，正文承载判断；frontmatter 见下面第 3 步，禁令见 `rules/system.md`）
    - 可复用方法 → `skills/<name>/SKILL.md`（目录名即 skill 名）
 2. **放对位置 + 命名**（agent 文件 `<name>.agent.md`、skill 目录 `skills/<name>/`；均 kebab、全局唯一，且目录 / 文件名与 frontmatter `name` 一致）。
 3. **写 frontmatter**：
@@ -51,7 +51,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 3. 更新正文；本次交付追加到该文档的 **`## 变更记录`** 节（交付历史的唯一落点）。
 4. frontmatter `status` 只能取枚举：`设计中` / `实施中` / `已交付` / `历史归档`；`description` 保持一句话（是什么 + 何时查，≤120 字符，spec-lint 强制），**不得**把交付历史写进 description / status。
 5. `knowledge/README.md` 导航行**来源于** frontmatter `description`：同一句话口径，允许排版差异，但不得出现 description 没有的事实、不含交付历史（行文一致性靠本步骤自觉，spec-lint 只机械校验长度 / 枚举 / 覆盖 / 链接）——**导航是每次 init 的强制税，一行膨胀 = 所有会话永久付费**。
-6. 待执行的事走 `planner` 任务卡，**别堆进知识库**。
+6. 待执行的事走任务卡（拆解用 `task-breakdown`），**别堆进知识库**。
 
 ### 流程 C · 归档离线任务卡（Codex 侧 `.spec/tasks/`）
 
@@ -82,7 +82,7 @@ description: 维护本仓库 .spec/ 的结构并把改动沉淀进知识库—�
 - **索引漂移 = 知识隐身**：新增 / 删除文档必须同步更新 `knowledge/README.md`，否则 Agent 发现不了。
 - **导航行膨胀 = 每会话强制税**：`knowledge/README.md` 强制载入每个会话，历史进「变更记录」节，不进导航行 / description / status。
 - **rules 管禁止，standards 管怎么做**，别混。
-- 本技能是**被拉取**的：「每次改完都更新知识」这条**义务**靠 `workflow.md` 与 `coder` 的交付标准保证，不靠本技能自觉。
+- 本技能是**被拉取**的：「每次改完都更新知识」这条**义务**靠 `workflow.md` 与 `AGENTS.md`「编码约定」的交付标准保证，不靠本技能自觉。
 
 ## 验证
 

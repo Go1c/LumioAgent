@@ -9,7 +9,7 @@ metadata:
 
 # 开发工作流（分支 / 提交 / 合并）
 
-> 本文是“开发这件事**怎么做**”的手册。Agent 之间**怎么协作**（planner → coder → reviewer → 收口）在 [`AGENTS.md`](../../AGENTS.md) 的「调度核心」里，不在这里。
+> 本文是“开发这件事**怎么做**”的手册。Agent 之间**怎么协作**（拆解 → 实现 → reviewer 对抗审查 → 收口）在 [`AGENTS.md`](../../AGENTS.md) 的「调度核心」与「编码约定」里，不在这里。
 > “禁止碰什么”的硬性护栏在 [`rules/system.md`](../../rules/system.md)；本文只描述流程，遇到护栏处**引用**它，不重复定义。
 
 ## 分支策略（**落地必填**）
@@ -19,7 +19,7 @@ metadata:
 
 ## 提交规范（通用）
 
-- 格式：`type(scope): subject`，例如 `feat(agents): 新增 reviewer`、`fix(coder): 修复 TDD 步骤`。
+- 格式：`type(scope): subject`，例如 `feat(agents): 新增 reviewer`、`fix(skills): 修复 TDD 步骤`。
 - 常用 type：`feat` / `fix` / `refactor` / `chore` / `docs` / `ci`。scope 可省略。
 - **一次提交只做一类事**；文档、脚手架、功能、测试修复不混在一起。
 - 提交前自检：验证命令通过（见 `AGENTS.md`「收口门槛」与 `rules/system.md`）、无调试残留、知识已同步（见下节）。
@@ -31,7 +31,7 @@ metadata:
 
 ## 改动完成 = 知识已同步
 
-一处改动只有在**知识沉淀完成**后才算 Done：用 `spec-steward` 技能更新对应 `knowledge/` 文档、`status` 与「变更记录」、`knowledge/README.md` 导航。豁免口径与 coder 交付标准一致：纯修复 / 机械套用既有模式可豁免，但**豁免必须在交回物里声明**，不得静默跳过。
+一处改动只有在**知识沉淀完成**后才算 Done：用 `spec-steward` 技能更新对应 `knowledge/` 文档、`status` 与「变更记录」、`knowledge/README.md` 导航。豁免口径与 `AGENTS.md`「编码约定」的交付标准一致：纯修复 / 机械套用既有模式可豁免，但**豁免必须在交回物里声明**，不得静默跳过。
 
 ## 相关
 
