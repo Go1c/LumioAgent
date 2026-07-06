@@ -8,40 +8,50 @@ metadata:
 
 # 派活模板（worker 派遣 / reviewer 触发）
 
-主 loop 派活时照抄骨架填空，保证每次派发要素齐全、口径一致。规则本身（并行边界、交回物格式、审查清单）在 `AGENTS.md` 与 `reviewer.agent.md`，此处只是把它们组装成可复用的 prompt 形状。
+主 loop 派活时照骨架填空,保证每次派发要素齐全、口径一致。**prompt 骨架以下列模板文件为单一权威**,本文只负责把它们接进本仓的调度机制(任务卡 / 并行边界 / 交回物格式)。
 
-## worker 派遣模板
+## 计划执行(默认路径:subagent-driven-development)
+
+按 [`skills/subagent-driven-development`](../../skills/subagent-driven-development/SKILL.md) 执行,prompt 骨架直接用其原文模板:
+
+- **implementer 派遣** → [`implementer-prompt.md`](../../skills/subagent-driven-development/implementer-prompt.md)
+- **每任务两级审查** → [`task-reviewer-prompt.md`](../../skills/subagent-driven-development/task-reviewer-prompt.md)
+- **整分支收口审查** → [`requesting-code-review/code-reviewer.md`](../../skills/requesting-code-review/code-reviewer.md)
+
+**文件交接纪律(硬要求,防上下文膨胀):** 任务简报用 `scripts/task-brief`、审查包用 `scripts/review-package` 落成文件,派遣 prompt 只传**路径**,不粘贴大段任务文本 / diff / 历史;implementer 报告写文件、只回传状态 + 提交号 + 一行测试摘要。派遣 prompt 不携带前序任务的累积摘要。
+
+**worker 状态协议:** implementer 以 `DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED` 回报,主 loop 按 SDD 的「Handling Implementer Status」分流;不许忽略升级、不许原样重试。
+
+**审查纪律:** 不替 reviewer 预判——派审 prompt 不得出现「X 不用报 / 最多算 minor / 计划选择了这样」;final review 的 findings 用**一个** fix agent 带完整清单修,不逐条派。
+
+## 多卡并行扇出(wave;与 SDD 正交)
+
+SDD 串行执行一份计划;**互不重叠文件集**的独立任务卡才可并行(规则见 `AGENTS.md`「并行边界与合入」),每个 worker 独立 worktree。派遣 prompt 在 implementer 模板基础上补两项:
 
 ```text
-你只执行这一张卡，不碰范围外文件。
-【任务卡】<卡全文，或 .spec/tasks/<slug>.md 路径>
-【文件集边界】只改：<路径列表>。并行方正在改：<路径列表>（一律不动；
-lint 报错涉及它们时只记录，主 loop 统一收口）。
-【环境】<主工作区 / 独立 worktree 路径>
-【规程】遵守 AGENTS.md「编码约定」（领任务先标记 / before-you-code /
-TDD / 不夹带 / 收工即验证）。
-【交回】按 AGENTS.md「交回物格式」四要素；验证证据必须是命令 + 关键输出。
+【文件集边界】只改:<路径列表>。并行方正在改:<路径列表>(一律不动;
+lint 报错涉及它们时只记录,主 loop 统一收口)。
+【环境】<独立 worktree 路径>
 ```
 
-- 能继承上下文的 fork 优先；冷启动 worker 才需要把背景摘要写进【任务卡】。
-- 多卡并行时，每个 worker 的【文件集边界】互不重叠（见 `AGENTS.md`「并行边界与合入」）。
+- 能继承上下文的 fork 优先;冷启动 worker 才需要把背景写进任务简报。
+- 各 worker 交付分别过 task-reviewer 审查,通过后主 loop 合入主工作区。
 
-## reviewer 触发模板
+## reviewer(整体收口)触发
+
+材料齐备才开审(任务卡 / 计划、完整 diff 审查包、带验证证据的交付报告),模板用 [`code-reviewer.md`](../../skills/requesting-code-review/code-reviewer.md) 填空,并注明:
 
 ```text
-对 <一张卡 / 功能包> 做一次性对抗审查。
-【审查级别】快审（默认）/ 深审 + 一句理由
-【审查对象】<worktree / 快照路径>相对基线 <commit> 的完整 diff + 下列交回物。
-【任务卡】<路径或全文>
-【交付报告】<各卡交回物摘要：改动清单 / 验证证据声称 / known gaps>
+【审查级别】快审(默认)/ 深审 + 一句理由
 【复跑清单】收口门槛命令 + 需抽查重放的验证声称。
-【范围外】<并行在途的文件集，diff 中出现一律不审>
-按 reviewer.agent.md 清单逐维过，输出标准审查报告。
+【范围外】<并行在途的文件集,diff 中出现一律不审>
 ```
 
-- 审查对象必须与在途改动隔离（worktree 或快照），否则 diff 被并行方污染。
-- 交付报告给「声称」，让 reviewer 核实而不是相信——这是对抗审查的输入格式。
+- 审查对象必须与在途改动隔离(worktree 或快照),否则 diff 被并行方污染。
+- 交付报告给「声称」,让 reviewer 核实而不是相信——这是对抗审查的输入格式。
+- 退回处理按 [`skills/receiving-code-review`](../../skills/receiving-code-review/SKILL.md):先核实再改,不盲改、不表演性认同。
 
 ## 变更记录
 
-- 2026-07-04：建立本文档。
+- 2026-07-06:模板指向 implementer / task-reviewer / code-reviewer prompt 文件;新增文件交接纪律、worker 状态协议、审查纪律;保留 wave 并行扇出的文件集边界补充项。
+- 2026-07-04:建立本文档。

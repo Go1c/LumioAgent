@@ -20,6 +20,7 @@ metadata:
 
 - 必须走：新功能、修 bug（先写能复现的失败测试，修完留作回归测试）、改无测试保护的关键逻辑。
 - 可不走：纯文档改动、一次性脚本。豁免在交回物里声明。
+- 写测试、加 mock、想给生产类加 test-only 方法前，先查反模式清单：[`testing-anti-patterns.md`](../../skills/test-driven-development/testing-anti-patterns.md)——测 mock 行为、test-only 方法入生产、不理解依赖就 mock、不完整 mock，一律禁止。
 
 ## 验证证据
 

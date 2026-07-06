@@ -12,7 +12,7 @@ metadata:
 
 ## 语言与文件命名（通用）
 
-- **规范主体使用中文**（`.spec/` 下全部文档）；唯一例外是根 `CLAUDE.md`（宿主入口惯例，英文）。落地项目若改用其他语言，需全仓一致并同步 `.spec/tools/spec-lint.mjs` 里的中文枚举值。
+- **规范主体使用中文**（`.spec/` 下全部文档）；例外：根 `CLAUDE.md`（宿主入口惯例）与 `skills/` 下允许英文技能文档（中英以该技能既有语言为准，不混写）。落地项目若改用其他语言，需全仓一致并同步 `.spec/tools/spec-lint.mjs` 里的中文枚举值。
 - 文件与目录命名一律 **kebab-case**；agent 文件 `<name>.agent.md`、skill 目录 `skills/<name>/`、ADR `NNNN-<slug>.md`。
 
 ## 注释原则（通用）

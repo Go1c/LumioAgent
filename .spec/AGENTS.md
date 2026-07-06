@@ -1,7 +1,7 @@
 # LumioAgent — 中心文档
 
 通用的开发项目管理 Agent。**主 Agent 调度,子 Agent 执行,Skill 是方法,.md 是规则。**
-主 loop 理解目标、拆任务、调度、收口:清晰小改动直接编码,需求不清用 `task-breakdown` 拆解,满足派发条件则扇出通用 worker;职能子 Agent 只有 `reviewer`(写的人 ≠ 审的人)。
+主 loop 理解目标、拆任务、调度、收口:清晰小改动直接编码,创造性工作走 `brainstorming` → `writing-plans` → `subagent-driven-development` 主工作流,多卡并行用 `task-breakdown` 扇出通用 worker;职能子 Agent 只有 `reviewer`(写的人 ≠ 审的人)。
 
 > 知识导航(`knowledge/README.md`)与硬红线(`rules/system.md`)经 `CLAUDE.md` 的 `@import` 每次 init 强制载入,本文件不复述;沉淀 / 同步能力用 `spec-steward` 技能。
 
@@ -15,12 +15,12 @@
 
 | 名称 | 职责 | 何时调度 |
 |------|------|----------|
-| `reviewer` | 对照任务卡与规范对抗式审查完整交付,产出放行 / 退回裁决 | 任务**整体完成**(收口门槛通过)后一次性审;不审半成品 |
+| `reviewer` | 对照任务卡与规范对抗式审查完整交付,产出放行 / 退回裁决 | 计划执行中**每任务完成**后审一次(两级:spec 合规 + 代码质量);**整体收口**(收口门槛通过)再审一次;不审半成品 |
 
 > **agents/ 准入门槛:只收「隔离本身即是产出价值」的角色**(当前仅 `reviewer`)。编码 / 拆解不设角色,规程见「编码约定」与 `task-breakdown`。
 
 - **调度取向:快 > 稳 > 好。** 默认并行:文件集互不重叠即并行扇出;能继承上下文的 fork 优先于冷启动 worker;串行只留给有依赖或文件重叠的工作。
-- **默认流程:** 需求不清 → `task-breakdown`;实现 → 主 loop 直编或派 worker;交付 → 收口门槛机器验证;**仅高风险改动(代码逻辑 / 安全面 / 跨模块重构)过 `reviewer`**,默认快审、显式要求才深审,其余(文档 / 配置 / 机械套用)lint + 测试直接收口并声明豁免 → 主 loop 收口。分级见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
+- **默认流程:** 创造性工作(新功能 / 建组件 / 改行为)→ `brainstorming` 出设计共识 → `writing-plans` 出实现计划 → `subagent-driven-development` 逐任务执行(每任务两级审查:spec 合规 + 代码质量;无子代理宿主降级为 `executing-plans`);修 bug / 排障先 `systematic-debugging` 找根因再动手;多张独立卡并行扇出仍走 `task-breakdown` + wave(见「并行边界与合入」)。交付 → 收口门槛机器验证 + `verification-before-completion`(证据先于声称);整体收口审查经 `requesting-code-review` 触发 `reviewer`(默认快审、显式要求才深审),退回按 `receiving-code-review` 处理。分级见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
 - **快速模式(收口白名单,默认优先尝试):** 纯文档 / 纯注释 / 纯配置数据 / 机械套用既有模式 / revert / 生成物随源更新 / 有效 diff < 20 行(去空行注释)——lint + 测试直接收口,交付附一行豁免声明,不派任何 agent。判定须机器可判(文件类型 + diff 行数),拿不准 = 快审。**红线面永不快速**:触碰 `rules/`、鉴权、安全面、可执行配置(如 hooks)的改动至少快审。
 - **审查闭环:** 交付即待审;completed 由主 loop 在 reviewer 通过(或按豁免跳过)后标记;高风险改动审查通过前**不得提交**。
 - **派 worker 三选一:** ① 多个互不依赖任务可并行 ② 改动大到撑爆编排上下文 ③ 需要隔离的干净实现环境。
@@ -37,9 +37,10 @@
 
 - **领任务先标记**:动手前标为进行中(Claude Code 用 `TaskUpdate`;多宿主更新 `.spec/tasks/<slug>.md` 的 `status`);不自标 completed(归「审查闭环」)。
 - **先加载再动手**:用 `before-you-code` 校准要读什么、读多深。
-- **测试先行**:用 `test-driven-development`;修 bug 先写能复现的失败测试。
+- **测试先行**:用 `test-driven-development`(铁律:没有先失败的测试就没有生产代码;反模式见其 `testing-anti-patterns.md`)。
+- **排障先找根因**:遇到 bug / 测试失败 / 异常行为,先走 `systematic-debugging` 四阶段,**未完成根因调查不得动手修**;修 3 次不成 = 质疑架构,停下上报。
 - **不夹带(全仓单一权威)**:只做当前目标要求的改动,不顺手重构、不加未要求的功能、不引入任务外新依赖。
-- **收工即验证**:交付前必过「收口门槛」。
+- **收工即验证**:交付前必过「收口门槛」;任何「完成 / 修好 / 通过」的声称前先过 `verification-before-completion`——没跑过验证命令就不许声称。
 - **交付带证据**:按「交回物格式」交付;主 loop 直编则据此向用户交代。
 - **改完沉淀**:新决策 / 新模式用 `spec-steward` 落 `knowledge/`;纯修复 / 微调可豁免,豁免须在交回物声明。
 
@@ -51,7 +52,7 @@
 | 子 Agent 发现 | `.claude/agents/` 自动发现 | 主 loop 手动读 `.spec/agents/` |
 | 技能加载 | `.claude/skills/` 自动发现 | `.agents/skills/` 索引,手动调用 |
 
-Codex 主 loop 本地执行:拆解用 `task-breakdown`,实现按「编码约定」,实质改动交付后读 `reviewer.agent.md` 本地对抗审查——同上下文自审丧失「写 ≠ 审」独立性,**属已知降级**;fork(继承上下文的子代理)与 worktree 隔离是 Claude Code 侧能力,Codex 无对应物时并行退化为串行,仅用户明确要求并行时用 Codex 多代理工具。宿主能力演进快,以官方文档为准,偏差时更新本表。
+Codex 主 loop 本地执行:设计与计划用 `brainstorming` / `writing-plans`,执行用 `executing-plans`(SDD 的无子代理降级),拆卡扇出用 `task-breakdown`,实现按「编码约定」,实质改动交付后读 `reviewer.agent.md` 本地对抗审查——同上下文自审丧失「写 ≠ 审」独立性,**属已知降级**;fork(继承上下文的子代理)与 worktree 隔离是 Claude Code 侧能力,Codex 无对应物时并行退化为串行,仅用户明确要求并行时用 Codex 多代理工具。宿主能力演进快,以官方文档为准,偏差时更新本表。
 
 ## 框架自身的决策与校验
 
