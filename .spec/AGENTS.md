@@ -20,7 +20,7 @@
 > **agents/ 准入门槛:只收「隔离本身即是产出价值」的角色**(当前仅 `reviewer`)。编码 / 拆解不设角色,规程见「编码约定」与 `task-breakdown`。
 
 - **调度取向:快 > 稳 > 好。** 默认并行:文件集互不重叠即并行扇出;能继承上下文的 fork 优先于冷启动 worker;串行只留给有依赖或文件重叠的工作。
-- **默认流程:** 创造性工作(新功能 / 建组件 / 改行为)→ `brainstorming` 出设计共识 → `writing-plans` 出实现计划 → `subagent-driven-development` 逐任务执行(每任务两级审查:spec 合规 + 代码质量;无子代理宿主降级为 `executing-plans`);修 bug / 排障先 `systematic-debugging` 找根因再动手;多张独立卡并行扇出仍走 `task-breakdown` + wave(见「并行边界与合入」)。交付 → 收口门槛机器验证 + `verification-before-completion`(证据先于声称);整体收口审查经 `requesting-code-review` 触发 `reviewer`(默认快审、显式要求才深审),退回按 `receiving-code-review` 处理。分级见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
+- **默认流程:** 创造性工作(新功能 / 建组件 / 改行为)→ `brainstorming` 出设计共识 → `writing-plans` 出实现计划 → `subagent-driven-development` 逐任务执行(每任务两级审查:spec 合规 + 代码质量;无子代理宿主按其 Inline Fallback 降级);修 bug / 排障先 `systematic-debugging` 找根因再动手;多张独立卡并行扇出仍走 `task-breakdown` + wave(见「并行边界与合入」)。交付 → 收口门槛机器验证 + `verification-before-completion`(证据先于声称);整体收口审查按「派活模板」触发 `reviewer`(默认快审、显式要求才深审),退回按 `receiving-code-review` 处理。分级见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
 - **快速模式(收口白名单,默认优先尝试):** 纯文档 / 纯注释 / 纯配置数据 / 机械套用既有模式 / revert / 生成物随源更新 / 有效 diff < 20 行(去空行注释)——lint + 测试直接收口,交付附一行豁免声明,不派任何 agent。判定须机器可判(文件类型 + diff 行数),拿不准 = 快审。**红线面永不快速**:触碰 `rules/`、鉴权、安全面、可执行配置(如 hooks)的改动至少快审。
 - **审查闭环:** 交付即待审;completed 由主 loop 在 reviewer 通过(或按豁免跳过)后标记;高风险改动审查通过前**不得提交**。
 - **派 worker 三选一:** ① 多个互不依赖任务可并行 ② 改动大到撑爆编排上下文 ③ 需要隔离的干净实现环境。
@@ -52,7 +52,7 @@
 | 子 Agent 发现 | `.claude/agents/` 自动发现 | 主 loop 手动读 `.spec/agents/` |
 | 技能加载 | `.claude/skills/` 自动发现 | `.agents/skills/` 索引,手动调用 |
 
-Codex 主 loop 本地执行:设计与计划用 `brainstorming` / `writing-plans`,执行用 `executing-plans`(SDD 的无子代理降级),拆卡扇出用 `task-breakdown`,实现按「编码约定」,实质改动交付后读 `reviewer.agent.md` 本地对抗审查——同上下文自审丧失「写 ≠ 审」独立性,**属已知降级**;fork(继承上下文的子代理)与 worktree 隔离是 Claude Code 侧能力,Codex 无对应物时并行退化为串行,仅用户明确要求并行时用 Codex 多代理工具。宿主能力演进快,以官方文档为准,偏差时更新本表。
+Codex 主 loop 本地执行:设计与计划用 `brainstorming` / `writing-plans`,执行按 `subagent-driven-development` 的 Inline Fallback,拆卡扇出用 `task-breakdown`,实现按「编码约定」,实质改动交付后读 `reviewer.agent.md` 本地对抗审查——同上下文自审丧失「写 ≠ 审」独立性,**属已知降级**;fork(继承上下文的子代理)与 worktree 隔离是 Claude Code 侧能力,Codex 无对应物时并行退化为串行,仅用户明确要求并行时用 Codex 多代理工具。宿主能力演进快,以官方文档为准,偏差时更新本表。
 
 ## 框架自身的决策与校验
 

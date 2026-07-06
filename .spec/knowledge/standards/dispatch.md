@@ -16,7 +16,7 @@ metadata:
 
 - **implementer 派遣** → [`implementer-prompt.md`](../../skills/subagent-driven-development/implementer-prompt.md)
 - **每任务两级审查** → [`task-reviewer-prompt.md`](../../skills/subagent-driven-development/task-reviewer-prompt.md)
-- **整分支收口审查** → [`requesting-code-review/code-reviewer.md`](../../skills/requesting-code-review/code-reviewer.md)
+- **整分支收口审查** → [`code-reviewer.md`](../../skills/subagent-driven-development/code-reviewer.md)
 
 **文件交接纪律(硬要求,防上下文膨胀):** 任务简报用 `scripts/task-brief`、审查包用 `scripts/review-package` 落成文件,派遣 prompt 只传**路径**,不粘贴大段任务文本 / diff / 历史;implementer 报告写文件、只回传状态 + 提交号 + 一行测试摘要。派遣 prompt 不携带前序任务的累积摘要。
 
@@ -36,10 +36,13 @@ lint 报错涉及它们时只记录,主 loop 统一收口)。
 
 - 能继承上下文的 fork 优先;冷启动 worker 才需要把背景写进任务简报。
 - 各 worker 交付分别过 task-reviewer 审查,通过后主 loop 合入主工作区。
+- 并行派遣 prompt 三要素:**聚焦**(一个 prompt 一个问题域,不派「把测试都修了」)、**自足**(错误信息 / 测试名 / 约束全带上,不依赖会话历史)、**交回物明确**(要求返回根因 + 改动摘要,不是「修好了」)。返回后先查改动是否冲突,再跑全量验证——agent 的成功报告不作数,以 diff 与测试为准。
 
 ## reviewer(整体收口)触发
 
-材料齐备才开审(任务卡 / 计划、完整 diff 审查包、带验证证据的交付报告),模板用 [`code-reviewer.md`](../../skills/requesting-code-review/code-reviewer.md) 填空,并注明:
+**何时触发:** 必触发——SDD 每任务完成后(task-reviewer)、重大功能完成后、合入主干前;可选但值钱——卡住要新视角、重构前留基线、修完复杂 bug 后。豁免口径以 `AGENTS.md`「快速模式」为准:白名单内改动 lint + 测试直接收口,不触发。
+
+材料齐备才开审(任务卡 / 计划、完整 diff 审查包、带验证证据的交付报告),模板用 [`code-reviewer.md`](../../skills/subagent-driven-development/code-reviewer.md) 填空,并注明:
 
 ```text
 【审查级别】快审(默认)/ 深审 + 一句理由
@@ -53,5 +56,5 @@ lint 报错涉及它们时只记录,主 loop 统一收口)。
 
 ## 变更记录
 
-- 2026-07-06:模板指向 implementer / task-reviewer / code-reviewer prompt 文件;新增文件交接纪律、worker 状态协议、审查纪律;保留 wave 并行扇出的文件集边界补充项。
+- 2026-07-06:模板指向 implementer / task-reviewer / code-reviewer prompt 文件;新增文件交接纪律、worker 状态协议、审查纪律、审查触发时机、并行派遣 prompt 三要素;保留 wave 并行扇出的文件集边界补充项。
 - 2026-07-04:建立本文档。
