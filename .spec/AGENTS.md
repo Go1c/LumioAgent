@@ -29,7 +29,7 @@
 - **派活模板:** worker 派遣与 reviewer 触发的 prompt 骨架见 [`knowledge/standards/dispatch.md`](knowledge/standards/dispatch.md)。
 - **交回物格式(全仓单一权威):** ① 改动清单;② **验证证据**——命令与关键输出,不得只声称「已通过」;③ known gaps;④ 知识沉淀落点(或声明无需沉淀)。拆解类交任务卡集合,②以自检结论 + 待澄清项代替;reviewer 交审查报告(见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md))。
 - **谁来调度:** 只有主 loop 派活;子 Agent 只执行,各自上下文只拿任务卡 + 相关文件。
-- **失败处理:** blocker / major → 附审查报告退回重做;同一问题三次不过 → 质疑方案:拆解问题重修卡,方向问题升级用户。
+- **失败处理:** P0 / P1 → 附审查报告退回重做;同一问题三次不过 → 质疑方案:拆解问题重修卡,方向问题升级用户。
 
 ## 编码约定
 

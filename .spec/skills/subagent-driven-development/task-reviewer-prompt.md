@@ -122,15 +122,16 @@ Subagent (general-purpose):
 
     ## Calibration
 
-    Categorize issues by actual severity. Not everything is Critical.
-    Important means this task cannot be trusted until it is fixed: incorrect
-    or fragile behavior, a missed requirement, or maintainability damage you
-    would block a merge over — verbatim duplication of a logic block,
-    swallowed errors, tests that assert nothing. "Coverage could be broader"
-    and polish suggestions are Minor.
+    Categorize issues by actual severity. Not everything is P0.
+    P0 means the task violates a hard guardrail, data/security boundary, or
+    stated acceptance requirement. P1 means this task cannot be trusted until
+    it is fixed: incorrect or fragile behavior, a missed requirement, or
+    maintainability damage you would block a merge over — verbatim
+    duplication of a logic block, swallowed errors, tests that assert
+    nothing. "Coverage could be broader" and polish suggestions are P2.
     If the plan or brief explicitly mandates something this rubric calls a
     defect (a test that asserts nothing, verbatim duplication of a logic
-    block), that IS a finding — report it as Important, labeled
+    block), that IS a finding — report it as P1, labeled
     plan-mandated. The plan's authorship does not grade its own work; the
     human decides.
     Acknowledge what was done well before listing issues — accurate praise
@@ -151,9 +152,9 @@ Subagent (general-purpose):
 
     ### Issues
 
-    #### Critical (Must Fix)
-    #### Important (Should Fix)
-    #### Minor (Nice to Have)
+    #### P0 (Must Fix)
+    #### P1 (Must Fix Before Merge)
+    #### P2 (Non-blocking)
 
     For each issue: file:line, what's wrong, why it matters, how to fix
     (if not obvious).
@@ -182,7 +183,7 @@ Subagent (general-purpose):
   wrote; the package never enters the controller's context)
 
 **Reviewer returns:** Spec Compliance verdict (✅/❌/⚠️), Strengths, Issues
-(Critical/Important/Minor), Task quality verdict
+(P0/P1/P2), Task quality verdict
 
 A fix dispatch can address spec gaps and quality findings together;
 re-review after fixes covers both verdicts.

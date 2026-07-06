@@ -68,7 +68,7 @@ Subagent (general-purpose):
 
     ## Calibration
 
-    Categorize issues by actual severity. Not everything is Critical.
+    Categorize issues by actual severity. Not everything is P0.
     Acknowledge what was done well before listing issues — accurate praise
     helps the implementer trust the rest of the feedback.
 
@@ -84,13 +84,13 @@ Subagent (general-purpose):
 
     ### Issues
 
-    #### Critical (Must Fix)
-    [Bugs, security issues, data loss risks, broken functionality]
+    #### P0 (Must Fix)
+    [Hard guardrail violations, security issues, data loss risks, broken core functionality]
 
-    #### Important (Should Fix)
+    #### P1 (Must Fix Before Merge)
     [Architecture problems, missing features, poor error handling, test gaps]
 
-    #### Minor (Nice to Have)
+    #### P2 (Non-blocking)
     [Code style, optimization opportunities, documentation polish]
 
     For each issue:
@@ -108,7 +108,7 @@ Subagent (general-purpose):
 
     **Reasoning:** [1-2 sentence technical assessment]
 
-    ## Critical Rules
+    ## Review Rules
 
     **DO:**
     - Categorize by actual severity
@@ -119,7 +119,7 @@ Subagent (general-purpose):
 
     **DON'T:**
     - Say "looks good" without checking
-    - Mark nitpicks as Critical
+    - Mark non-blocking polish as P0
     - Give feedback on code you didn't actually read
     - Be vague ("improve error handling")
     - Avoid giving a clear verdict
@@ -131,7 +131,7 @@ Subagent (general-purpose):
 - `[BASE_SHA]` — starting commit
 - `[HEAD_SHA]` — ending commit
 
-**Reviewer returns:** Strengths, Issues (Critical / Important / Minor), Recommendations, Assessment
+**Reviewer returns:** Strengths, Issues (P0 / P1 / P2), Recommendations, Assessment
 
 ## Example Output
 
@@ -143,7 +143,7 @@ Subagent (general-purpose):
 
 ### Issues
 
-#### Important
+#### P1
 1. **Missing help text in CLI wrapper**
    - File: index-conversations:1-31
    - Issue: No --help flag, users won't discover --concurrency
@@ -154,7 +154,7 @@ Subagent (general-purpose):
    - Issue: Invalid dates silently return no results
    - Fix: Validate ISO format, throw error with example
 
-#### Minor
+#### P2
 1. **Progress indicators**
    - File: indexer.ts:130
    - Issue: No "X of Y" counter for long operations
@@ -168,5 +168,5 @@ Subagent (general-purpose):
 
 **Ready to merge: With fixes**
 
-**Reasoning:** Core implementation is solid with good architecture and tests. Important issues (help text, date validation) are easily fixed and don't affect core functionality.
+**Reasoning:** Core implementation is solid with good architecture and tests. P1 issues (help text, date validation) are easily fixed and don't affect core functionality.
 ```

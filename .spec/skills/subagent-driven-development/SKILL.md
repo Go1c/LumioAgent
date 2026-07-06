@@ -55,7 +55,7 @@ digraph process {
         "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
         "Write diff file, dispatch task reviewer subagent (./task-reviewer-prompt.md)" [shape=box];
         "Task reviewer reports spec ✅ and quality approved?" [shape=diamond];
-        "Dispatch fix subagent for Critical/Important findings" [shape=box];
+        "Dispatch fix subagent for P0/P1 findings" [shape=box];
         "Mark task complete in todo list and progress ledger" [shape=box];
     }
 
@@ -71,8 +71,8 @@ digraph process {
     "Implementer subagent asks questions?" -> "Implementer subagent implements, tests, commits, self-reviews" [label="no"];
     "Implementer subagent implements, tests, commits, self-reviews" -> "Write diff file, dispatch task reviewer subagent (./task-reviewer-prompt.md)";
     "Write diff file, dispatch task reviewer subagent (./task-reviewer-prompt.md)" -> "Task reviewer reports spec ✅ and quality approved?";
-    "Task reviewer reports spec ✅ and quality approved?" -> "Dispatch fix subagent for Critical/Important findings" [label="no"];
-    "Dispatch fix subagent for Critical/Important findings" -> "Write diff file, dispatch task reviewer subagent (./task-reviewer-prompt.md)" [label="re-review"];
+    "Task reviewer reports spec ✅ and quality approved?" -> "Dispatch fix subagent for P0/P1 findings" [label="no"];
+    "Dispatch fix subagent for P0/P1 findings" -> "Write diff file, dispatch task reviewer subagent (./task-reviewer-prompt.md)" [label="re-review"];
     "Task reviewer reports spec ✅ and quality approved?" -> "Mark task complete in todo list and progress ledger" [label="yes"];
     "Mark task complete in todo list and progress ledger" -> "More tasks remain?";
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
@@ -116,7 +116,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
 
-**BLOCKED:** The implementer cannot complete the task. Assess the blocker:
+**BLOCKED:** The implementer cannot complete the task. Assess the blocking condition:
 1. If it's a context problem, provide more context and re-dispatch with the same model
 2. If the task requires more reasoning, re-dispatch with a more capable model
 3. If the task is too large, break it into smaller pieces
@@ -146,7 +146,7 @@ final whole-branch review. When you fill a reviewer template:
   ignore or not flag a specific issue. If you believe a finding would be a
   false positive, let the reviewer raise it and adjudicate it in the review
   loop. If the prompt you are writing contains "do not flag," "don't treat X
-  as a defect," "at most Minor," or "the plan chose" — stop: you are
+  as a defect," "at most P2," or "the plan chose" — stop: you are
   pre-judging, usually to spare yourself a review loop.
 - The global-constraints block you hand the reviewer is its attention
   lens. Copy the binding requirements verbatim from the plan's Global
@@ -168,7 +168,7 @@ final whole-branch review. When you fill a reviewer template:
   later dispatches — a real session's dispatch hit 42k chars of which 99%
   was pasted history. A fresh subagent needs its task, the interfaces it
   touches, and the global constraints. Nothing else.
-- Dispatch fix subagents for Critical and Important findings. Record Minor
+- Dispatch fix subagents for P0 and P1 findings. Record P2
   findings in the progress ledger as you go, and point the final
   whole-branch review at that list so it can triage which must be fixed
   before merge. A roll-up nobody reads is a silent discard.
@@ -290,7 +290,7 @@ Implementer:
 Task reviewer: Spec ❌:
   - Missing: Progress reporting (spec says "report every 100 items")
   - Extra: Added --json flag (not requested)
-  Issues (Important): Magic number (100)
+  Issues (P1): Magic number (100)
 
 [Dispatch fix subagent with all findings]
 Fixer: Removed --json flag, added progress reporting, extracted PROGRESS_INTERVAL constant
@@ -324,12 +324,12 @@ Done!
 - Skip review loops (reviewer found issues = implementer fixes = review again)
 - Let implementer self-review replace actual review (both are needed)
 - Tell a reviewer what not to flag, or pre-rate a finding's severity in the
-  dispatch prompt ("treat it as Minor at most") — the plan's example code is
+  dispatch prompt ("treat it as P2 at most") — the plan's example code is
   a starting point, not evidence that its weaknesses were chosen
 - Dispatch a task reviewer without a diff file — generate it first
   (`scripts/review-package BASE HEAD`) and name the printed path in the
   prompt
-- Move to next task while the review has open Critical/Important issues
+- Move to next task while the review has open P0/P1 issues
 - Re-dispatch a task the progress ledger already marks complete — check
   the ledger (and `git log`) after any compaction or resume
 
@@ -362,7 +362,7 @@ When the host has no subagent support, execute the plan inline in this session:
 
 1. **Load and review the plan critically.** Concerns → raise them with the user before starting. No concerns → create todos for the plan items.
 2. **Execute each task exactly as written** (plans carry bite-sized steps): mark in_progress → follow steps → run the verifications specified → mark complete.
-3. **Stop and ask instead of guessing** when you hit a blocker: missing dependency, failing test, unclear instruction, repeated verification failure.
+3. **Stop and ask instead of guessing** when you hit a blocking condition: missing dependency, failing test, unclear instruction, repeated verification failure.
 4. **After all tasks complete and verified,** finish the branch per using-git-worktrees.
 
 This mode loses fresh-context-per-task and independent review — a known degradation. Apply extra skepticism when self-reviewing.
