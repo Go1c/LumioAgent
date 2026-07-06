@@ -26,6 +26,6 @@
 
 ## 目录纪律
 
-- **根目录只放在途卡**（pending / in_progress）。
-- 任务完成后移入 `archive/`（归档流程见 `spec-steward` 流程 C；历史在 git）。
+- **只放在途卡**（pending / in_progress）。
+- 任务完成后直接删除卡文件（历史在 git，不设归档目录；清理见 `spec-steward` 流程 C）。
 - **种子仓自身不落卡**：本目录机制供落地项目使用；种子自己的改进过程属过程记录，不入库（历史在 git）。

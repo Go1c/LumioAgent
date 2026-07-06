@@ -20,7 +20,7 @@
  *  8. 软链接存活:.claude/agents、.claude/skills、.agents/skills 必须存在且解析进 .spec/。
  *  9. 任务卡 frontmatter:.spec/tasks/ 根目录每张卡(README 除外)必须有 frontmatter,
  *     且只允许 status 字段,枚举 pending / in_progress / completed(契约见 tasks/README.md);
- *     archive/ 下历史卡不校验。
+ *     子目录不校验。
  */
 import { readFileSync, readdirSync, existsSync, statSync, lstatSync, realpathSync } from 'node:fs'
 import { join, dirname, basename, resolve, relative } from 'node:path'
@@ -108,12 +108,12 @@ for (const file of [...featureDocs, ...standardDocs]) {
   for (const key of ['metadata.type', 'metadata.status']) if (!fm[key]) err(file, `frontmatter 缺 ${key}`)
   const status = fm['metadata.status']
   if (status && !STATUS_ENUM.has(status)) {
-    err(file, `status「${status}」不在枚举(${[...STATUS_ENUM].join(' / ')})——历史写进「变更记录」节`)
+    err(file, `status「${status}」不在枚举(${[...STATUS_ENUM].join(' / ')})——历史在 git,不进文档`)
   }
   if (fm.description && /^[>|]/.test(fm.description)) {
     err(file, 'description 必须单行明文——YAML 多行标量会绕过长度校验')
   } else if (fm.description && [...fm.description].length > 120) {
-    err(file, `description 超过 120 字符(${[...fm.description].length})——一句话是什么+何时查,历史下沉`)
+    err(file, `description 超过 120 字符(${[...fm.description].length})——一句话是什么+何时查`)
   }
 }
 

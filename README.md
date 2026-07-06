@@ -8,7 +8,7 @@
 
 ## 它怎么工作
 
-- 调度、编码约定、并行与审查闭环的**权威定义在 [.spec/AGENTS.md](.spec/AGENTS.md)**，本节不复述：主 loop 调度一切，唯一职能子 Agent 是 `reviewer`（写的人 ≠ 审的人），技能（`.spec/skills/`）是可复用方法，框架级决策走 `.spec/decisions/` ADR（空模板，给你的项目用）。
+- 调度、编码约定、并行与审查闭环的**权威定义在 [.spec/AGENTS.md](.spec/AGENTS.md)**，本节不复述：主 loop 调度一切，唯一职能子 Agent 是 `reviewer`（写的人 ≠ 审的人），技能（`.spec/skills/`）是可复用方法，决策一律走 `.spec/decisions/` ADR——全仓唯一决策落点（空模板，给你的项目用）。
 - **一致性**由 `node .spec/tools/spec-lint.mjs` 机械校验（完整校验项清单见该脚本头部注释），不靠人肉清单。
 
 能力按**渐进式披露**加载：三份核心（中心文档 / 知识导航 / 硬红线）每次 init 强制载入（Claude Code 经 `@import`；无此机制的宿主靠主动读三份核心），其余按需下钻。Skill 格式**兼容 [Agent Skills 开放标准](https://agentskills.io)** 的必填子集（本仓约定只用 name + description）。
@@ -23,7 +23,7 @@ LumioAgent/
 │   ├── rules/                # Agent 护栏 / 禁令（跨工具、跨 Agent，强制载入）
 │   ├── knowledge/            # 项目知识库（standards 规范 + features 功能 + lessons 经验池）
 │   ├── decisions/            # ADR 决策目录（空模板，从 0001 开始写）
-│   ├── tasks/                # 离线任务卡（无内置任务工具的宿主用；archive/ 归档）
+│   ├── tasks/                # 离线任务卡（无内置任务工具的宿主用；完成即删，历史在 git）
 │   ├── skills/               # 技能库，扁平结构，一个技能一个目录
 │   └── tools/                # spec-lint 结构校验脚本 + fixture 自测
 ├── AGENTS.md                 # 根入口指针 → .spec/AGENTS.md
@@ -55,7 +55,7 @@ LumioAgent/
 
 - **加 / 改一个职能、技能或知识** → 用 `spec-steward` 技能照着做：它保证放对位置、frontmatter 合规、索引 / 名册同步。
 - 改完 `.spec/` 跑 `node .spec/tools/spec-lint.mjs`——索引漂移、悬空链接、漏 @import 都会被机器抓住。
-- 框架级取舍（调度方式、结构约定）落 `decisions/` 新 ADR，不改写旧决策。
+- 决策（功能内取舍、调度方式、结构约定）一律落 `decisions/` 新 ADR，不改写旧决策；其他任何地方不留决策记录。
 - 下游项目的通用经验回填种子 → `spec-steward` 的「流程 D」。
 
 > 当前仓库内容为规范、定义文档与校验脚本，尚未包含业务运行时代码。

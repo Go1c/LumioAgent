@@ -18,11 +18,7 @@ metadata:
 - **每任务两级审查** → [`task-reviewer-prompt.md`](../../skills/subagent-driven-development/task-reviewer-prompt.md)
 - **整分支收口审查** → [`code-reviewer.md`](../../skills/subagent-driven-development/code-reviewer.md)
 
-**文件交接纪律(硬要求,防上下文膨胀):** 任务简报用 `scripts/task-brief`、审查包用 `scripts/review-package` 落成文件,派遣 prompt 只传**路径**,不粘贴大段任务文本 / diff / 历史;implementer 报告写文件、只回传状态 + 提交号 + 一行测试摘要。派遣 prompt 不携带前序任务的累积摘要。
-
-**worker 状态协议:** implementer 以 `DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED` 回报,主 loop 按 SDD 的「Handling Implementer Status」分流;不许忽略升级、不许原样重试。
-
-**审查纪律:** 不替 reviewer 预判——派审 prompt 不得出现「X 不用报 / 最多算 minor / 计划选择了这样」;final review 的 findings 用**一个** fix agent 带完整清单修,不逐条派。
+执行纪律以 SDD 的 SKILL.md 为单一权威,此处不复述,只列索引:文件交接(路径传递、报告落文件)见其「File Handoffs」;worker 状态分流(`DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED`)见其「Handling Implementer Status」;派审 prompt 纪律(不预判 findings、final review 用一个 fix agent 带完整清单)见其「Constructing Reviewer Prompts」。
 
 ## 多卡并行扇出(wave;与 SDD 正交)
 
@@ -53,8 +49,3 @@ lint 报错涉及它们时只记录,主 loop 统一收口)。
 - 审查对象必须与在途改动隔离(worktree 或快照),否则 diff 被并行方污染。
 - 交付报告给「声称」,让 reviewer 核实而不是相信——这是对抗审查的输入格式。
 - 退回处理按 [`skills/receiving-code-review`](../../skills/receiving-code-review/SKILL.md):先核实再改,不盲改、不表演性认同。
-
-## 变更记录
-
-- 2026-07-06:模板指向 implementer / task-reviewer / code-reviewer prompt 文件;新增文件交接纪律、worker 状态协议、审查纪律、审查触发时机、并行派遣 prompt 三要素;保留 wave 并行扇出的文件集边界补充项。
-- 2026-07-04:建立本文档。

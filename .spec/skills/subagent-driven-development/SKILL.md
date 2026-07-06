@@ -14,7 +14,7 @@ Execute plan by dispatching a fresh implementer subagent per task, a task review
 **Narration:** between tool calls, narrate at most one short line — the
 ledger and the tool results carry the record.
 
-**Continuous execution:** Do not pause to check in with your human partner between tasks. Execute all tasks from the plan without stopping. The only reasons to stop are: BLOCKED status you cannot resolve, ambiguity that genuinely prevents progress, or all tasks complete. "Should I continue?" prompts and progress summaries waste their time — they asked you to execute the plan, so execute it.
+**Continuous execution:** Do not pause to check in with the user between tasks. Execute all tasks from the plan without stopping. The only reasons to stop are: BLOCKED status you cannot resolve, ambiguity that genuinely prevents progress, or all tasks complete. "Should I continue?" prompts and progress summaries waste their time — they asked you to execute the plan, so execute it.
 
 ## When to Use
 
@@ -89,7 +89,7 @@ Before dispatching Task 1, scan the plan once for conflicts:
 - anything the plan explicitly mandates that the review rubric treats as a
   defect (a test that asserts nothing, verbatim duplication of a logic block)
 
-Present everything you find to your human partner as one batched question —
+Present everything you find to the user as one batched question —
 each finding beside the plan text that mandates it, asking which governs —
 before execution begins, not one interrupt per discovery mid-plan. If the
 scan is clean, proceed without comment. The review loop remains the net for
@@ -97,36 +97,14 @@ conflicts that only emerge from implementation.
 
 ## Model Selection
 
-Use the least powerful model that can handle each role to conserve cost and increase speed.
+Use the least powerful model that can handle each role, and name it explicitly in every dispatch — an omitted model inherits the session's, often the most capable and most expensive. When genuinely unsure, inherit rather than guess low: cheap models take 2-3× the turns on multi-step work and cost more overall.
 
-**Mechanical implementation tasks** (isolated functions, clear specs, 1-2 files): use a fast, cheap model. Most implementation tasks are mechanical when the plan is well-specified.
-
-**Integration and judgment tasks** (multi-file coordination, pattern matching, debugging): use a standard model.
-
-**Architecture and design tasks**: use the most capable available model.
-The final whole-branch review is one of these — dispatch it on the most
-capable available model, not the session default.
-
-**Review tasks**: choose the model with the same judgment, scaled to the
-diff's size, complexity, and risk. A small mechanical diff does not need the
-most capable model; a subtle concurrency change does.
-
-**Always specify the model explicitly when dispatching a subagent.** An
-omitted model inherits your session's model — often the most capable and
-most expensive — which silently defeats this section.
-
-**Turn count beats token price.** Wall-clock and context cost scale with how
-many turns a subagent takes, and the cheapest models routinely take 2-3× the
-turns on multi-step work — costing more overall. Use a mid-tier model as the
-floor for reviewers and for implementers working from prose descriptions.
-When the task's plan text contains the complete code to write, the
-implementation is transcription plus testing: use the cheapest tier for
-that implementer. Single-file mechanical fixes also take the cheapest tier.
-
-**Task complexity signals (implementation tasks):**
-- Touches 1-2 files with a complete spec → cheap model
-- Touches multiple files with integration concerns → standard model
-- Requires design judgment or broad codebase understanding → most capable model
+| Work | Model tier |
+|------|-----------|
+| Transcription-grade implementation (plan text contains the complete code); single-file mechanical fixes | cheapest |
+| Implementation from prose specs; reviews of small/mechanical diffs | mid-tier (the floor for these roles) |
+| Multi-file integration, debugging; reviews of subtle or risky diffs | standard |
+| Architecture and design; the final whole-branch review | most capable available |
 
 ## Handling Implementer Status
 
@@ -331,38 +309,6 @@ Final reviewer: All requirements met, ready to merge
 Done!
 ```
 
-## Advantages
-
-**vs. Manual execution:**
-- Subagents follow TDD naturally
-- Fresh context per task (no confusion)
-- Parallel-safe (subagents don't interfere)
-- Subagent can ask questions (before AND during work)
-
-**vs. Executing Plans:**
-- Same session (no handoff)
-- Continuous progress (no waiting)
-- Review checkpoints automatic
-
-**Efficiency gains:**
-- Controller curates exactly what context is needed; bulk artifacts move
-  as files, not pasted text
-- Subagent gets complete information upfront
-- Questions surfaced before work begins (not after)
-
-**Quality gates:**
-- Self-review catches issues before handoff
-- Task review carries two verdicts: spec compliance and code quality
-- Review loops ensure fixes actually work
-- Spec compliance prevents over/under-building
-- Code quality ensures implementation is well-built
-
-**Cost:**
-- More subagent invocations (implementer + reviewer per task)
-- Controller does more prep work (extracting all tasks upfront)
-- Review loops add iterations
-- But catches issues early (cheaper than debugging later)
-
 ## Red Flags
 
 **Never:**
@@ -414,7 +360,7 @@ Done!
 
 When the host has no subagent support, execute the plan inline in this session:
 
-1. **Load and review the plan critically.** Concerns → raise them with your human partner before starting. No concerns → create todos for the plan items.
+1. **Load and review the plan critically.** Concerns → raise them with the user before starting. No concerns → create todos for the plan items.
 2. **Execute each task exactly as written** (plans carry bite-sized steps): mark in_progress → follow steps → run the verifications specified → mark complete.
 3. **Stop and ask instead of guessing** when you hit a blocker: missing dependency, failing test, unclear instruction, repeated verification failure.
 4. **After all tasks complete and verified,** finish the branch per using-git-worktrees.

@@ -20,7 +20,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 ## Scope Check
 
-If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
+Decomposition is brainstorming's job (or task-breakdown's), not this skill's. If the spec still covers multiple independent subsystems, stop and send it back for splitting — one plan per subsystem, each producing working, testable software on its own.
 
 ## File Structure
 
@@ -33,7 +33,7 @@ Before defining tasks, map out which files will be created or modified and what 
 
 This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
 
-## Task Right-Sizing
+## Task Granularity
 
 A task is the smallest unit that carries its own test cycle and is worth a
 fresh reviewer's gate. When drawing task boundaries: fold setup,
@@ -42,7 +42,7 @@ deliverable needs them; split only where a reviewer could meaningfully
 reject one task while approving its neighbor. Each task ends with an
 independently testable deliverable.
 
-## Bite-Sized Task Granularity
+## Step Granularity (Within a Task)
 
 **Each step is one action (2-5 minutes):**
 - "Write the failing test" - step

@@ -20,7 +20,7 @@
 > **agents/ 准入门槛:只收「隔离本身即是产出价值」的角色**(当前仅 `reviewer`)。编码 / 拆解不设角色,规程见「编码约定」与 `task-breakdown`。
 
 - **调度取向:快 > 稳 > 好。** 默认并行:文件集互不重叠即并行扇出;能继承上下文的 fork 优先于冷启动 worker;串行只留给有依赖或文件重叠的工作。
-- **默认流程:** 创造性工作(新功能 / 建组件 / 改行为)→ `brainstorming` 出设计共识 → `writing-plans` 出实现计划 → `subagent-driven-development` 逐任务执行(每任务两级审查:spec 合规 + 代码质量;无子代理宿主按其 Inline Fallback 降级);修 bug / 排障先 `systematic-debugging` 找根因再动手;多张独立卡并行扇出仍走 `task-breakdown` + wave(见「并行边界与合入」)。交付 → 收口门槛机器验证 + `verification-before-completion`(证据先于声称);整体收口审查按「派活模板」触发 `reviewer`(默认快审、显式要求才深审),退回按 `receiving-code-review` 处理。分级见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
+- **默认流程:** 创造性工作(新功能 / 建组件 / 改行为)→ `brainstorming` 出设计共识 → `writing-plans` 出实现计划(设计落 `docs/specs/`、计划落 `docs/plans/`,均为功能级工作产物;跨宿主任务状态真值仍是 `.spec/tasks/`,计划内 checkbox 只是执行内部进度)→ `subagent-driven-development` 逐任务执行(每任务两级审查:spec 合规 + 代码质量;无子代理宿主按其 Inline Fallback 降级);修 bug / 排障先 `systematic-debugging` 找根因再动手;多张独立卡并行扇出仍走 `task-breakdown` + wave(见「并行边界与合入」)。交付 → 收口门槛机器验证 + `verification-before-completion`(证据先于声称);整体收口审查按「派活模板」触发 `reviewer`(默认快审、显式要求才深审),退回按 `receiving-code-review` 处理。分级见 [`agents/reviewer.agent.md`](agents/reviewer.agent.md)。
 - **快速模式(收口白名单,默认优先尝试):** 纯文档 / 纯注释 / 纯配置数据 / 机械套用既有模式 / revert / 生成物随源更新 / 有效 diff < 20 行(去空行注释)——lint + 测试直接收口,交付附一行豁免声明,不派任何 agent。判定须机器可判(文件类型 + diff 行数),拿不准 = 快审。**红线面永不快速**:触碰 `rules/`、鉴权、安全面、可执行配置(如 hooks)的改动至少快审。
 - **审查闭环:** 交付即待审;completed 由主 loop 在 reviewer 通过(或按豁免跳过)后标记;高风险改动审查通过前**不得提交**。
 - **派 worker 三选一:** ① 多个互不依赖任务可并行 ② 改动大到撑爆编排上下文 ③ 需要隔离的干净实现环境。
@@ -42,7 +42,7 @@
 - **不夹带(全仓单一权威)**:只做当前目标要求的改动,不顺手重构、不加未要求的功能、不引入任务外新依赖。
 - **收工即验证**:交付前必过「收口门槛」;任何「完成 / 修好 / 通过」的声称前先过 `verification-before-completion`——没跑过验证命令就不许声称。
 - **交付带证据**:按「交回物格式」交付;主 loop 直编则据此向用户交代。
-- **改完沉淀**:新决策 / 新模式用 `spec-steward` 落 `knowledge/`;纯修复 / 微调可豁免,豁免须在交回物声明。
+- **改完沉淀**:新模式 / 新规范用 `spec-steward` 落 `knowledge/`,决策记 `decisions/`;纯修复 / 微调可豁免,豁免须在交回物声明。
 
 ## 宿主差异
 
@@ -56,7 +56,7 @@ Codex 主 loop 本地执行:设计与计划用 `brainstorming` / `writing-plans`
 
 ## 框架自身的决策与校验
 
-- 框架级决策记 [`decisions/`](decisions/README.md)(ADR,不改写、只新增取代);功能内决策写 feature 文档「已决策」。
+- 决策**一律**记 [`decisions/`](decisions/README.md)(ADR,不改写、只新增取代)——功能内与框架级共用,唯一落点;feature 文档只描述设计现状,不留决策记录。
 - 结构一致性由 `node .spec/tools/spec-lint.mjs` 校验,改完 `.spec/` 必跑;校验项清单以脚本头部注释为单一权威。
 
 > 硬性禁令(不得再派生子 Agent、frontmatter 限制、调度变更须同步)在 [`rules/system.md`](rules/system.md)。

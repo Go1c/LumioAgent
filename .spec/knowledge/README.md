@@ -9,7 +9,7 @@ metadata:
 
 本文件是 `knowledge/` 下所有 .md 的导航 meta:一行描述 + 路径,按需下钻。
 
-> **导航行与各文档 frontmatter `description` 同一句话口径,只写「是什么 + 何时查」。** 交付历史在各文档的「变更记录」节,此处不堆;长度 / status 枚举 / 登记覆盖 / 链接可达由 `node .spec/tools/spec-lint.mjs` 机械校验。
+> **导航行与各文档 frontmatter `description` 同一句话口径,只写「是什么 + 何时查」。** 交付历史在 git,不进文档;长度 / status 枚举 / 登记覆盖 / 链接可达由 `node .spec/tools/spec-lint.mjs` 机械校验。
 
 ## standards/(开发规范 · 要遵守的「怎么做」)
 
@@ -36,4 +36,4 @@ metadata:
 
 ---
 
-新增 / 修改 / 维护知识文档(放哪、frontmatter、同步本导航)→ 用 `spec-steward` 技能;框架级决策记录 → [`../decisions/`](../decisions/README.md)。
+新增 / 修改 / 维护知识文档(放哪、frontmatter、同步本导航)→ 用 `spec-steward` 技能;决策记录(唯一落点)→ [`../decisions/`](../decisions/README.md)。
