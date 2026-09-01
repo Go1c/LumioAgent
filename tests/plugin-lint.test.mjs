@@ -149,3 +149,13 @@ test('模板引用插件资产路径被抓', () => {
   assert.equal(code, 1)
   assert.match(output, /模板不得引用插件资产/)
 })
+
+// 落点禁名:技能/规则正文一旦指定旧文档根落点,提交前就拦下(防框架自伤)。
+test('技能正文指定旧文档根落点被抓', () => {
+  const { code, output } = lint(fixture({
+    'skills/demo/SKILL.md':
+      '---\nname: demo\ndescription: 演示技能,描述要够长以便被识别\n---\n\n# Demo\n\nSave to `docs/plans/x.md`.\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /旧文档根落点/)
+})

@@ -20,6 +20,8 @@
  *  6. 链接可达:插件树下全部 .md 的相对链接必须指向存在的文件。
  *  7. 模板隔离:templates/ 内不得引用插件资产路径(rules/ skills/ agents/ tools/ references/)——
  *     模板会被复制进用户项目,那些路径在那边不存在。
+ *  8. 落点禁名:插件树下 .md 正文不得出现 docs/specs/、docs/plans/ ——
+ *     技能指定的落点必须在项目 .spec/ 校验面内(防规则与技能互相打架)。
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs'
 import { join, dirname, basename, resolve, relative } from 'node:path'
@@ -182,6 +184,15 @@ for (const file of walk(join(ROOT, 'templates'), (p) => p.endsWith('.md'))) {
     if (/(^|\/)(rules|skills|agents|tools|references)\//.test(link)) {
       err(file, `模板不得引用插件资产路径(复制进用户项目后会悬空):${link}`)
     }
+  }
+}
+
+// ── 8. 落点禁名:插件资产正文不得指定旧文档根落点(防规则-技能自伤) ────────
+const BANNED_LANDING_PATHS = ['docs/specs/', 'docs/plans/']
+for (const file of walk(ROOT, (p) => p.endsWith('.md'))) {
+  const text = readFileSync(file, 'utf8')
+  for (const banned of BANNED_LANDING_PATHS) {
+    if (text.includes(banned)) err(file, `正文出现旧文档根落点「${banned}」——框架产物只落 .spec/`)
   }
 }
 
