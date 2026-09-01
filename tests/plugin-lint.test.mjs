@@ -164,9 +164,12 @@ test('docs/specs 落点同样被抓,形近路径不误伤', () => {
   const bad = lint(fixture({
     'skills/demo/SKILL.md':
       '---\nname: demo\ndescription: 演示技能,描述要够长以便被识别\n---\n\n# Demo\n\nWrite the design to `docs/specs/x-design.md`.\n',
+    'skills/demo2/SKILL.md':
+      '---\nname: demo2\ndescription: 演示技能,描述要够长以便被识别\n---\n\n# Demo2\n\n落点「docs/plans/x.md」不再使用(全角前缀,无反引号)。\n',
   }))
   assert.equal(bad.code, 1)
   assert.match(bad.output, /docs\/specs\//)
+  assert.match(bad.output, /docs\/plans\//)
   const ok = lint(fixture({
     'skills/demo/SKILL.md':
       '---\nname: demo\ndescription: 演示技能,描述要够长以便被识别\n---\n\n# Demo\n\nSee `mydocs/plans/legacy.md` and `docs/plans-archive/y.md`.\n',

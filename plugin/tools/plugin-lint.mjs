@@ -189,10 +189,10 @@ for (const file of walk(join(ROOT, 'templates'), (p) => p.endsWith('.md'))) {
 }
 
 // ── 8. 落点禁名:插件资产正文不得指定旧文档根落点(防规则-技能自伤) ────────
-const BANNED_LANDING_RE = /(^|[\s/`'"([])(docs\/(?:specs|plans)\/)/
+const BANNED_LANDING_RE = /(?<![\w.-])docs\/(?:specs|plans)\//
 for (const file of walk(ROOT, (p) => p.endsWith('.md'))) {
   const m = readFileSync(file, 'utf8').match(BANNED_LANDING_RE)
-  if (m) err(file, `正文出现旧文档根落点「${m[2]}」——框架产物只落 .spec/`)
+  if (m) err(file, `正文出现旧文档根落点「${m[0]}」——框架产物只落 .spec/`)
 }
 
 // ── 汇总 ─────────────────────────────────────────────────────────────────
