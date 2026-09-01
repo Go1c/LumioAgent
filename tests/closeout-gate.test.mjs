@@ -137,6 +137,14 @@ test('未跟踪的纯文档不拦豁免,但提示未计入', () => {
   assert.match(output, /未计入/)
 })
 
+test('未跟踪的红线面文档不豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'rules/new-rule.md', '新红线\n')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /未跟踪/)
+})
+
 test('空 diff → 快速豁免(无可定级改动)', () => {
   const { output } = gate(repo())
   assert.match(output, /快速豁免/)

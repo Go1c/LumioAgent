@@ -10,15 +10,18 @@
  *      → 有效行 ≥ 100 深审,否则快审;永不豁免(一票取消豁免)。
  *      鉴权 / 安全面机器判不了,不在本工具内——靠人工与 reviewer。
  *   2. BASE..HEAD 全部提交主题以 revert 开头 → 快速豁免
- *   3. 存在未跟踪的**非文档/数据类**文件 → 快审(内容不可定级,先 git add);
- *      纯文档/数据类的未跟踪文件不拦豁免,仅提示未计入定级。
+ *   3. 存在未跟踪的**非文档/数据类**文件、或未跟踪的**红线面**文件(哪怕是文档)
+ *      → 快审(内容不可定级,先 git add);
+ *      非红线面的纯文档/数据类未跟踪文件不拦豁免,仅提示未计入定级。
  *   4. 含二进制文件改动 → 快审(不可豁免)
  *   5. 全部文件为纯文档(.md/.txt/.rst) / 纯配置数据(.json/.yaml/.yml/.toml/.csv) /
  *      纯注释改动(已知注释语法的代码文件,改动行全为注释或空行) → 快速豁免(不限行数)
- *   6. 有效行(去空行与注释行)合计 ≥ 500 → 深审
- *   7. 有效行 < 50 → 快速豁免
+ *   6. 有效行(新增行,去空行与注释)合计 ≥ 500 → 深审
+ *   7. 有效行(新增行,去空行与注释) < 50 → 快速豁免
  *   8. 其余 → 快审
  *
+ * 有效行只计新增(`+`)行,删除(`-`)行不计——快速模式取放宽定调:30 行重写按 30 算,
+ * 纯删除按 0 算(与 revert 豁免同旨)。
  * 「机械套用既有模式」「生成物随源更新」机器判不了,已从豁免面移除(归快审)。
  * 退出码:恒 0(定级是建议不是门禁);用法 / 环境错误 2。
  */
@@ -63,7 +66,7 @@ for (const f of files) {
   const ext = extname(f)
   const markers = COMMENT_MARKERS.get(ext) ?? []
   const changed = d.split('\n')
-    .filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l))
+    .filter((l) => /^\+/.test(l) && !/^\+\+\+/.test(l))
     .map((l) => l.slice(1).trim())
   const effective = changed.filter((l) => l && !markers.some((m) => l.startsWith(m)))
   totalEffective += effective.length
@@ -80,8 +83,8 @@ if (BASE !== 'HEAD') {
 }
 
 const redFiles = files.filter(isRed)
-const untrackedBlocking = untracked.filter((f) => !isDocOrData(f))
-const untrackedDocs = untracked.filter(isDocOrData)
+const untrackedBlocking = untracked.filter((f) => !isDocOrData(f) || isRed(f))
+const untrackedDocs = untracked.filter((f) => isDocOrData(f) && !isRed(f))
 const reasons = []
 let level
 
@@ -97,7 +100,7 @@ if (files.length === 0 && untrackedBlocking.length === 0 && untrackedDocs.length
   reasons.push('BASE..HEAD 全部为 revert 提交')
 } else if (untrackedBlocking.length > 0) {
   level = '快审'
-  reasons.push(`存在未跟踪的非文档类文件(${untrackedBlocking.join('、')})——内容不可定级,先 git add`)
+  reasons.push(`存在未跟踪的非文档类或红线面文件(${untrackedBlocking.join('、')})——内容不可定级,先 git add`)
 } else if (hasBinary) {
   level = '快审'
   reasons.push('含二进制文件改动——不可豁免')
@@ -109,7 +112,7 @@ if (files.length === 0 && untrackedBlocking.length === 0 && untrackedDocs.length
   reasons.push(`有效行 ${totalEffective} ≥ 500`)
 } else if (totalEffective < 50) {
   level = '快速豁免'
-  reasons.push(`有效行 ${totalEffective} < 50(去空行与注释)`)
+  reasons.push(`有效行 ${totalEffective} < 50(新增行,去空行与注释)`)
 } else {
   level = '快审'
   reasons.push(`默认——白名单未命中(有效行 ${totalEffective})`)
