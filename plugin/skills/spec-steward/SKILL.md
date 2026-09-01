@@ -55,7 +55,7 @@ description: 维护 LumioAgent 的结构并把改动沉淀进知识库——放�
 1. 一句话总结：这次改了什么、为什么。
 2. 判断文档归属：
    - 影响**开发流程 / 规范**（workflow / 测试策略 / 代码风格等）→ 更新 `knowledge/standards/` 对应文件。
-   - 影响**功能设计**（新功能、行为变更）→ 找 `knowledge/features/` 对应文档：有就更新，没有就从 `_TEMPLATE.md` 新建（放对领域 / 模块）——只写设计现状，不留决策记录。
+   - 影响**功能设计**（新功能、行为变更）→ 更新 `knowledge/features/` 对应文档并流转 `status`（feature 文档由 brainstorming 在设计期直接建立、`设计中` 起步，交付时改 `已交付`；确无文档才从 `_TEMPLATE.md` 补建）——只写设计现状，不留决策记录，无二次搬运。
    - **决策**（功能内与框架级都算：为什么这样调度 / 选型 / 划边界）→ 项目 `.spec/decisions/` 新增 ADR（**唯一落点**，见其 `README.md`）。
    - **复发问题 / 踩坑经验**（reviewer 退回报告、known gaps 中第二次出现的同类问题）→ 追加进项目 `.spec/knowledge/lessons.md`（收录准入与条目格式见该文档）。
 3. 更新正文——**只保留当前有效内容**，交付历史不入库（git 提交即历史）。
