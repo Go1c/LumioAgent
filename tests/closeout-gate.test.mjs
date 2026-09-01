@@ -266,6 +266,15 @@ test('.claude/ 与 .circleci/ 计入红线面', () => {
   assert.match(output, /红线面/)
 })
 
+test('嵌套 .claude/ 也计入红线面(Claude Code 会读子目录 settings)', () => {
+  const r = repo()
+  write(r, 'packages/app/.claude/settings.json', '{"a":1}\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面/)
+})
+
 test('.gitlab-ci.yml 计入红线面', () => {
   const r = repo()
   write(r, '.gitlab-ci.yml', 'stages: []\n')

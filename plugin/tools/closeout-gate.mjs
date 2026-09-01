@@ -8,8 +8,8 @@
  * 三态与判定顺序(先命中先生效;本注释是判定规则的单一权威):
  *   0. 空 diff(无已跟踪改动且无未跟踪文件) → 快速豁免
  *   1. 红线面被触碰 → 有效行 ≥ 100 深审,否则快审;永不豁免(一票取消豁免)。
- *      红线名单:路径段 rules / hooks;路径前缀 .github/workflows/、.claude/、.circleci/;
- *      文件名 hooks.json、.gitlab-ci.yml。
+ *      红线名单:路径段 rules / hooks / .claude(嵌套的 .claude/ 同样算——Claude Code 会读子目录配置);
+ *      路径前缀 .github/workflows/、.circleci/;文件名 hooks.json、.gitlab-ci.yml。
  *      鉴权 / 安全面机器判不了,不在本工具内——靠人工与 reviewer。
  *      package.json 等含脚本的配置不在红线名单,落在配置数据豁免面——需要更严时人工升级。
  *   2. BASE..HEAD 全部提交主题以 revert 开头(后接 : ( 或空格) → 快速豁免
@@ -77,11 +77,11 @@ const COMMENT_MARKERS = new Map(Object.entries({
 }))
 const isDocOrData = (f) => DOC_EXT.has(extname(f)) || DATA_EXT.has(extname(f))
 
-const RED_PREFIX = ['.github/workflows/', '.claude/', '.circleci/']
+const RED_PREFIX = ['.github/workflows/', '.circleci/']
 const RED_BASENAME = new Set(['hooks.json', '.gitlab-ci.yml'])
 const isRed = (f) => {
   const segs = f.split('/')
-  return segs.includes('rules') || segs.includes('hooks') ||
+  return segs.includes('rules') || segs.includes('hooks') || segs.includes('.claude') ||
     RED_BASENAME.has(basename(f)) || RED_PREFIX.some((p) => f.startsWith(p))
 }
 
@@ -101,7 +101,7 @@ for (const f of files) {
   const ext = extname(f)
   const markers = COMMENT_MARKERS.get(ext) ?? []
   const body = d.split('\n').filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l))
-  // 已列入 files 却读不到任何 +/- 行(pathspec 失配、纯 mode 变更等):不可定级,不得豁免。
+  // 已列入 files 却读不到任何 +/- 行(pathspec 失配、纯 mode 变更等):不可定级,不得走类型白名单豁免。
   if (body.length === 0) { allWhitelistedType = false; continue }
   const changed = body
     .filter((l) => /^\+/.test(l))
