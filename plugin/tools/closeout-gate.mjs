@@ -15,7 +15,8 @@
  *      非红线面的纯文档/数据类未跟踪文件不拦豁免,仅提示未计入定级。
  *   4. 含二进制文件改动 → 快审(不可豁免)
  *   5. 全部文件为纯文档(.md/.txt/.rst) / 纯配置数据(.json/.yaml/.yml/.toml/.csv) /
- *      纯注释改动(已知注释语法的代码文件,改动行全为注释或空行) → 快速豁免(不限行数)
+ *      纯注释或纯删除改动(已知注释语法的代码文件,新增行全为注释或空行,含只删不增)
+ *      → 快速豁免(不限行数)
  *   6. 有效行(新增行,去空行与注释)合计 ≥ 500 → 深审
  *   7. 有效行(新增行,去空行与注释) < 50 → 快速豁免
  *   8. 其余 → 快审
@@ -106,7 +107,7 @@ if (files.length === 0 && untrackedBlocking.length === 0 && untrackedDocs.length
   reasons.push('含二进制文件改动——不可豁免')
 } else if (files.length > 0 && allWhitelistedType) {
   level = '快速豁免'
-  reasons.push('全部文件为纯文档 / 配置数据 / 纯注释改动')
+  reasons.push('全部文件为纯文档 / 配置数据 / 纯注释或纯删除改动')
 } else if (totalEffective >= 500) {
   level = '深审'
   reasons.push(`有效行 ${totalEffective} ≥ 500`)
