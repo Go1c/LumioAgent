@@ -13,7 +13,7 @@ description: 维护 LumioAgent 的结构并把改动沉淀进知识库——放�
 | 归属 | 位置 | 特征 |
 |------|------|------|
 | **插件资产** | 插件仓的 `rules/` `skills/` `agents/` `commands/` `hooks/` `references/` `templates/` | 跨项目通用，随插件版本升级 |
-| **项目实例** | 项目的 `.spec/knowledge/` `.spec/decisions/` `.spec/tasks/` `.spec/AGENTS.md` | 只属于这个项目，留在项目仓库 |
+| **项目实例** | 项目的 `.spec/knowledge/` `.spec/decisions/` `.spec/plans/` `.spec/tasks/` `.spec/AGENTS.md` | 只属于这个项目，留在项目仓库 |
 
 判据:**换一个项目还成立吗?** 成立 → 插件资产;不成立 → 项目实例。
 

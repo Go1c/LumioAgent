@@ -101,7 +101,7 @@ digraph brainstorming {
 **Documentation:**
 
 - The design document IS the feature doc's first version — no separate spec file, no later sedimentation step:
-  - Feature work: write to `.spec/knowledge/features/<topic>.md` in final-register voice (describe what it IS, not the discussion), frontmatter per the project's `_TEMPLATE.md` with `status: 设计中`, and register it in `.spec/knowledge/README.md` navigation. Status flows `设计中 → 实施中 → 已交付` as work proceeds — the document never moves.
+  - Feature work: write to `.spec/knowledge/features/<topic>.md` in final-register voice (describe what it IS, not the discussion), frontmatter per the project's `_TEMPLATE.md` (`metadata.status: 设计中`), and register it in `.spec/knowledge/README.md` navigation. Status flows `设计中 → 实施中 → 已交付` as work proceeds — the document never moves.
   - One-off engineering efforts (nothing long-lived to describe): fold the design into the effort's plan document in `.spec/plans/` (see writing-plans) as a design section — no feature doc.
   - Trade-offs, rejected alternatives, and the "why" go to an ADR in `.spec/decisions/`; the feature doc keeps only the design as it stands.
   - The discussion process itself is NOT committed anywhere — it lives in the conversation.
