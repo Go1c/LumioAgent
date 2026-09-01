@@ -22,7 +22,7 @@ metadata:
 
 ## 多卡并行扇出(wave;与 SDD 正交)
 
-SDD 串行执行一份计划;**互不重叠文件集**的独立任务卡才可并行(规则见 `AGENTS.md`「并行边界与合入」),每个 worker 独立 worktree。派遣 prompt 在 implementer 模板基础上补两项:
+SDD 串行执行一份计划;**互不重叠文件集**的独立任务卡才可并行(规则见 `rules/dispatch.md`「并行边界与合入」),每个 worker 独立 worktree。派遣 prompt 在 implementer 模板基础上补两项:
 
 ```text
 【文件集边界】只改:<路径列表>。并行方正在改:<路径列表>(一律不动;

@@ -24,7 +24,7 @@ metadata:
 
 ## 验证证据
 
-形式要求以 `AGENTS.md`「交回物格式」为单一权威——「已通过」三个字不是证据。
+形式要求以插件注入的 `rules/dispatch.md`「交回物格式」为单一权威——「已通过」三个字不是证据。
 
 ## 验收标准（Definition of Done）
 

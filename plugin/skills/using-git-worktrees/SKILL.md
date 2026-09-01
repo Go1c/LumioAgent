@@ -213,7 +213,7 @@ Run the project's verification gate (test suite / 收口门槛 command) and read
 
 ### 2. Integrate per the project's merge policy
 
-This project defines the policy in `AGENTS.md`（「审查闭环」与「并行边界与合入」）: review passes → the main loop merges the worktree into the main workspace; unreviewed or rejected work is not merged; conflicts go back to the implementer. Follow that policy — do not invent a different ceremony.
+This project defines the policy in the plugin-injected `rules/dispatch.md`（「审查闭环」与「并行边界与合入」）: review passes → the main loop merges the worktree into the main workspace; unreviewed or rejected work is not merged; conflicts go back to the implementer. Follow that policy — do not invent a different ceremony.
 
 Only when no project policy applies, ask the user what they want: merge locally, push + PR, keep the branch, or discard.
 
