@@ -20,7 +20,8 @@
  *  4. 任务卡 frontmatter:.spec/tasks/ 根目录每张卡(README 除外)必须有 frontmatter,
  *     且只允许 status 字段,枚举 pending / in_progress / completed;子目录不校验。
  *  5. 禁并行文档根:git 索引内不得出现 docs/specs/、docs/plans/,或仓根之外的
- *     第二个 .spec/(templates/.spec/ 模板骨架豁免);非 git 环境跳过本项。
+ *     第二个 .spec/(templates/.spec/ 模板骨架豁免);非 git 仓库或无 git 时跳过本项,
+ *     其余 git 失败上报(不静默失效)。
  *  6. ADR 状态行:每条 ADR 必有「- 状态:」行,取值以「生效」开头,或
  *     「(部分)被 [NNNN](<file>) 取代」——被取代必须链接取代者。
  *  7. 计划 frontmatter:.spec/plans/ 根目录每份计划(README 除外)与任务卡同契约
@@ -133,11 +134,12 @@ if (existsSync(decisionsDir)) {
     : new Set()
   for (const file of walk(decisionsDir, (p) => p.endsWith('.md') && basename(p) !== 'README.md')) {
     if (!adrLinks.has(file)) err(file, '未登记进 decisions/README.md 索引')
-    const status = readFileSync(file, 'utf8').match(/^-\s*状态[:：]\s*(.+)$/m)
+    const adrBody = readFileSync(file, 'utf8').replace(/```[\s\S]*?```/g, '')
+    const status = adrBody.match(/^-\s*状态[:：]\s*(.+)$/m)
     if (!status) { err(file, 'ADR 缺「- 状态:」行'); continue }
     const v = status[1].trim()
     if (!/^生效/.test(v) && !/^(部分)?被\s*\[\d{4}\]\([^)\s]+\)\s*取代/.test(v)) {
-      err(file, `ADR 状态「${v}」不合法——只能以「生效」开头,或「(部分)被 [NNNN](<file>) 取代」`)
+      err(file, `ADR 状态「${v}」不合法——只能以「生效」开头,或「被 [NNNN](<file>) 取代」(部分取代加前缀「部分」)`)
     }
   }
 }
@@ -170,11 +172,17 @@ checkStatusCards(join(SPEC, 'plans'), '计划')
 // ── 5. 禁并行文档根(遍历面 = git 索引;非 git 环境跳过) ───────────────
 let indexedFiles = null
 try {
-  // stderr 吞掉:非 git 目录下 git 会打 fatal:,本项是静默跳过,不该吓到下游项目
   indexedFiles = execFileSync('git', ['ls-files'], {
-    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+    cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
+    stdio: ['ignore', 'pipe', 'pipe'],
   }).split('\n').filter(Boolean)
-} catch { /* 非 git 仓库或无 git:本项跳过 */ }
+} catch (e) {
+  // 只吞「非 git 仓库」(git 退出码 128)与「无 git」(ENOENT)——此时索引不存在,本项无意义。
+  // 其余错误(ENOBUFS、权限、dubious ownership)必须上报,否则本项校验会静默失效(fail open)。
+  if (e.status !== 128 && e.code !== 'ENOENT') {
+    err(join(ROOT, '.spec'), `git ls-files 失败,禁并行文档根校验未执行:${e.code ?? e.status ?? e.message}`)
+  }
+}
 for (const rel of indexedFiles ?? []) {
   if (/(^|\/)docs\/(specs|plans)\//.test(rel)) {
     err(join(ROOT, rel), '并行文档根:框架产物(设计/计划)只落 .spec/,不落 docs/')

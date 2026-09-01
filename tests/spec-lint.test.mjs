@@ -209,3 +209,29 @@ test('合法计划与 plans/README 通过', () => {
   }))
   assert.equal(code, 0, output)
 })
+
+test('形近路径不误伤(mydocs/specs、docs/plans-archive)', () => {
+  const { code, output } = lint(gitFixture({
+    'mydocs/specs/x.md': '# 不是 docs/specs\n',
+    'docs/plans-archive/y.md': '# 不是 docs/plans\n',
+  }))
+  assert.equal(code, 0, output)
+})
+
+test('ADR 取代式缺链接被抓(裸「被 0002 取代」不合法)', () => {
+  const { code, output } = lint(fixture({
+    '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md)\n',
+    '.spec/decisions/0001-x.md': '# 0001\n\n- 状态:被 0002 取代\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /不合法/)
+})
+
+test('ADR 状态行只在围栏内不算数(防样例蒙混)', () => {
+  const { code, output } = lint(fixture({
+    '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md)\n',
+    '.spec/decisions/0001-x.md': '# 0001\n\n```markdown\n- 状态:生效\n```\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /缺「- 状态:」行/)
+})
