@@ -28,4 +28,4 @@ metadata:
 ## 语言 / 框架特定风格（**落地必填**）
 
 <!-- 落地项目在此填写：语言版本、formatter / linter 配置指向、目录分层约定、框架惯例。 -->
-纯 Markdown + Node 脚本（ESM、零依赖、仅 Node 内置模块，`engines.node >= 20`）。无 formatter / linter 配置——`tools/` 下的脚本靠自身测试与两支 lint 约束。
+<!-- 例：TypeScript 5.x strict；Prettier + ESLint 配置见仓库根；按功能分层。 -->

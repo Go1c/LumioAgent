@@ -1,61 +1,76 @@
 # LumioAgent
 
-一个**通用的开发项目管理 Agent 框架**。主 Agent 负责理解目标、拆解任务、调度、收口，对清晰小改动直接编码；唯一职能子 Agent `reviewer` 负责对抗审查；技能（Skill）是可复用的方法；`.md` 文件是规则。
-
-`.spec/` 是唯一权威目录。Codex、Claude 和根目录入口都只是指针，最终都指向 `.spec/` 里的同一套规范。
+一个**通用的开发项目管理 Agent 框架**，以 Agent 插件分发。主 Agent 负责理解目标、拆解任务、调度、收口，对清晰小改动直接编码；唯一职能子 Agent `reviewer` 负责对抗审查；技能（Skill）是可复用的方法；`.md` 文件是规则。
 
 > 一句话：**主 Agent 调度，子 Agent 执行，Skill 是方法，.md 是规则。**
 
+## 双标准
+
+| 层 | 标准 | 内容 | 谁能用 |
+|---|---|---|---|
+| 可移植层 | [Agent Plugins 1.0.0](https://agent-plugins.org/)（根 `plugin.json`） | `skills/` | Claude Code、Codex CLI、Cursor、GitHub Copilot、VS Code、ChatGPT、Kiro… |
+| 专有层 | Claude Code（`.claude-plugin/plugin.json`） | `agents/`、`commands/`、`hooks/` | 仅 Claude Code |
+
+规范 v1 明确把 agents / commands / hooks / rules 排除在可移植层之外，这是标准的边界。**其他客户端只能拿到技能层**；红线规则靠 `/lumio:init` 写进项目入口文件兜底。
+
+## 安装
+
+```bash
+claude plugin marketplace add Go1c/LumioAgent && claude plugin install lumio@lumioagent
+```
+
+装完在你的项目里跑一次：
+
+```bash
+/lumio:init
+```
+
+它会在项目里生成 `.spec/` 脚手架（知识库 / 决策 / 任务卡骨架）并写入宿主入口指针。**默认不覆盖任何已有文件**，可反复跑——升级插件后再跑一次即可补齐新增模板。
+
+然后填两处空：`.spec/AGENTS.md` 的「项目是什么」与「收口门槛」。不填则收口无从判断。
+
 ## 它怎么工作
 
-- 调度、编码约定、并行与审查闭环的**权威定义在 [.spec/AGENTS.md](.spec/AGENTS.md)**，本节不复述：主 loop 调度一切，唯一职能子 Agent 是 `reviewer`（写的人 ≠ 审的人），技能（`.spec/skills/`）是可复用方法，决策一律走 `.spec/decisions/` ADR——全仓唯一决策落点（空模板，给你的项目用）。
-- **一致性**由 `node .spec/tools/spec-lint.mjs` 机械校验（完整校验项清单见该脚本头部注释），不靠人肉清单。
-
-能力按**渐进式披露**加载：三份核心（中心文档 / 知识导航 / 硬红线）每次 init 强制载入（Claude Code 经 `@import`；无此机制的宿主靠主动读三份核心），其余按需下钻。Skill 格式**兼容 [Agent Skills 开放标准](https://agentskills.io)** 的必填子集（本仓约定只用 name + description）。
+- **规则常驻**：`rules/*.md`（硬红线 + 调度规程）由 SessionStart hook 每次会话注入。目录是 glob 的，新增规则文件即生效——没有登记表，也就没有漂移。
+- **提交守卫**：PreToolUse hook 在 `git commit` 前跑项目侧 `spec-lint`，不通过就阻断。项目没有 `.spec/` 时静默放行。
+- **渐进式披露**：常驻的只有 `rules/`；技能、派活模板、审查清单按需下钻。
+- **一致性靠机器**：两支 lint 分别校验插件自身与项目实例，清单以各脚本头部注释为单一权威。
 
 ## 仓库地图
 
+本仓库既是插件本体，也是使用它的项目（dogfood）。
+
 ```
 LumioAgent/
-├── .spec/                    # 唯一权威源
-│   ├── AGENTS.md             # ★ 中心文档：项目槽位 + 调度核心 + 名册，先读它
-│   ├── agents/               # 子 Agent 定义（仅 reviewer；准入门槛见 AGENTS.md）
-│   ├── rules/                # Agent 护栏 / 禁令（跨工具、跨 Agent，强制载入）
-│   ├── knowledge/            # 项目知识库（standards 规范 + features 功能 + lessons 经验池）
-│   ├── decisions/            # ADR 决策目录（空模板，从 0001 开始写）
-│   ├── tasks/                # 离线任务卡（无内置任务工具的宿主用；完成即删，历史在 git）
-│   ├── skills/               # 技能库，扁平结构，一个技能一个目录
-│   └── tools/                # spec-lint 结构校验脚本 + fixture 自测
-├── AGENTS.md                 # 根入口指针 → .spec/AGENTS.md
-├── CLAUDE.md                 # Claude Code 入口：@import 强制加载三份核心
-├── .claude/、.agents/        # 软链接 → .spec/（宿主自动发现 agents / skills）
-├── LICENSE                   # MIT
-├── .gitignore
-└── README.md
+├── plugin.json               # Agent Plugins 1.0.0 清单（可移植层）
+├── .claude-plugin/           # Claude Code 清单 + marketplace
+├── skills/                   # 技能库，一个技能一个目录
+├── agents/                   # 子 Agent（仅 reviewer）
+├── commands/                 # /lumio:init、/lumio:lint
+├── hooks/hooks.json          # SessionStart 注入规则 + PreToolUse 拦提交
+├── rules/                    # ★ 每次会话强制注入：system.md 红线 + dispatch.md 调度规程
+├── references/               # 按需下钻：派活 prompt 骨架
+├── templates/                # /lumio:init 的释放源
+├── tools/                    # 两支 lint + hook 脚本 + 脚手架脚本（均带测试）
+├── tests/                    # Agent Plugins 规范合规与双清单一致
+└── .spec/                    # 本仓自己的项目实例数据（= init 的产出）
 ```
-
-## 从哪开始读
-
-1. **[.spec/AGENTS.md](.spec/AGENTS.md)** —— 中心文档：调度核心（默认流程 / 交回物格式 / 失败升级）+ 子 Agent 名册。**先读它，再按需下钻。**
-2. **[.spec/knowledge/README.md](.spec/knowledge/README.md)** —— 知识导航：有哪些规范和功能记录、在哪。
-3. **[.spec/rules/system.md](.spec/rules/system.md)** —— 硬红线：协作禁令与安全护栏。
-
-## 怎么用到你的项目
-
-把这个仓库复制进你的项目，然后：
-
-1. **填空**：`.spec/AGENTS.md` 顶部有「项目是什么 / 收口门槛」两处占位，填上你项目的定位和验证命令。
-2. **改写规范骨架**：`.spec/knowledge/standards/` 里三份文档标了「落地必填」的段落，换成你项目的真实约定；其余通用部分可保留。
-3. **保留框架资产**：`.spec/rules/` 的红线原样保留；`.spec/decisions/` 是空 ADR 模板，你的决策从 0001 开始写；`.claude/settings.json` 的提交前 lint 兜底随仓生效（Claude Code 启动会话时加载）。
-4. **老项目也能用**：不必一步到位，先只搬 `.spec/rules/` + `.spec/AGENTS.md`，其余分批接入。
-
-> 每次收尾跑一下 `node .spec/tools/spec-lint.mjs`，结构不一致会被当场指出。版本历史见 git tags；后续从下游项目验证过的通用经验会以打 tag 的方式回流到这里。
 
 ## 怎么扩展
 
-- **加 / 改一个职能、技能或知识** → 用 `spec-steward` 技能照着做：它保证放对位置、frontmatter 合规、索引 / 名册同步。
-- 改完 `.spec/` 跑 `node .spec/tools/spec-lint.mjs`——索引漂移、悬空链接、漏 @import 都会被机器抓住。
-- 决策（功能内取舍、调度方式、结构约定）一律落 `decisions/` 新 ADR，不改写旧决策；其他任何地方不留决策记录。
-- 下游项目的通用经验回填种子 → `spec-steward` 的「流程 D」。
+- **加 / 改技能、职能或知识** → 用 `spec-steward` 技能：它保证放对位置、frontmatter 合规、索引 / 名册同步。
+- **加一条硬规则** → 丢进 `rules/`，自动进入每次会话，无需登记。
+- **决策** → 一律落项目 `.spec/decisions/` 新 ADR，不改写旧决策。
+- 改完跑 `/lumio:lint`；发版四方版本号同步后用 `claude plugin tag` 打 `lumio--v<version>`。
 
-> 当前仓库内容为规范、定义文档与校验脚本，尚未包含业务运行时代码。
+## 开发
+
+```bash
+node --test tests/*.test.mjs tools/*.test.mjs && node tools/plugin-lint.mjs && node tools/spec-lint.mjs && claude plugin validate . --strict
+```
+
+开发期实时加载：把 `~/.claude/skills/lumio` 软链到本仓，即以 `lumio@skills-dir` 自动加载。
+
+## License
+
+MIT

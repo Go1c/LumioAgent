@@ -36,8 +36,4 @@ metadata:
 ## 项目测试栈与命令（**落地必填**）
 
 <!-- 落地项目在此填写：测试框架、各层运行命令、集成/E2E 的开关方式与环境要求。 -->
-`node --test tests/*.test.mjs tools/*.test.mjs` —— 零依赖，全部用 Node 内置 test runner。三类：
-
-- `tests/agent-plugins-conformance.test.mjs` —— Agent Plugins 1.0.0 规范合规与双清单一致。
-- `tools/*-lint.test.mjs` —— 两支 lint 的 fixture 自测（临时目录搭最小仓库，断言违规被抓）。
-- `tools/hooks.test.mjs`、`tools/init-scaffold.test.mjs` —— hook 与脚手架脚本的行为契约。
+<!-- 例：单元 `pnpm test`；E2E `pnpm test:e2e`（需本地起服务）。 -->

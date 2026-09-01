@@ -1,22 +1,23 @@
 # CLAUDE.md
 
-Claude Code entrypoint. The `@import` lines below **force-load** their content into every session context. The authoritative source is `.spec/`; this file only loads, it defines no rules of its own.
+Claude Code entrypoint.
 
-Central doc (项目介绍 + Agent 调度):
+**本仓库既是 LumioAgent 插件本体,也是使用它的项目(dogfood)。** 两个身份的边界:
 
-@.spec/AGENTS.md
+- **插件资产**(随版本分发,装进别的项目):`skills/`、`agents/`、`commands/`、`hooks/`、`rules/`、`references/`、`templates/`、`tools/`、两份清单。
+- **项目实例数据**(只属于本仓):`.spec/` —— 由 `templates/` 经 `/lumio:init` 生成,内容与任何下游项目同构。
 
-Knowledge navigation (force-loaded so the agent always knows what knowledge exists and where):
+通用规程(调度核心 / 编码约定 / 硬红线)由插件的 SessionStart hook 每次会话注入 `rules/*.md`,**本文件不再用 `@import` 载入它们**——新增规则文件放进 `rules/` 即自动生效,没有登记表可漏。
 
-@.spec/knowledge/README.md
+开发本插件时的实时加载:把 `~/.claude/skills/lumio` 软链到本仓,即以 `lumio@skills-dir` 自动加载。
 
-System rules (**force-loaded at every agent init, no progressive disclosure** — hard red lines that must be in context from the start):
+<!-- lumio:init -->
+## LumioAgent
 
-@.spec/rules/system.md
+本项目使用 LumioAgent 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
 
-> **Maintenance:** every force-loaded file needs a matching `@.spec/<path>.md` line above, or it won't load at init. This applies to every rule file under `rules/` and to `knowledge/README.md`. This completeness is machine-checked by `node .spec/tools/spec-lint.mjs` — run it after any `.spec/` change.
+- [`.spec/AGENTS.md`](.spec/AGENTS.md) —— 项目中心文档(先读)
+- [`.spec/knowledge/README.md`](.spec/knowledge/README.md) —— 知识导航
+- [`.spec/decisions/`](.spec/decisions/README.md) —— 决策唯一落点(ADR)
 
-Claude-specific:
-
-- Sub-agents and skills are exposed via symlinks: `.claude/agents -> ../.spec/agents`, `.claude/skills -> ../.spec/skills`. Rules reach context via the `@import` lines above, not via a symlink.
-- Do not maintain any Claude-only rules here. When behavior changes, edit `.spec/`; this file is just a pointer.
+> 通用规程与硬红线由插件在每次会话注入(Claude Code);无此机制的宿主请主动读取上述文件。
