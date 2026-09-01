@@ -134,3 +134,110 @@ test('合法任务卡通过,子目录与 README 不校验', () => {
   }))
   assert.equal(code, 0, output)
 })
+
+// ── W1 新增:禁并行文档根(git 索引) ──────────────────────────────
+function gitFixture(overrides = {}) {
+  const root = fixture(overrides)
+  execFileSync('git', ['init', '-q'], { cwd: root })
+  execFileSync('git', ['add', '-A'], { cwd: root })
+  return root
+}
+
+test('git 索引中的 docs/specs|plans 被抓(并行文档根)', () => {
+  const { code, output } = lint(gitFixture({ 'docs/plans/2026-01-01-x.md': '# 旧落点\n' }))
+  assert.equal(code, 1)
+  assert.match(output, /并行文档根/)
+})
+
+test('嵌套第二个 .spec 被抓,模板骨架豁免', () => {
+  const { code, output } = lint(gitFixture({
+    'engine/.spec/AGENTS.md': '# 第二套\n',
+    'vendor/templates/.spec/AGENTS.md': '# 模板骨架\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /第二个 \.spec/)
+  assert.doesNotMatch(output, /vendor/)
+})
+
+test('合法 git 仓库全绿(非 git fixture 则跳过该项)', () => {
+  const { code, output } = lint(gitFixture())
+  assert.equal(code, 0, output)
+})
+
+// ── W1 新增:ADR 状态校验 ────────────────────────────────────────
+test('ADR 缺状态行被抓', () => {
+  const { code, output } = lint(fixture({
+    '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md)\n',
+    '.spec/decisions/0001-x.md': '# 0001 · X\n\n- 日期:2026-01-01\n\n## 背景\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /缺「- 状态:」行/)
+})
+
+test('ADR 状态非法被抓,生效与带链接取代式通过', () => {
+  const bad = lint(fixture({
+    '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md)\n',
+    '.spec/decisions/0001-x.md': '# 0001\n\n- 状态:Accepted\n',
+  }))
+  assert.equal(bad.code, 1)
+  assert.match(bad.output, /不合法/)
+  const good = lint(fixture({
+    '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md) [0002](0002-y.md)\n',
+    '.spec/decisions/0001-x.md': '# 0001\n\n- 状态:部分被 [0002](0002-y.md) 取代——仅某条\n',
+    '.spec/decisions/0002-y.md': '# 0002\n\n- 状态:生效(取代 0001 一条)\n',
+  }))
+  assert.equal(good.code, 0, good.output)
+})
+
+// ── W1 新增:plans/ frontmatter ──────────────────────────────────
+test('计划缺 frontmatter / 多余字段 / 非枚举被抓', () => {
+  const { code, output } = lint(fixture({
+    '.spec/plans/2026-01-01-a.md': '# 无 frontmatter\n',
+    '.spec/plans/2026-01-01-b.md': '---\nstatus: pending\nowner: me\n---\n\n# b\n',
+    '.spec/plans/2026-01-01-c.md': '---\nstatus: done\n---\n\n# c\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /计划缺少 frontmatter/)
+  assert.match(output, /只允许 status/)
+  assert.match(output, /不在枚举/)
+})
+
+test('合法计划与 plans/README 通过', () => {
+  const { code, output } = lint(fixture({
+    '.spec/plans/README.md': '# 计划目录\n',
+    '.spec/plans/2026-01-01-a.md': '---\nstatus: completed\n---\n\n# a\n',
+  }))
+  assert.equal(code, 0, output)
+})
+
+test('形近路径不误伤(mydocs/specs、docs/plans-archive)', () => {
+  const { code, output } = lint(gitFixture({
+    'mydocs/specs/x.md': '# 不是 docs/specs\n',
+    'docs/plans-archive/y.md': '# 不是 docs/plans\n',
+  }))
+  assert.equal(code, 0, output)
+})
+
+test('ADR 取代式缺链接被抓(裸「被 0002 取代」不合法)', () => {
+  const { code, output } = lint(fixture({
+    '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md)\n',
+    '.spec/decisions/0001-x.md': '# 0001\n\n- 状态:被 0002 取代\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /不合法/)
+})
+
+test('非 ASCII 路径的并行文档根也被抓(quotePath 不逃逸)', () => {
+  const { code, output } = lint(gitFixture({ 'docs/plans/2026-计划.md': '# 旧落点\n' }))
+  assert.equal(code, 1)
+  assert.match(output, /并行文档根/)
+})
+
+test('ADR 状态行只在围栏内不算数(防样例蒙混)', () => {
+  const { code, output } = lint(fixture({
+    '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md)\n',
+    '.spec/decisions/0001-x.md': '# 0001\n\n```markdown\n- 状态:生效\n```\n',
+  }))
+  assert.equal(code, 1)
+  assert.match(output, /缺「- 状态:」行/)
+})

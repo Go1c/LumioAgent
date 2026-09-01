@@ -5,27 +5,29 @@
 ## 怎么写一条 ADR
 
 - 一个决策 = 一个文件 `NNNN-<slug>.md`,编号从 `0001` 递增;写完在下方索引加一行。
-- **一旦记录不改写**:被推翻就新增一条,把旧的状态标成「被 NNNN 取代」,历史留痕。
+- **一旦记录不改写**:被推翻就新增一条,把旧的状态标成「被 NNNN 取代」,历史留痕。被取代的状态行必须链接取代者(spec-lint 强制)。
 - 无 frontmatter。格式照抄:
 
-      # NNNN · <一句话决策>
+  ```markdown
+  # NNNN · <一句话决策>
 
-      - 日期:YYYY-MM-DD
-      - 状态:生效 | 被 NNNN 取代
+  - 日期:YYYY-MM-DD
+  - 状态:生效 | 被 [NNNN](NNNN-<slug>.md) 取代(部分取代加前缀「部分」)
 
-      ## 背景
-      面对什么问题。
+  ## 背景
+  面对什么问题。
 
-      ## 决策
-      定了什么。
+  ## 决策
+  定了什么。
 
-      ## 后果
-      接受了什么代价。
+  ## 后果
+  接受了什么代价。
+  ```
 
 ## 索引
 
 | 编号 | 决策 | 状态 |
 |------|------|------|
-| [0001](0001-plugin-migration.md) | 以双标准 Agent 插件分发，规则改由 SessionStart hook 注入 | 部分被 0002 取代 |
+| [0001](0001-plugin-migration.md) | 以双标准 Agent 插件分发，规则改由 SessionStart hook 注入 | 部分被 [0002](0002-plugin-subdir.md) 取代 |
 | [0002](0002-plugin-subdir.md) | 插件本体移入 `plugin/`，用 git-subdir 只发布这一层 | 生效 |
 | [0003](0003-governance-optimization.md) | 治理优化：单一落点、审查不入库、lint 走 git 索引 | 生效 |

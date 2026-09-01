@@ -1,5 +1,5 @@
 ---
-status: pending
+status: completed
 ---
 
 # W1 落点换轨 Implementation Plan

@@ -23,7 +23,7 @@ You MUST create a task for each of these items and complete them in order:
 2. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 3. **Propose 2-3 approaches** — with trade-offs and your recommendation
 4. **Present design** — in sections scaled to their complexity, get user approval after each section
-5. **Write design doc** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` and commit
+5. **Write design doc** — the design IS the feature doc: `.spec/knowledge/features/<topic>.md` (see "After the Design"); commit
 6. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 7. **User reviews written spec** — ask user to review the spec file before proceeding
 8. **Transition to implementation** — invoke writing-plans skill to create implementation plan
@@ -100,8 +100,12 @@ digraph brainstorming {
 
 **Documentation:**
 
-- Write the validated design (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
-  - (User preferences for spec location override this default)
+- The design document IS the feature doc's first version — no separate spec file, no later sedimentation step:
+  - Feature work: write to `.spec/knowledge/features/<topic>.md` in final-register voice (describe what it IS, not the discussion), frontmatter per the project's `_TEMPLATE.md` (`metadata.status: 设计中`), and register it in `.spec/knowledge/README.md` navigation. Status flows `设计中 → 实施中 → 已交付` as work proceeds — the document never moves.
+  - One-off engineering efforts (nothing long-lived to describe): fold the design into the effort's plan document in `.spec/plans/` (see writing-plans) as a design section — no feature doc.
+  - Trade-offs, rejected alternatives, and the "why" go to an ADR in `.spec/decisions/`; the feature doc keeps only the design as it stands.
+  - The discussion process itself is NOT committed anywhere — it lives in the conversation.
+  - (User preferences for spec location override these defaults)
 - Commit the design document to git
 
 **Spec Self-Review:**

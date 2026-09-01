@@ -15,7 +15,8 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** If working in an isolated worktree, it should have been created via the `using-git-worktrees` skill at execution time.
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+**Save plans to:** `.spec/plans/YYYY-MM-DD-<feature-name>.md`
+- Start the file with frontmatter `status: pending` — the only key allowed; enum `pending / in_progress / completed` (spec-lint enforced). Execution flips it: subagent-driven-development sets `in_progress` at start, `completed` at final close.
 - (User preferences for plan location override this default)
 
 ## Scope Check
@@ -56,6 +57,10 @@ independently testable deliverable.
 **Every plan MUST start with this header:**
 
 ```markdown
+---
+status: pending
+---
+
 # [Feature Name] Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use subagent-driven-development to implement this plan task-by-task (hosts without subagents: its Inline Fallback section). Steps use checkbox (`- [ ]`) syntax for tracking.
@@ -157,7 +162,7 @@ If you find issues, fix them inline. No need to re-review — just fix and move 
 
 After saving the plan, hand off to execution:
 
-> "Plan complete and saved to `docs/plans/<filename>.md`. Executing with subagent-driven-development: fresh subagent per task, two-stage review per task, broad review at the end."
+> "Plan complete and saved to `.spec/plans/<filename>.md`. Executing with subagent-driven-development: fresh subagent per task, two-stage review per task, broad review at the end."
 
 - **REQUIRED SUB-SKILL:** Use subagent-driven-development
 - Hosts without subagent support execute the same plan via its Inline Fallback section.

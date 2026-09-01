@@ -26,6 +26,7 @@ describe('init-scaffold:脚手架释放', () => {
       assert.ok(existsSync(join(target, '.spec/knowledge/README.md')))
       assert.ok(existsSync(join(target, '.spec/decisions/README.md')))
       assert.ok(existsSync(join(target, '.spec/tasks/README.md')))
+      assert.ok(existsSync(join(target, '.spec/plans/README.md')))
       assert.deepEqual(result.skipped, [], '空目录不应有跳过项')
     })
   })

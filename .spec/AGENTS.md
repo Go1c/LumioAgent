@@ -27,4 +27,5 @@ node plugin/tools/plugin-lint.mjs && node plugin/tools/spec-lint.mjs && node --t
 
 - 规范与功能记录:[`knowledge/README.md`](knowledge/README.md)(导航)
 - 决策唯一落点:[`decisions/`](decisions/README.md)(ADR,不改写、只新增取代)
+- 实现计划:[`plans/`](plans/README.md)(历史记录,日期前缀、不设索引)
 - 离线任务卡:[`tasks/`](tasks/README.md)(无内置任务工具的宿主用)

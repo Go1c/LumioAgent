@@ -239,6 +239,9 @@ a ledger file, not only in todos.
   trust the ledger and `git log` over your own recollection.
 - `git clean -fdx` will destroy the ledger (it's git-ignored scratch); if
   that happens, recover from `git log`.
+- Plan frontmatter mirrors the coarse state: set `status: in_progress` when
+  execution starts and `status: completed` when the final review passes
+  (enum enforced by spec-lint).
 
 ## Prompt Templates
 
@@ -251,7 +254,7 @@ a ledger file, not only in todos.
 ```
 You: I'm using Subagent-Driven Development to execute this plan.
 
-[Read plan file once: docs/plans/feature-plan.md]
+[Read plan file once: .spec/plans/feature-plan.md]
 [Create todos for all tasks]
 
 Task 1: Hook installation script
@@ -360,9 +363,9 @@ Done!
 
 When the host has no subagent support, execute the plan inline in this session:
 
-1. **Load and review the plan critically.** Concerns → raise them with the user before starting. No concerns → create todos for the plan items.
+1. **Load and review the plan critically.** Concerns → raise them with the user before starting. No concerns → create todos for the plan items and set the plan file's frontmatter to `status: in_progress`.
 2. **Execute each task exactly as written** (plans carry bite-sized steps): mark in_progress → follow steps → run the verifications specified → mark complete.
 3. **Stop and ask instead of guessing** when you hit a blocking condition: missing dependency, failing test, unclear instruction, repeated verification failure.
-4. **After all tasks complete and verified,** finish the branch per using-git-worktrees.
+4. **After all tasks complete and verified,** set the plan's frontmatter to `status: completed`, then finish the branch per using-git-worktrees.
 
 This mode loses fresh-context-per-task and independent review — a known degradation. Apply extra skepticism when self-reviewing.
