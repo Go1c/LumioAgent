@@ -1,5 +1,5 @@
 ---
-status: in_progress
+status: completed
 ---
 
 # W2 closeout-gate Implementation Plan
