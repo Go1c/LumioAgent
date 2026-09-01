@@ -12,11 +12,11 @@ metadata:
 
 ## 计划执行(默认路径:subagent-driven-development)
 
-按 [`skills/subagent-driven-development`](../../skills/subagent-driven-development/SKILL.md) 执行,prompt 骨架直接用其原文模板:
+按 [`skills/subagent-driven-development`](../skills/subagent-driven-development/SKILL.md) 执行,prompt 骨架直接用其原文模板:
 
-- **implementer 派遣** → [`implementer-prompt.md`](../../skills/subagent-driven-development/implementer-prompt.md)
-- **每任务两级审查** → [`task-reviewer-prompt.md`](../../skills/subagent-driven-development/task-reviewer-prompt.md)
-- **整分支收口审查** → [`code-reviewer.md`](../../skills/subagent-driven-development/code-reviewer.md)
+- **implementer 派遣** → [`implementer-prompt.md`](../skills/subagent-driven-development/implementer-prompt.md)
+- **每任务两级审查** → [`task-reviewer-prompt.md`](../skills/subagent-driven-development/task-reviewer-prompt.md)
+- **整分支收口审查** → [`code-reviewer.md`](../skills/subagent-driven-development/code-reviewer.md)
 
 执行纪律以 SDD 的 SKILL.md 为单一权威,此处不复述,只列索引:文件交接(路径传递、报告落文件)见其「File Handoffs」;worker 状态分流(`DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED`)见其「Handling Implementer Status」;派审 prompt 纪律(不预判 findings、final review 用一个 fix agent 带完整清单)见其「Constructing Reviewer Prompts」。
 
@@ -38,7 +38,7 @@ lint 报错涉及它们时只记录,主 loop 统一收口)。
 
 **何时触发:** 必触发——SDD 每任务完成后(task-reviewer)、重大功能完成后、合入主干前;可选但值钱——卡住要新视角、重构前留基线、修完复杂 bug 后。豁免口径以 `AGENTS.md`「快速模式」为准:白名单内改动 lint + 测试直接收口,不触发。
 
-材料齐备才开审(任务卡 / 计划、完整 diff 审查包、带验证证据的交付报告),模板用 [`code-reviewer.md`](../../skills/subagent-driven-development/code-reviewer.md) 填空,并注明:
+材料齐备才开审(任务卡 / 计划、完整 diff 审查包、带验证证据的交付报告),模板用 [`code-reviewer.md`](../skills/subagent-driven-development/code-reviewer.md) 填空,并注明:
 
 ```text
 【审查级别】快审(默认)/ 深审 + 一句理由
@@ -48,4 +48,4 @@ lint 报错涉及它们时只记录,主 loop 统一收口)。
 
 - 审查对象必须与在途改动隔离(worktree 或快照),否则 diff 被并行方污染。
 - 交付报告给「声称」,让 reviewer 核实而不是相信——这是对抗审查的输入格式。
-- 退回处理按 [`skills/receiving-code-review`](../../skills/receiving-code-review/SKILL.md):先核实再改,不盲改、不表演性认同。
+- 退回处理按 [`skills/receiving-code-review`](../skills/receiving-code-review/SKILL.md):先核实再改,不盲改、不表演性认同。

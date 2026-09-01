@@ -1,19 +1,22 @@
 # LumioAgent Entry
 
-Compatibility entrypoint for agent tools. The authoritative spec lives under `.spec/`; this file only points, it defines no rules of its own.
+遵循 [AGENTS.md 开放标准](https://agents.md/) 的入口文件,供不读 `CLAUDE.md` 的客户端使用。
 
-Read these three in order — they are the always-in-context core (Claude Code force-loads them via `@import` in `CLAUDE.md`; Codex has no `@import`, so read them voluntarily here):
+**本仓库既是 LumioAgent 插件本体,也是使用它的项目。** 插件按 [Agent Plugins 1.0.0](https://agent-plugins.org/) 打包:
+技能层(`skills/`)跨客户端可移植;子 Agent、slash command 与 hook 是 Claude Code 专有层(规范 v1 不覆盖)。
 
-1. **`.spec/AGENTS.md`** — 项目介绍 + Agent 调度(中心文档,先读)。
-2. **`.spec/knowledge/README.md`** — 项目知识导航(有哪些知识、在哪)。
-3. **`.spec/rules/system.md`** — 硬性禁令 / 护栏(不许做什么)。
+**没有 SessionStart hook 的宿主请主动读这两份常驻规则**——Claude Code 由插件自动注入,其他客户端拿不到:
 
-Beyond the core: 子 Agent 规范在 `.spec/agents/`,技能在 `.spec/skills/`;Codex 的索引 / 执行映射见 `.spec/AGENTS.md`。沉淀 / 同步任何能力 → 用 `spec-steward` 技能。
+1. [`rules/system.md`](rules/system.md) —— 硬红线:协作禁令与安全护栏。
+2. [`rules/dispatch.md`](rules/dispatch.md) —— 调度核心、编码约定、交回物格式、宿主差异。
 
-Rules for all agents:
+<!-- lumio:init -->
+## LumioAgent
 
-- **Read and follow `.spec/AGENTS.md` first.**
-- Treat this file as a pointer only. Do not add project rules here.
-- Tool-specific entries must point into `.spec/`; they must not define a second source of truth.
+本项目使用 LumioAgent 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
 
-Note: Codex relies on voluntarily reading the three core docs after this pointer; Claude Code force-loads them via `@import`. Known asymmetry, acceptable.
+- [`.spec/AGENTS.md`](.spec/AGENTS.md) —— 项目中心文档(先读)
+- [`.spec/knowledge/README.md`](.spec/knowledge/README.md) —— 知识导航
+- [`.spec/decisions/`](.spec/decisions/README.md) —— 决策唯一落点(ADR)
+
+> 通用规程与硬红线由插件在每次会话注入(Claude Code);无此机制的宿主请主动读取上述文件。

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "lumio",
+  "version": "1.0.0",
+  "description": "通用开发项目管理 Agent 框架：主 loop 调度、reviewer 对抗审查、方法论技能集、强制在场的红线规则",
+  "author": { "name": "Cui", "url": "https://github.com/Go1c" },
+  "homepage": "https://github.com/Go1c/LumioAgent",
+  "repository": "https://github.com/Go1c/LumioAgent",
+  "license": "MIT",
+  "keywords": ["agent", "workflow", "code-review", "tdd", "spec"]
+}
