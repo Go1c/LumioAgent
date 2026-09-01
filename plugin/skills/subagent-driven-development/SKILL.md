@@ -363,9 +363,9 @@ Done!
 
 When the host has no subagent support, execute the plan inline in this session:
 
-1. **Load and review the plan critically.** Concerns → raise them with the user before starting. No concerns → create todos for the plan items.
+1. **Load and review the plan critically.** Concerns → raise them with the user before starting. No concerns → create todos for the plan items and set the plan file's frontmatter to `status: in_progress`.
 2. **Execute each task exactly as written** (plans carry bite-sized steps): mark in_progress → follow steps → run the verifications specified → mark complete.
 3. **Stop and ask instead of guessing** when you hit a blocking condition: missing dependency, failing test, unclear instruction, repeated verification failure.
-4. **After all tasks complete and verified,** finish the branch per using-git-worktrees.
+4. **After all tasks complete and verified,** set the plan's frontmatter to `status: completed`, then finish the branch per using-git-worktrees.
 
 This mode loses fresh-context-per-task and independent review — a known degradation. Apply extra skepticism when self-reviewing.

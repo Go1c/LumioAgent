@@ -28,6 +28,6 @@
 
 | 编号 | 决策 | 状态 |
 |------|------|------|
-| [0001](0001-plugin-migration.md) | 以双标准 Agent 插件分发，规则改由 SessionStart hook 注入 | 部分被 0002 取代 |
+| [0001](0001-plugin-migration.md) | 以双标准 Agent 插件分发，规则改由 SessionStart hook 注入 | 部分被 [0002](0002-plugin-subdir.md) 取代 |
 | [0002](0002-plugin-subdir.md) | 插件本体移入 `plugin/`，用 git-subdir 只发布这一层 | 生效 |
 | [0003](0003-governance-optimization.md) | 治理优化：单一落点、审查不入库、lint 走 git 索引 | 生效 |

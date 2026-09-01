@@ -172,13 +172,13 @@ checkStatusCards(join(SPEC, 'plans'), '计划')
 // ── 5. 禁并行文档根(遍历面 = git 索引;非 git 环境跳过) ───────────────
 let indexedFiles = null
 try {
-  indexedFiles = execFileSync('git', ['ls-files'], {
+  indexedFiles = execFileSync('git', ['ls-files', '-z'], {
     cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
     stdio: ['ignore', 'pipe', 'pipe'],
-  }).split('\n').filter(Boolean)
+  }).split('\0').filter(Boolean)
 } catch (e) {
-  // 只吞「非 git 仓库」(git 退出码 128)与「无 git」(ENOENT)——此时索引不存在,本项无意义。
-  // 其余错误(ENOBUFS、权限、dubious ownership)必须上报,否则本项校验会静默失效(fail open)。
+  // 只吞 git 以 128 退出的失败(非仓库、dubious ownership 等——这些环境 git commit 同样不可用)
+  // 与无 git(ENOENT)。其余 Node 层错误(ENOBUFS、权限)必须上报,否则本项校验会静默失效(fail open)。
   if (e.status !== 128 && e.code !== 'ENOENT') {
     err(join(ROOT, '.spec'), `git ls-files 失败,禁并行文档根校验未执行:${e.code ?? e.status ?? e.message}`)
   }

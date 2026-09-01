@@ -227,6 +227,12 @@ test('ADR 取代式缺链接被抓(裸「被 0002 取代」不合法)', () => {
   assert.match(output, /不合法/)
 })
 
+test('非 ASCII 路径的并行文档根也被抓(quotePath 不逃逸)', () => {
+  const { code, output } = lint(gitFixture({ 'docs/plans/2026-计划.md': '# 旧落点\n' }))
+  assert.equal(code, 1)
+  assert.match(output, /并行文档根/)
+})
+
 test('ADR 状态行只在围栏内不算数(防样例蒙混)', () => {
   const { code, output } = lint(fixture({
     '.spec/decisions/README.md': '# 决策索引\n\n[0001](0001-x.md)\n',

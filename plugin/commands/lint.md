@@ -11,10 +11,10 @@ allowed-tools: Bash(node:*)
 node "${CLAUDE_PLUGIN_ROOT}/tools/spec-lint.mjs" "${CLAUDE_PROJECT_DIR}"
 ```
 
-如果当前项目**就是 LumioAgent 插件仓本身**（存在根 `plugin.json` 且 name 为 `lumio`），再跑一次插件自身的校验与测试：
+如果当前项目**就是 LumioAgent 插件仓本身**（存在 `plugin/plugin.json` 且其 name 为 `lumio`），再跑一次插件自身的校验与测试：
 
 ```bash
-node "${CLAUDE_PROJECT_DIR}/tools/plugin-lint.mjs" && node --test "${CLAUDE_PROJECT_DIR}"/tests/*.test.mjs "${CLAUDE_PROJECT_DIR}"/tools/*.test.mjs
+node "${CLAUDE_PROJECT_DIR}/plugin/tools/plugin-lint.mjs" && node --test "${CLAUDE_PROJECT_DIR}"/tests/*.test.mjs
 ```
 
 把失败项逐条报给用户并指出修法；全绿就报 OK，不要加修饰。
