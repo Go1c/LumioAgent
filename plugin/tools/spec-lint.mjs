@@ -19,8 +19,15 @@
  *     (剥围栏代码块与行内代码,避免代码里的 [T](x) 误判)。
  *  4. 任务卡 frontmatter:.spec/tasks/ 根目录每张卡(README 除外)必须有 frontmatter,
  *     且只允许 status 字段,枚举 pending / in_progress / completed;子目录不校验。
+ *  5. 禁并行文档根:git 索引内不得出现 docs/specs/、docs/plans/,或仓根之外的
+ *     第二个 .spec/(templates/.spec/ 模板骨架豁免);非 git 环境跳过本项。
+ *  6. ADR 状态行:每条 ADR 必有「- 状态:」行,取值以「生效」开头,或
+ *     「(部分)被 [NNNN](<file>) 取代」——被取代必须链接取代者。
+ *  7. 计划 frontmatter:.spec/plans/ 根目录每份计划(README 除外)与任务卡同契约
+ *     (仅 status,枚举 pending / in_progress / completed)。
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { join, dirname, basename, resolve, relative } from 'node:path'
 
 const ROOT = resolve(process.argv[2] ?? process.env.CLAUDE_PROJECT_DIR ?? process.cwd())
@@ -126,6 +133,12 @@ if (existsSync(decisionsDir)) {
     : new Set()
   for (const file of walk(decisionsDir, (p) => p.endsWith('.md') && basename(p) !== 'README.md')) {
     if (!adrLinks.has(file)) err(file, '未登记进 decisions/README.md 索引')
+    const status = readFileSync(file, 'utf8').match(/^-\s*状态[:：]\s*(.+)$/m)
+    if (!status) { err(file, 'ADR 缺「- 状态:」行'); continue }
+    const v = status[1].trim()
+    if (!/^生效/.test(v) && !/^(部分)?被\s*\[\d{4}\]\([^)\s]+\)\s*取代/.test(v)) {
+      err(file, `ADR 状态「${v}」不合法——只能以「生效」开头,或「(部分)被 [NNNN](<file>) 取代」`)
+    }
   }
 }
 
@@ -136,19 +149,38 @@ for (const file of walk(SPEC, (p) => p.endsWith('.md'))) {
   }
 }
 
-// ── 4. 任务卡 frontmatter ─────────────────────────────────────────────────
-const tasksDir = join(SPEC, 'tasks')
-if (existsSync(tasksDir)) {
-  for (const name of readdirSync(tasksDir)) {
-    const p = join(tasksDir, name)
+// ── 4. 任务卡 / 计划 frontmatter(共享契约:仅 status,同一枚举) ──────────
+function checkStatusCards(dir, label) {
+  if (!existsSync(dir)) return
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name)
     if (statSync(p).isDirectory() || !name.endsWith('.md') || name === 'README.md') continue
     const fm = parseFrontmatter(p)
-    if (!fm) { err(p, '任务卡缺少 frontmatter(格式契约见 tasks/README.md)'); continue }
+    if (!fm) { err(p, `${label}缺少 frontmatter(格式契约见该目录 README.md)`); continue }
     const keys = fm.__keys.filter((k) => k !== '__keys')
-    if (keys.join(',') !== 'status') err(p, `任务卡 frontmatter 只允许 status,实际:${keys.join(',')}`)
+    if (keys.join(',') !== 'status') err(p, `${label} frontmatter 只允许 status,实际:${keys.join(',')}`)
     if (!TASK_STATUS_ENUM.has(fm.status)) {
       err(p, `status「${fm.status ?? ''}」不在枚举(${[...TASK_STATUS_ENUM].join(' / ')})`)
     }
+  }
+}
+checkStatusCards(join(SPEC, 'tasks'), '任务卡')
+checkStatusCards(join(SPEC, 'plans'), '计划')
+
+// ── 5. 禁并行文档根(遍历面 = git 索引;非 git 环境跳过) ───────────────
+let indexedFiles = null
+try {
+  // stderr 吞掉:非 git 目录下 git 会打 fatal:,本项是静默跳过,不该吓到下游项目
+  indexedFiles = execFileSync('git', ['ls-files'], {
+    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+  }).split('\n').filter(Boolean)
+} catch { /* 非 git 仓库或无 git:本项跳过 */ }
+for (const rel of indexedFiles ?? []) {
+  if (/(^|\/)docs\/(specs|plans)\//.test(rel)) {
+    err(join(ROOT, rel), '并行文档根:框架产物(设计/计划)只落 .spec/,不落 docs/')
+  }
+  if (rel.includes('/.spec/') && !rel.includes('templates/.spec/')) {
+    err(join(ROOT, rel), '仓根之外出现第二个 .spec/(模板骨架 templates/.spec/ 豁免)')
   }
 }
 
