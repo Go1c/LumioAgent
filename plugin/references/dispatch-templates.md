@@ -36,7 +36,7 @@ lint 报错涉及它们时只记录,主 loop 统一收口)。
 
 ## reviewer(整体收口)触发
 
-**何时触发:** 必触发——SDD 每任务完成后(task-reviewer)、重大功能完成后、合入主干前;可选但值钱——卡住要新视角、重构前留基线、修完复杂 bug 后。豁免口径以 `AGENTS.md`「快速模式」为准:白名单内改动 lint + 测试直接收口,不触发。
+**何时触发:** 必触发——SDD 每任务完成后(task-reviewer)、重大功能完成后、合入主干前;可选但值钱——卡住要新视角、重构前留基线、修完复杂 bug 后。豁免口径以 `rules/dispatch.md`「快速模式」与 `closeout-gate` 头注释为准:白名单内改动 lint + 测试直接收口,不触发。
 
 材料齐备才开审(任务卡 / 计划、完整 diff 审查包、带验证证据的交付报告),模板用 [`code-reviewer.md`](../skills/subagent-driven-development/code-reviewer.md) 填空,并注明:
 
