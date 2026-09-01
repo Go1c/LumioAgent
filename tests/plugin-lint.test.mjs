@@ -7,7 +7,7 @@ import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 
-const LINT = join(dirname(fileURLToPath(import.meta.url)), 'plugin-lint.mjs')
+const LINT = join(dirname(dirname(fileURLToPath(import.meta.url))), 'plugin', 'tools', 'plugin-lint.mjs')
 
 function fixture(overrides = {}) {
   const root = mkdtempSync(join(tmpdir(), 'plugin-lint-fixture-'))

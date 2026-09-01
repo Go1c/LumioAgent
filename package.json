@@ -5,8 +5,10 @@
   "type": "module",
   "description": "LumioAgent — 通用开发项目管理 Agent 插件：技能集与结构校验",
   "scripts": {
-    "test": "node --test tests/*.test.mjs tools/*.test.mjs",
-    "lint": "node tools/plugin-lint.mjs && node tools/spec-lint.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "lint": "node plugin/tools/plugin-lint.mjs && node plugin/tools/spec-lint.mjs"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

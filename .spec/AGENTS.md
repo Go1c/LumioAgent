@@ -12,14 +12,15 @@ LumioAgent —— 通用开发项目管理 Agent 框架,以**双标准 Agent 插
 ## 收口门槛
 
 ```bash
-node tools/plugin-lint.mjs && node tools/spec-lint.mjs && node --test tests/*.test.mjs tools/*.test.mjs && claude plugin validate . --strict
+node plugin/tools/plugin-lint.mjs && node plugin/tools/spec-lint.mjs && node --test tests/*.test.mjs && claude plugin validate . --strict
 ```
 
 ## 项目专属约定
 
 本仓既是插件本体又是它的使用者,因此比下游项目多两条:
 
-- **改插件资产必过 `plugin-lint`**:`skills/`、`agents/`、`rules/`、`hooks/`、`templates/`、两份清单——任一改动后跑 `node tools/plugin-lint.mjs`。
+- **改 `plugin/` 下任何东西必过 `plugin-lint`**——它同时校验结构一致性与「发布面不得混入开发文件」。
+- **新增开发用文件一律放仓库根**,不要放进 `plugin/`:那里的一切都会装进用户机器。
 - **发版四方同步**:`plugin.json` / `.claude-plugin/plugin.json` / `package.json` / `CHANGELOG.md` 的版本号必须一致(由 `tests/agent-plugins-conformance.test.mjs` 锁死),发布用 `claude plugin tag` 打 `lumio--v<version>`。
 
 ## 知识与决策

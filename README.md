@@ -40,21 +40,27 @@ claude plugin marketplace add Go1c/LumioAgent && claude plugin install lumio@lum
 
 本仓库既是插件本体，也是使用它的项目（dogfood）。
 
+**发布面与开发面严格分开**：用户装到的只有 `plugin/`，marketplace 用 `git-subdir` 只拉这一层。
+
 ```
 LumioAgent/
-├── plugin.json               # Agent Plugins 1.0.0 清单（可移植层）
-├── .claude-plugin/           # Claude Code 清单 + marketplace
-├── skills/                   # 技能库，一个技能一个目录
-├── agents/                   # 子 Agent（仅 reviewer）
-├── commands/                 # /lumio:init、/lumio:lint
-├── hooks/hooks.json          # SessionStart 注入规则 + PreToolUse 拦提交
-├── rules/                    # ★ 每次会话强制注入：system.md 红线 + dispatch.md 调度规程
-├── references/               # 按需下钻：派活 prompt 骨架
-├── templates/                # /lumio:init 的释放源
-├── tools/                    # 两支 lint + hook 脚本 + 脚手架脚本（均带测试）
-├── tests/                    # Agent Plugins 规范合规与双清单一致
-└── .spec/                    # 本仓自己的项目实例数据（= init 的产出）
+├── plugin/                   # ★ 发布面——装进用户机器的就是这个目录
+│   ├── plugin.json           #   Agent Plugins 1.0.0 清单（可移植层）
+│   ├── .claude-plugin/       #   Claude Code 清单
+│   ├── skills/               #   技能库，一个技能一个目录
+│   ├── agents/               #   子 Agent（仅 reviewer）
+│   ├── commands/             #   /lumio:init、/lumio:lint
+│   ├── hooks/hooks.json      #   SessionStart 注入规则 + PreToolUse 拦提交
+│   ├── rules/                #   每次会话注入：system.md 红线 + dispatch.md 调度规程
+│   ├── references/           #   按需下钻：派活 prompt 骨架
+│   ├── templates/            #   /lumio:init 的释放源
+│   └── tools/                #   两支 lint + hook 脚本 + 脚手架脚本
+├── .claude-plugin/           # marketplace.json（留仓库根，供 marketplace add 发现）
+├── tests/                    # 全部测试——开发面，不下发
+└── .spec/                    # 本仓自己的项目实例数据（= init 的产出），不下发
 ```
+
+plugin-lint 有一条专门的校验：`plugin/` 里出现 `tests`、`.spec`、`package.json` 等开发文件即报错——因为那会被原样装进每个用户的机器。
 
 ## 怎么扩展
 
@@ -66,10 +72,10 @@ LumioAgent/
 ## 开发
 
 ```bash
-node --test tests/*.test.mjs tools/*.test.mjs && node tools/plugin-lint.mjs && node tools/spec-lint.mjs && claude plugin validate . --strict
+node --test tests/*.test.mjs && node plugin/tools/plugin-lint.mjs && node plugin/tools/spec-lint.mjs && claude plugin validate . --strict
 ```
 
-开发期实时加载：把 `~/.claude/skills/lumio` 软链到本仓，即以 `lumio@skills-dir` 自动加载。
+开发期实时加载：把 `~/.claude/skills/lumio` 软链到本仓的 **`plugin/`**，即以 `lumio@skills-dir` 自动加载，改动立即生效。
 
 ## License
 

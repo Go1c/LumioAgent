@@ -8,7 +8,9 @@
  * Agent Plugins 1.0.0 的清单合规由 tests/agent-plugins-conformance.test.mjs 负责,本脚本不重复。
  *
  * 校验项清单(本注释是插件侧「lint 能力清单」的单一权威):
- *  1. 核心文件存在:根 plugin.json、.claude-plugin/{plugin,marketplace}.json、hooks/hooks.json。
+ *  1. 核心文件存在:插件根的 plugin.json、.claude-plugin/plugin.json、hooks/hooks.json;
+ *     marketplace.json 在插件根或其父目录(插件位于子目录时,清单留在仓库根)。
+ *  1b. 发布面隔离:插件目录不得混入开发过程文件——它们会被原样装进用户机器。
  *  2. agents frontmatter:只允许 name + description,name 与文件名一致。
  *  3. skills frontmatter:必含 name + description,name 与目录名一致;
  *     其余键限于 Agent Skills 标准的可选字段(跨客户端可移植性所需)。
@@ -73,13 +75,24 @@ function mdLinks(file) {
 }
 
 // ── 1. 核心文件存在 ───────────────────────────────────────────────────────
-for (const rel of [
-  'plugin.json',
-  '.claude-plugin/plugin.json',
-  '.claude-plugin/marketplace.json',
-  'hooks/hooks.json',
-]) {
+for (const rel of ['plugin.json', '.claude-plugin/plugin.json', 'hooks/hooks.json']) {
   if (!existsSync(join(ROOT, rel))) err(join(ROOT, rel), `缺核心文件:${rel}`)
+}
+// 插件在子目录时,marketplace.json 留在仓库根(marketplace add <repo> 从那里发现)。
+const marketplaceCandidates = [
+  join(ROOT, '.claude-plugin', 'marketplace.json'),
+  join(ROOT, '..', '.claude-plugin', 'marketplace.json'),
+]
+if (!marketplaceCandidates.some(existsSync)) {
+  err(marketplaceCandidates[0], '缺核心文件:.claude-plugin/marketplace.json(插件根或其父目录)')
+}
+
+// ── 1b. 发布面隔离 ────────────────────────────────────────────────────────
+// 装进用户机器的就是这个目录的全部内容;开发过程文件混进来 = 每个用户都拿一份。
+for (const leaked of ['tests', '.spec', 'package.json', '.gitignore', '.claude']) {
+  if (existsSync(join(ROOT, leaked))) {
+    err(join(ROOT, leaked), `发布面混入开发过程文件:${leaked}(会被原样装进用户机器)`)
+  }
 }
 
 // ── 2. agents frontmatter ─────────────────────────────────────────────────

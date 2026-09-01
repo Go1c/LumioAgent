@@ -4,12 +4,12 @@ Claude Code entrypoint.
 
 **本仓库既是 LumioAgent 插件本体,也是使用它的项目(dogfood)。** 两个身份的边界:
 
-- **插件资产**(随版本分发,装进别的项目):`skills/`、`agents/`、`commands/`、`hooks/`、`rules/`、`references/`、`templates/`、`tools/`、两份清单。
-- **项目实例数据**(只属于本仓):`.spec/` —— 由 `templates/` 经 `/lumio:init` 生成,内容与任何下游项目同构。
+- **发布面 = `plugin/`**:装进用户机器的就是这个目录的全部内容(`skills/` `agents/` `commands/` `hooks/` `rules/` `references/` `templates/` `tools/` + 清单 + LICENSE)。marketplace 用 `git-subdir` 只拉这一层。
+- **开发面 = 仓库根**:`.spec/`(本仓自己的项目实例)、`tests/`、`package.json`、CI —— **一律不下发**。往 `plugin/` 里放开发文件会被 plugin-lint 拦下。
 
 通用规程(调度核心 / 编码约定 / 硬红线)由插件的 SessionStart hook 每次会话注入 `rules/*.md`,**本文件不再用 `@import` 载入它们**——新增规则文件放进 `rules/` 即自动生效,没有登记表可漏。
 
-开发本插件时的实时加载:把 `~/.claude/skills/lumio` 软链到本仓,即以 `lumio@skills-dir` 自动加载。
+开发本插件时的实时加载:把 `~/.claude/skills/lumio` 软链到本仓的 **`plugin/`**(不是仓库根),即以 `lumio@skills-dir` 自动加载,改动立即生效、无需重装。
 
 <!-- lumio:init -->
 ## LumioAgent

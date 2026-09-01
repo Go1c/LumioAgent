@@ -8,9 +8,9 @@ import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { initScaffold, POINTER_MARKER } from './init-scaffold.mjs'
+import { initScaffold, POINTER_MARKER } from '../plugin/tools/init-scaffold.mjs'
 
-const pluginRoot = dirname(dirname(fileURLToPath(import.meta.url)))
+const pluginRoot = join(dirname(dirname(fileURLToPath(import.meta.url))), 'plugin')
 
 const withTarget = (fn) => {
   const target = mkdtempSync(join(tmpdir(), 'lumio-init-'))

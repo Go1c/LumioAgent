@@ -7,8 +7,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { buildRulesContext } from './inject-rules.mjs'
-import { isGitCommit } from './guard-commit.mjs'
+import { buildRulesContext } from '../plugin/tools/inject-rules.mjs'
+import { isGitCommit } from '../plugin/tools/guard-commit.mjs'
 
 function fixture(rules) {
   const root = mkdtempSync(join(tmpdir(), 'lumio-hooks-'))

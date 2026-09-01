@@ -8,7 +8,7 @@ import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 
-const LINT = join(dirname(fileURLToPath(import.meta.url)), 'spec-lint.mjs')
+const LINT = join(dirname(dirname(fileURLToPath(import.meta.url))), 'plugin', 'tools', 'spec-lint.mjs')
 
 /** 生成一个最小合法项目,返回根路径;overrides 可改写/追加文件(值为 null 表示删除该默认文件)。 */
 function fixture(overrides = {}) {
