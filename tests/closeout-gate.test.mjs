@@ -26,12 +26,12 @@ function write(root, rel, content) {
   mkdirSync(dirname(p), { recursive: true })
   writeFileSync(p, content)
 }
-/** 跑 gate 并清理仓库,返回 { code, output }。 */
-function gate(root, base) {
+/** 跑 gate 并清理仓库,返回 { code, output }。cwd 默认仓库根,可传子目录验证根定界。 */
+function gate(root, base, cwd = root) {
   try {
     const args = [GATE]
     if (base) args.push(base)
-    return { code: 0, output: execFileSync(process.execPath, args, { cwd: root, encoding: 'utf8' }) }
+    return { code: 0, output: execFileSync(process.execPath, args, { cwd, encoding: 'utf8' }) }
   } catch (e) {
     return { code: e.status ?? 1, output: `${e.stdout ?? ''}${e.stderr ?? ''}` }
   } finally {
@@ -143,6 +143,7 @@ test('未跟踪的红线面文档不豁免 → 快审', () => {
   const { output } = gate(r)
   assert.match(output, /closeout-gate: 快审/)
   assert.match(output, /未跟踪/)
+  assert.doesNotMatch(output, /未计入/) // 已拦级的文件不得再自称未计入(对称排除)
 })
 
 test('空 diff → 快速豁免(无可定级改动)', () => {
@@ -154,4 +155,122 @@ test('非 git 目录 → 退出码 2', () => {
   const root = mkdtempSync(join(tmpdir(), 'closeout-gate-bare-'))
   const { code } = gate(root)
   assert.equal(code, 2)
+})
+
+// ——— 审查退回加固:根定界 / 防改名逃逸 / BASE 校验 / pathspec / 宽松化锚定 ———
+
+test('大体量纯删除按新增 0 行计 → 快速豁免(锚定「只计新增」,churn 会判深审)', () => {
+  const r = repo()
+  write(r, 'big.js', 'export const z = 1\n'.repeat(520))
+  g(r, 'add', '-A')
+  g(r, 'commit', '-qm', 'big')
+  rmSync(join(r, 'big.js'))
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /快速豁免/)
+  assert.match(output, /纯删除/)
+})
+
+test('整体重写按新增行计 → 快速豁免且有效行为 30(锚定不含删除行)', () => {
+  const r = repo()
+  write(r, 'base.js', 'export const y = 1\n'.repeat(30))
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /快速豁免/)
+  assert.match(output, /有效行 30 </)
+})
+
+test('320 行新增 → 快审(防 500 深审阈值被收紧)', () => {
+  const r = repo()
+  write(r, 'mid.js', 'export const m = 1\n'.repeat(320))
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+})
+
+test('子目录内运行:未跟踪文件仍按仓库根扫描,不漏', () => {
+  const r = repo()
+  write(r, 'sub/keep.txt', 'x\n')
+  g(r, 'add', '-A')
+  g(r, 'commit', '-qm', 'sub')
+  write(r, 'stray.js', 'export const s = 1\n')
+  const { output } = gate(r, undefined, join(r, 'sub'))
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /未跟踪/)
+})
+
+test('子目录内运行:未跟踪红线面路径按仓库根归一,仍判红线', () => {
+  const r = repo()
+  write(r, 'sub/keep.txt', 'x\n')
+  g(r, 'add', '-A')
+  g(r, 'commit', '-qm', 'sub')
+  write(r, '.claude/settings.json', '{"a":1}\n')
+  const { output } = gate(r, undefined, join(r, 'sub'))
+  assert.match(output, /closeout-gate: 快审/)
+  assert.doesNotMatch(output, /\.\.\//) // 路径不得带 ../,否则红线前缀判定失效
+})
+
+test('红线文件改名移出 rules/ 不得逃逸红线分支', () => {
+  const r = repo()
+  write(r, 'rules/old.md', '规则行\n'.repeat(40))
+  g(r, 'add', '-A')
+  g(r, 'commit', '-qm', 'add rule')
+  mkdirSync(join(r, 'docs'), { recursive: true })
+  g(r, 'mv', 'rules/old.md', 'docs/new.md')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面/)
+  assert.match(output, /rules\/old\.md/) // 源路径必须现身,否则改名即逃逸
+})
+
+test('BASE 以 - 开头 → 退出码 2(不得被当 git 选项吞掉)', () => {
+  const r = repo()
+  const { code, output } = gate(r, '-z')
+  assert.equal(code, 2)
+  assert.match(output, /BASE/)
+})
+
+test('BASE 不可解析 → 退出码 2', () => {
+  const r = repo()
+  const { code, output } = gate(r, 'no-such-ref')
+  assert.equal(code, 2)
+  assert.match(output, /BASE/)
+})
+
+test('冒号开头的文件名不得因 pathspec 魔法被当空 diff 豁免', () => {
+  const r = repo()
+  write(r, ':weird.js', 'export const w = 1\n'.repeat(80))
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+})
+
+test('revertigo 前缀不得蹭 revert 豁免', () => {
+  const r = repo()
+  write(r, 'base.js', `export const a = 1\n${'export const x = 1\n'.repeat(80)}`)
+  g(r, 'add', '-A')
+  g(r, 'commit', '-qm', 'revertigo: 蹭豁免')
+  const { output } = gate(r, 'HEAD~1')
+  assert.match(output, /closeout-gate: 快审/)
+  assert.doesNotMatch(output, /全部为 revert 提交/)
+})
+
+test('.claude/ 与 .circleci/ 计入红线面', () => {
+  const r = repo()
+  write(r, '.claude/settings.json', '{"a":1}\n')
+  write(r, '.circleci/config.yml', 'jobs: {}\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面/)
+})
+
+test('.gitlab-ci.yml 计入红线面', () => {
+  const r = repo()
+  write(r, '.gitlab-ci.yml', 'stages: []\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面/)
 })
