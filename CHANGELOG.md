@@ -6,13 +6,14 @@
 
 ### Changed
 
-- **仓库与品牌改名 LumioAgentSpec**(依据 ADR 0004):GitHub 仓库迁至 `Go1c/LumioAgentSpec`,两份插件清单、marketplace.json、模板与工具文案中的名称与 URL 全部更新。插件 id `lumio` 与 `/lumio:init`、`/lumio:lint`、`lumio:<skill>` 调用方式不变。
+- **仓库与品牌改名 LumioAgentSpec**(依据 ADR 0004):两份插件清单、marketplace.json、模板与工具文案中的名称与 URL 全部更新。插件 id `lumio` 与 `/lumio:init`、`/lumio:lint`、`lumio:<skill>` 调用方式不变。
+- **仓库迁入 LumioGames 组织**(依据 ADR 0005):地址为 `LumioGames/LumioAgentSpec`,清单的 `author` / `homepage` / `repository` 与 marketplace 的 `git-subdir` url 一并指向组织。
 - marketplace 标识 `lumioagent` → `lumioagentspec`;`package.json` name 同步。
 - README 重写为中英双语(`README.md` 英文 + `README.zh-CN.md` 中文):先讲解决什么问题(跨 Agent 切换、单一上下文、机器把关),再讲支持哪些 Agent 与设计理念,附工作流图与技能清单。
 
 ### 升级指引
 
-- 已按 1.0.0 安装的用户请重新添加 marketplace 并重装:`claude plugin marketplace add Go1c/LumioAgentSpec && claude plugin install lumio@lumioagentspec`。旧 URL 由 GitHub 自动重定向,旧标识 `lumioagent` 不再维护。
+- 已按 1.0.0 安装的用户请重新添加 marketplace 并重装:`claude plugin marketplace add LumioGames/LumioAgentSpec && claude plugin install lumio@lumioagentspec`。旧地址(`Go1c/LumioAgent`、`Go1c/LumioAgentSpec`)由 GitHub 自动重定向,仍可拉取但不再维护;旧标识 `lumioagent` 同样废弃。
 
 ## [1.0.0]
 
@@ -44,5 +45,5 @@
 5. spec-lint 需要 git：非 git 仓库跳过禁根校验，其余 git 失败会显式报错（不再静默）。
 6. 升级后重跑 `/lumio:init` 领取新模板（`plans/README.md` 等；不覆盖既有文件）。
 
-[Unreleased]: https://github.com/Go1c/LumioAgentSpec/compare/lumio--v1.0.0...HEAD
-[1.0.0]: https://github.com/Go1c/LumioAgentSpec/releases/tag/lumio--v1.0.0
+[Unreleased]: https://github.com/LumioGames/LumioAgentSpec/compare/lumio--v1.0.0...HEAD
+[1.0.0]: https://github.com/LumioGames/LumioAgentSpec/releases/tag/lumio--v1.0.0

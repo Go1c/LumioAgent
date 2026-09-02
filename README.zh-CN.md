@@ -55,7 +55,7 @@
 Claude Code 从 marketplace 安装：
 
 ```bash
-claude plugin marketplace add Go1c/LumioAgentSpec && claude plugin install lumio@lumioagentspec
+claude plugin marketplace add LumioGames/LumioAgentSpec && claude plugin install lumio@lumioagentspec
 ```
 
 然后在你的项目里跑一次：

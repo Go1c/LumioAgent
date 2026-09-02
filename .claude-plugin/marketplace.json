@@ -3,20 +3,20 @@
   "name": "lumioagentspec",
   "description": "LumioAgentSpec 官方插件源：通用开发项目管理 Agent 框架——调度、对抗审查、方法论技能与红线规则",
   "owner": {
-    "name": "Cui",
-    "url": "https://github.com/Go1c"
+    "name": "LumioGames",
+    "url": "https://github.com/LumioGames"
   },
   "plugins": [
     {
       "name": "lumio",
       "source": {
         "source": "git-subdir",
-        "url": "https://github.com/Go1c/LumioAgentSpec.git",
+        "url": "https://github.com/LumioGames/LumioAgentSpec.git",
         "path": "plugin"
       },
       "description": "通用开发项目管理 Agent 框架：主 loop 调度、reviewer 对抗审查、方法论技能集、强制在场的红线规则",
-      "homepage": "https://github.com/Go1c/LumioAgentSpec",
-      "repository": "https://github.com/Go1c/LumioAgentSpec",
+      "homepage": "https://github.com/LumioGames/LumioAgentSpec",
+      "repository": "https://github.com/LumioGames/LumioAgentSpec",
       "license": "MIT",
       "category": "workflow",
       "keywords": [

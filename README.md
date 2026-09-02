@@ -55,7 +55,7 @@ Plainly: **the core is identical everywhere** (rules, knowledge, tasks, the revi
 Claude Code, from the marketplace:
 
 ```bash
-claude plugin marketplace add Go1c/LumioAgentSpec && claude plugin install lumio@lumioagentspec
+claude plugin marketplace add LumioGames/LumioAgentSpec && claude plugin install lumio@lumioagentspec
 ```
 
 Then, inside your project, once:

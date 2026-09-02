@@ -1,6 +1,6 @@
 # 项目中心文档
 
-本项目使用 [LumioAgentSpec](https://github.com/Go1c/LumioAgentSpec) 插件提供的调度与编码规程。
+本项目使用 [LumioAgentSpec](https://github.com/LumioGames/LumioAgentSpec) 插件提供的调度与编码规程。
 **通用规程(调度核心 / 编码约定 / 交回物格式 / 宿主差异)由插件在每次会话注入,本文件不复述**——这里只写本项目独有的东西。
 
 ## 项目是什么
