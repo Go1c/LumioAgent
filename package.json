@@ -1,6 +1,6 @@
 {
   "name": "lumioagentspec",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "LumioAgentSpec — 通用开发项目管理 Agent 插件：技能集与结构校验",
