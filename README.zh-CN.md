@@ -16,6 +16,26 @@
 
 </div>
 
+<!-- lumio-community:start -->
+<div align="center">
+<table>
+<tr>
+<td align="center" width="50%" valign="top">
+<a href="https://qm.qq.com/q/PGkXh4tCyQ"><img src="https://raw.githubusercontent.com/LumioGames/.github/main/profile/assets/qr-qq.svg" width="170" alt="QQ 交流群 972220164"></a><br>
+<a href="https://qm.qq.com/q/PGkXh4tCyQ"><img src="https://img.shields.io/badge/QQ%20%E4%BA%A4%E6%B5%81%E7%BE%A4-972220164-6171F0?style=for-the-badge&logo=tencentqq&logoColor=white" alt="QQ 交流群 972220164"></a><br>
+<sub>什么都能聊</sub>
+</td>
+<td align="center" width="50%" valign="top">
+<a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=7bbl451c-aa1d-4e6d-a21c-fd1f1ebeb6b5"><img src="https://raw.githubusercontent.com/LumioGames/.github/main/profile/assets/qr-workflow.svg" width="170" alt="Workflow 开发者社区"></a><br>
+<a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=7bbl451c-aa1d-4e6d-a21c-fd1f1ebeb6b5"><img src="https://img.shields.io/badge/%E9%A3%9E%E4%B9%A6%E7%BE%A4-Workflow%20%E5%BC%80%E5%8F%91%E8%80%85%E7%A4%BE%E5%8C%BA-7C8CFF?style=for-the-badge&logoColor=white" alt="Workflow 开发者社区"></a><br>
+<sub>飞书话题群 · Agent 与项目管理</sub>
+</td>
+</tr>
+</table>
+<sub>先进群再看代码。其它群和整体介绍见 <a href="https://github.com/LumioGames">LumioGames 主页</a>。</sub>
+</div>
+<!-- lumio-community:end -->
+
 ---
 
 ## 我们解决什么问题

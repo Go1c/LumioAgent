@@ -16,6 +16,26 @@ Switch between Claude Code, Codex, Cursor, Grok and the rest. Your project's rul
 
 </div>
 
+<!-- lumio-community:start -->
+<div align="center">
+<table>
+<tr>
+<td align="center" width="50%" valign="top">
+<a href="https://qm.qq.com/q/PGkXh4tCyQ"><img src="https://raw.githubusercontent.com/LumioGames/.github/main/profile/assets/qr-qq.svg" width="170" alt="QQ group 972220164"></a><br>
+<a href="https://qm.qq.com/q/PGkXh4tCyQ"><img src="https://img.shields.io/badge/QQ%20group-972220164-6171F0?style=for-the-badge&logo=tencentqq&logoColor=white" alt="QQ group 972220164"></a><br>
+<sub>QQ group · anything goes</sub>
+</td>
+<td align="center" width="50%" valign="top">
+<a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=7bbl451c-aa1d-4e6d-a21c-fd1f1ebeb6b5"><img src="https://raw.githubusercontent.com/LumioGames/.github/main/profile/assets/qr-workflow.svg" width="170" alt="Workflow community"></a><br>
+<a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=7bbl451c-aa1d-4e6d-a21c-fd1f1ebeb6b5"><img src="https://img.shields.io/badge/Feishu-Workflow%20community-7C8CFF?style=for-the-badge&logoColor=white" alt="Workflow community"></a><br>
+<sub>Feishu topic group · agents and project management</sub>
+</td>
+</tr>
+</table>
+<sub>Join the chat before you read the code. Other groups and the big picture are on the <a href="https://github.com/LumioGames">LumioGames profile</a>.</sub>
+</div>
+<!-- lumio-community:end -->
+
 ---
 
 ## The problem
