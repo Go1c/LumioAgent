@@ -72,13 +72,21 @@
 
 ## 快速开始
 
-Claude Code 从 marketplace 安装：
+**Cursor / Codex / GitHub Copilot / VS Code / Kiro 等支持 [Agent Plugins](https://agent-plugins.org/) 标准的客户端**：
+
+```bash
+npx plugins add LumioGames/LumioAgentSpec
+```
+
+**Claude Code**：
 
 ```bash
 claude plugin marketplace add LumioGames/LumioAgentSpec && claude plugin install lumio@lumioagentspec
 ```
 
-然后在你的项目里跑一次：
+**其他客户端 / 手动接入**：把仓库的 [`plugin/skills/`](plugin/skills/) 目录按 Agent Plugins 标准接入，或者直接让 Agent 读项目里的 [`AGENTS.md`](AGENTS.md)。
+
+装好后，在你的项目里跑一次（目前只有 Claude Code 有这条命令）：
 
 ```bash
 /lumio:init
@@ -86,9 +94,7 @@ claude plugin marketplace add LumioGames/LumioAgentSpec && claude plugin install
 
 它会在项目里生成 `.spec/` 目录（知识库、决策记录、任务卡、计划），并往 `CLAUDE.md` / `AGENTS.md` 追加一段入口指针。默认不覆盖任何已有文件，升级插件后再跑一次就能补齐新模板。
 
-最后填 `.spec/AGENTS.md` 里的两处空：**项目是什么**、**收口门槛命令**（比如你的 lint + 测试命令）。填好之后，任何 Agent 打开这个项目都知道自己在干什么、什么叫干完。
-
-其他 Agent 不用装插件：把这个仓库的 `plugin/skills/` 按 Agent Plugins 标准接入，或者直接让 Agent 读项目里的 `AGENTS.md`，就够了。
+最后填 `.spec/AGENTS.md` 里的两处空：**项目是什么**、**收口门槛命令**（比如你的 lint + 测试命令）。填好之后，任何 Agent 打开这个项目都知道自己在干什么、什么叫干完——包括刚才用 `npx plugins add` 装的那些客户端。
 
 ## 设计理念
 

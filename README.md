@@ -72,13 +72,21 @@ Plainly: **the core is identical everywhere** (rules, knowledge, tasks, the revi
 
 ## Quick start
 
-Claude Code, from the marketplace:
+**Cursor / Codex / GitHub Copilot / VS Code / Kiro and other clients that support the [Agent Plugins](https://agent-plugins.org/) standard:**
+
+```bash
+npx plugins add LumioGames/LumioAgentSpec
+```
+
+**Claude Code:**
 
 ```bash
 claude plugin marketplace add LumioGames/LumioAgentSpec && claude plugin install lumio@lumioagentspec
 ```
 
-Then, inside your project, once:
+**Any other client / manual setup:** load this repo's [`plugin/skills/`](plugin/skills/) through the Agent Plugins standard, or just let the agent read the project's [`AGENTS.md`](AGENTS.md).
+
+Then, inside your project, once (this command exists in Claude Code only, for now):
 
 ```bash
 /lumio:init
@@ -86,9 +94,7 @@ Then, inside your project, once:
 
 This creates `.spec/` (knowledge base, decision records, task cards, plans) and appends an entry pointer to `CLAUDE.md` / `AGENTS.md`. It never overwrites existing files by default, so re-run it after a plugin upgrade to pick up new templates.
 
-Finally fill in two blanks in `.spec/AGENTS.md`: **what the project is** and **the close-out gate command** (your lint + test command, for example). From then on, any agent opening the project knows what it is working on and what "finished" means.
-
-Other agents need no plugin install. Load this repo's `plugin/skills/` through the Agent Plugins standard, or just let the agent read the project's `AGENTS.md`. That is enough.
+Finally fill in two blanks in `.spec/AGENTS.md`: **what the project is** and **the close-out gate command** (your lint + test command, for example). From then on, any agent opening the project knows what it is working on and what "finished" means — including the clients you installed via `npx plugins add`.
 
 ## Design principles
 
