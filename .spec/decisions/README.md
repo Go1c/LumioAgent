@@ -33,3 +33,5 @@
 | [0003](0003-governance-optimization.md) | 治理优化：单一落点、审查不入库、lint 走 git 索引 | 生效 |
 | [0004](0004-rename-lumioagentspec.md) | 仓库与品牌改名 LumioAgentSpec，marketplace 标识同步改为 `lumioagentspec` | 生效 |
 | [0005](0005-transfer-to-lumiogames.md) | 仓库迁入 LumioGames 组织，清单归属改为组织 | 生效 |
+| [0006](0006-skill-consolidation.md) | 技能精简:下线被宿主原生能力覆盖的技能,11 → 6 | 生效 |
+| [0007](0007-parallel-first-dispatch.md) | 并行优先:契约先行拆解、统一合入后审一次、测试按任务大小分级 | 生效 |

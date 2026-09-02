@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
+description: Use when you have a spec or requirements for a multi-step task, before touching code — either a deep step-by-step plan for one feature, or a set of non-overlapping task cards (contract cards first) for parallel fan-out
 ---
 
 # Writing Plans
@@ -13,15 +13,18 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
 
-**Context:** If working in an isolated worktree, it should have been created via the `using-git-worktrees` skill at execution time.
-
 **Save plans to:** `.spec/plans/YYYY-MM-DD-<feature-name>.md`
 - Start the file with frontmatter `status: pending` — the only key allowed; enum `pending / in_progress / completed` (spec-lint enforced). Execution flips it: subagent-driven-development sets `in_progress` at start, `completed` at final close.
 - (User preferences for plan location override this default)
 
+## Two Outputs: Deep Plan vs Task Cards
+
+- **Deep plan** (the rest of this file): one feature, executed step by step with complete code in every step. Use when the work is one coherent thread.
+- **Shallow mode — task cards** (section at the end): several independent cards fanned out to parallel workers. Use when the goal splits into pieces that can be built and verified separately. This is the default whenever parallel execution is possible (`rules/dispatch.md`「调度取向」).
+
 ## Scope Check
 
-Decomposition is brainstorming's job (or task-breakdown's), not this skill's. If the spec still covers multiple independent subsystems, stop and send it back for splitting — one plan per subsystem, each producing working, testable software on its own.
+Decomposition into sub-projects is brainstorming's job (or this skill's shallow mode), not the deep plan's. If the spec still covers multiple independent subsystems, stop and send it back for splitting — one plan per subsystem, each producing working, testable software on its own.
 
 ## File Structure
 
@@ -36,14 +39,16 @@ This structure informs the task decomposition. Each task should produce self-con
 
 ## Task Granularity
 
-A task is the smallest unit that carries its own test cycle and is worth a
-fresh reviewer's gate. When drawing task boundaries: fold setup,
+A task is the smallest unit that carries its own verification and is worth
+a fresh implementer's brief. When drawing task boundaries: fold setup,
 configuration, scaffolding, and documentation steps into the task whose
-deliverable needs them; split only where a reviewer could meaningfully
-reject one task while approving its neighbor. Each task ends with an
-independently testable deliverable.
+deliverable needs them; split only where one task can be built and verified
+without the other. Each task ends with an independently testable
+deliverable.
 
 ## Step Granularity (Within a Task)
+
+The failing-test-first steps below bind **large tasks** (`rules/dispatch.md`「编码约定 · 测试分级」: not pure docs / config / comments / deletions, and ≥ 50 effective added lines). A small task keeps only the implementation, run-existing-tests and commit steps — no new test per change.
 
 **Each step is one action (2-5 minutes):**
 - "Write the failing test" - step
@@ -63,7 +68,7 @@ status: pending
 
 # [Feature Name] Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use subagent-driven-development to implement this plan task-by-task (hosts without subagents: its Inline Fallback section). Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use subagent-driven-development to implement this plan wave by wave (hosts without subagents: its Inline Fallback section). Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** [One sentence describing what this builds]
 
@@ -162,7 +167,20 @@ If you find issues, fix them inline. No need to re-review — just fix and move 
 
 After saving the plan, hand off to execution:
 
-> "Plan complete and saved to `.spec/plans/<filename>.md`. Executing with subagent-driven-development: fresh subagent per task, two-stage review per task, broad review at the end."
+> "Plan complete and saved to `.spec/plans/<filename>.md`. Executing with subagent-driven-development: contract cards first, implementation cards fanned out per wave, one review of the merged whole."
 
 - **REQUIRED SUB-SKILL:** Use subagent-driven-development
 - Hosts without subagent support execute the same plan via its Inline Fallback section.
+
+## Shallow Mode: Task Cards (parallel fan-out)
+
+Split one goal into cards that a worker can start without asking a question and that can be verified on their own. Card format has a single authority — the project's `.spec/tasks/README.md` (goal / 涉及范围 / 验收标准 / 依赖 / 接口) — do not restate it here.
+
+1. **Clarify.** Read the goal plus `AGENTS.md`, `knowledge/` and the relevant source. Resolve what the code or docs can answer; list the rest explicitly as 待澄清项 — never fill a gap with a guess.
+2. **Extract the shared dependencies first — the contract cards (wave 0).** Anything two or more cards would both need: data structures, type definitions, API signatures, protocols, common modules, conventions. Each becomes its own card whose deliverable is the artefact itself (a types / interface file, a schema, a `.spec/knowledge/standards/` doc). Implementation cards align only through these artefacts; if a contract turns out insufficient, the contract card changes — no implementation card widens an interface on its own.
+3. **Split the rest.** One card = one thing, independently completable and verifiable. Two cards touching the same logic is a signal to merge them.
+4. **Write the cards.** Every card with a neighbour dependency **must** carry the `## 接口` block (Consumes / Produces with exact signatures) — parallel workers never see each other's code, so the contract on the card is their only alignment. Mark the expected size (small / large per `rules/dispatch.md`「测试分级」); the closeout tool's verdict wins later. No placeholders (criteria in the card README).
+5. **Schedule waves.** Wave 0 = contract cards; a wave contains only cards with no dependency edge between them and non-overlapping file sets; waves run serially, cards inside a wave in parallel (rules: `rules/dispatch.md`「并行边界与合入」).
+6. **Self-check.** Each card starts without a follow-up question; every acceptance criterion is objectively verifiable ("no horizontal scroll at 375px", not "looks good"); the set covers the goal with no gap, no overlap, no scope creep; no wave has an internal edge or overlapping file set.
+
+Don't over-split: work that is one step stays one card.

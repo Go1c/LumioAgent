@@ -55,7 +55,7 @@ Complete each phase before the next.
 
 ### Phase 4: Implementation
 
-1. **Create a failing test case first** (use `test-driven-development`) — simplest reproduction; MUST exist before fixing
+1. **Large fixes** (size gate: `rules/dispatch.md`「测试分级」): **create a failing test case first** (use `test-driven-development`) — simplest reproduction; MUST exist before fixing. **Small fixes:** reproduce the symptom with the exact steps from Phase 1 instead — no new test required, but the symptom must be shown gone in step 3
 2. **Implement a single fix** for the root cause — ONE change, no "while I'm here" improvements, no bundled refactoring
 3. **Verify:** test passes, no other tests broken, symptom actually gone
 4. **Fix didn't work?** STOP. Count attempts. Fewer than 3 → back to Phase 1 with the new information. **3 or more → question the architecture.**
@@ -98,4 +98,4 @@ If the issue is truly environmental or timing-dependent: document what you inves
 
 In this directory: `root-cause-tracing.md` (trace bugs backward through the call stack), `defense-in-depth.md` (multi-layer validation after the root cause is found), `condition-based-waiting.md` (replace arbitrary timeouts with condition polling).
 
-Related skills: `test-driven-development` (Phase 4's failing test), `verification-before-completion` (verify before claiming fixed).
+Related: `test-driven-development` (Phase 4's failing test for large fixes; small fixes reproduce by steps — size gate in `rules/dispatch.md`「测试分级」); claim "fixed" only with the verification run per `rules/dispatch.md`「收工即验证」.

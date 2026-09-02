@@ -10,7 +10,7 @@
 
 [![Agent Plugins 1.0.0](https://img.shields.io/badge/Agent%20Plugins-1.0.0-2563eb)](https://agent-plugins.org/)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-7c3aed)](https://docs.anthropic.com/en/docs/claude-code)
-[![Version](https://img.shields.io/badge/version-1.0.0-16a34a)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-16a34a)](CHANGELOG.md)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-64748b)](LICENSE)
 
@@ -106,32 +106,25 @@ flowchart LR
 
   subgraph loop["主 loop"]
     direction LR
-    T["目标"] --> BS["brainstorming"] --> WP["writing-plans"] --> SDD["subagent-driven-development"]
-    SDD --> W["worker · 单任务"]
-    W --> RV["reviewer · spec 合规 + 代码质量"]
-    RV -->|"P0 / P1"| W
-    RV -->|"通过"| CG["closeout-gate"]
+    T["目标"] --> BS["brainstorming"] --> WP["writing-plans · 契约先行"]
+    WP --> W0["wave 0 · 契约卡"] --> W1["wave 1..n · 实现卡并行"]
+    W1 --> M["统一合入"] --> CG["closeout-gate"]
     CG -->|"快速豁免"| D["带证据交付"]
-    CG -->|"快审 / 深审"| RV2["reviewer · 整体收口"] --> D
+    CG -->|"快审 / 深审"| RV["reviewer · 整体收口"] --> D
   end
 ```
 
 ## 里面有什么
 
-11 个技能，每个就是一份「遇到这种情况该怎么做」：
+6 个技能，每个就是一份「遇到这种情况该怎么做」：
 
 | 技能 | 什么时候用 |
 |---|---|
-| `before-you-code` | 动手前先读相关知识、想清楚做多深。 |
 | `brainstorming` | 要做新东西了，先把意图、需求、设计聊明白。 |
-| `writing-plans` | 设计定了，写分步实现计划。 |
-| `task-breakdown` | 目标太大太模糊，拆成互不重叠、带验收标准的任务卡。 |
-| `subagent-driven-development` | 按计划一个任务一个任务做，每个做完审一次。 |
-| `test-driven-development` | 写任何功能或修复。没有先失败的测试就没有生产代码。 |
+| `writing-plans` | 设计定了，写分步实现计划；或先剥出契约卡，再拆成互不重叠的任务卡。 |
+| `subagent-driven-development` | 契约卡先合入，实现卡按 wave 并行派出，全部合入后统一审一次。 |
+| `test-driven-development` | 大任务先写失败测试再写代码；小任务免。 |
 | `systematic-debugging` | 遇到 bug 先找根因，找到之前不许改。 |
-| `using-git-worktrees` | 需要隔离的工作区，以及做完后合并、清理。 |
-| `verification-before-completion` | 想说「做完了」之前，先跑验证命令。 |
-| `receiving-code-review` | 收到审查意见，先核实再改，不盲从。 |
 | `spec-steward` | 改完东西，把新知识、新规范沉淀进 `.spec/`。 |
 
 再加：一个审查子 Agent `reviewer`，两条命令 `/lumio:init` `/lumio:lint`，两个 hook（注入规则、拦提交），两份常驻规则（`system.md` 硬红线、`dispatch.md` 调度规程），以及几支纯 Node 脚本（两支 lint、`closeout-gate` 定级、脚手架）。零运行时依赖。

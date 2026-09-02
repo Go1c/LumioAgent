@@ -1,6 +1,6 @@
 # Task Reviewer Prompt Template
 
-Use this template when dispatching a task reviewer subagent. The reviewer
+Use this template only for a **red-line card** (`rules/`, hooks, `.claude/`, CI config, auth / security) that must be reviewed before it is merged; every other card is reviewed once, as part of the merged whole, with code-reviewer.md (see SKILL.md「The Process」). Use it when dispatching that single-card reviewer. The reviewer
 reads the task's diff once and returns two verdicts: spec compliance and
 code quality.
 

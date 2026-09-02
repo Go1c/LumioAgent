@@ -61,7 +61,7 @@ description: 维护 LumioAgentSpec 的结构并把改动沉淀进知识库——
 3. 更新正文——**只保留当前有效内容**，交付历史不入库（git 提交即历史）。
 4. frontmatter `status` 只能取枚举：`设计中` / `实施中` / `已交付` / `历史归档`；`description` 保持一句话（是什么 + 何时查，≤120 字符，spec-lint 强制），**不得**把交付历史写进 description / status。
 5. 项目 `.spec/knowledge/README.md` 导航行**来源于** frontmatter `description`：同一句话口径，允许排版差异，但不得出现 description 没有的事实、不含交付历史（行文一致性靠本步骤自觉，spec-lint 只机械校验长度 / 枚举 / 覆盖 / 链接）——导航行是 Agent 决定「要不要翻开这份文档」的唯一依据，含糊或膨胀都会让判断失准。
-6. 待执行的事走任务卡（拆解用 `task-breakdown`），**别堆进知识库**。
+6. 待执行的事走任务卡（拆解用 `writing-plans` 浅拆模式），**别堆进知识库**。
 
 ### 流程 C · 清理离线任务卡（无内置任务工具的宿主，项目 `.spec/tasks/`）
 

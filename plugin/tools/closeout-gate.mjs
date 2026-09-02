@@ -28,6 +28,8 @@
  * 纯删除按 0 算(与 revert 豁免同旨)。
  * 注释判定只看行首标记,不解析语法:块注释内的代码行、行尾注释均按字面处理。
  * 「机械套用既有模式」「生成物随源更新」机器判不了,已从豁免面移除(归快审)。
+ * 同一有效行口径也是 rules/dispatch.md「编码约定 · 测试分级」的依据:纯文档 / 配置 / 注释 / 删除改动或有效行 < 50
+ * = 小任务(免 TDD),其余 = 大任务;红线面抬级只影响审查级别,不影响测试分级。
  * 退出码:恒 0(定级是建议不是门禁);用法 / 环境错误 2。
  */
 import { execFileSync } from 'node:child_process'
@@ -132,7 +134,7 @@ if (files.length === 0 && untrackedBlocking.length === 0 && untrackedDocs.length
 } else if (redFiles.length > 0) {
   level = totalEffective >= 100 ? '深审' : '快审'
   reasons.push(`红线面被触碰(${redFiles.join('、')})——一票取消豁免,永不快速`)
-  if (level === '深审') reasons.push(`红线面 + 有效行 ${totalEffective} ≥ 100`)
+  reasons.push(level === '深审' ? `红线面 + 有效行 ${totalEffective} ≥ 100` : `红线面 + 有效行 ${totalEffective} < 100`)
 } else if (isRevert) {
   level = '快速豁免'
   reasons.push('BASE..HEAD 全部为 revert 提交')
@@ -144,7 +146,7 @@ if (files.length === 0 && untrackedBlocking.length === 0 && untrackedDocs.length
   reasons.push('含二进制文件改动——不可豁免')
 } else if (files.length > 0 && allWhitelistedType) {
   level = '快速豁免'
-  reasons.push('全部文件为纯文档 / 配置数据 / 纯注释或纯删除改动')
+  reasons.push(`全部文件为纯文档 / 配置数据 / 纯注释或纯删除改动(有效行 ${totalEffective})`)
 } else if (totalEffective >= 500) {
   level = '深审'
   reasons.push(`有效行 ${totalEffective} ≥ 500`)

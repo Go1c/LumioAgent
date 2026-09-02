@@ -44,8 +44,10 @@ Subagent (general-purpose):
     **While you work:** If you encounter something unexpected or unclear, **ask questions**.
     It's always OK to pause and clarify. Don't guess or make assumptions.
 
-    While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    While iterating, run the focused test for what you're changing. Before
+    committing, run the tests covering your task's files once and put the
+    command and output in your report. Do not run the full suite — it runs
+    once at closeout, after all waves are merged.
 
     ## Code Organization
 

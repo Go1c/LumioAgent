@@ -10,7 +10,7 @@ Switch between Claude Code, Codex, Cursor, Grok and the rest. Your project's rul
 
 [![Agent Plugins 1.0.0](https://img.shields.io/badge/Agent%20Plugins-1.0.0-2563eb)](https://agent-plugins.org/)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-7c3aed)](https://docs.anthropic.com/en/docs/claude-code)
-[![Version](https://img.shields.io/badge/version-1.0.0-16a34a)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-16a34a)](CHANGELOG.md)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-64748b)](LICENSE)
 
@@ -97,41 +97,34 @@ Only the rules are resident. Skills, dispatch templates and the review checklist
 
 ```mermaid
 flowchart LR
-  subgraph hooks["Always-on · Claude Code hooks"]
+  subgraph hooks["Resident · Claude Code hooks"]
     direction TB
-    S["SessionStart"] -->|"inject rules/*.md"| R["Rules in context"]
+    S["SessionStart"] -->|"inject rules/*.md"| R["rules present"]
     P["PreToolUse · git commit"] -->|"spec-lint"| G{"pass?"}
-    G -->|"no"| X["Commit blocked"]
+    G -->|"no"| X["block commit"]
   end
 
-  subgraph loop["Main loop"]
+  subgraph loop["main loop"]
     direction LR
-    T["Goal"] --> BS["brainstorming"] --> WP["writing-plans"] --> SDD["subagent-driven-development"]
-    SDD --> W["worker · one task"]
-    W --> RV["reviewer · spec + code quality"]
-    RV -->|"P0 / P1"| W
-    RV -->|"pass"| CG["closeout-gate"]
-    CG -->|"fast-exempt"| D["Deliver with evidence"]
-    CG -->|"quick / deep"| RV2["reviewer · close-out"] --> D
+    T["Goal"] --> BS["brainstorming"] --> WP["writing-plans · contract first"]
+    WP --> W0["wave 0 · contract cards"] --> W1["wave 1..n · implementation cards in parallel"]
+    W1 --> M["merge"] --> CG["closeout-gate"]
+    CG -->|"fast exempt"| D["deliver with evidence"]
+    CG -->|"quick / deep review"| RV["reviewer · closeout"] --> D
   end
 ```
 
 ## What's inside
 
-Eleven skills. Each one is a "when this happens, do it this way":
+Six skills. Each one is a "when this happens, do it this way":
 
 | Skill | When to use it |
 |---|---|
-| `before-you-code` | Before touching code: read what matters, decide how deep to go. |
 | `brainstorming` | Building something new: get intent, requirements and design clear first. |
-| `writing-plans` | Design is settled: write the step-by-step implementation plan. |
-| `task-breakdown` | The goal is too big or vague: split it into non-overlapping task cards with acceptance criteria. |
-| `subagent-driven-development` | Work through the plan one task at a time, reviewing after each. |
-| `test-driven-development` | Any feature or fix. No production code without a failing test first. |
+| `writing-plans` | Design is settled: write the step-by-step plan, or carve out contract cards first and split the rest into non-overlapping task cards. |
+| `subagent-driven-development` | Merge the contract cards, fan out implementation cards wave by wave, review the merged whole once. |
+| `test-driven-development` | Large tasks: failing test before production code. Small tasks are exempt. |
 | `systematic-debugging` | Hit a bug: find the root cause, no fixes before that. |
-| `using-git-worktrees` | Isolated workspaces, then merging and cleaning up. |
-| `verification-before-completion` | About to say "done": run the verification commands first. |
-| `receiving-code-review` | Got review feedback: verify it before acting on it. |
 | `spec-steward` | Finished a change: record new knowledge and conventions in `.spec/`. |
 
 Plus: one review sub-agent (`reviewer`), two commands (`/lumio:init`, `/lumio:lint`), two hooks (inject rules, guard commits), two resident rule files (`system.md` hard red lines, `dispatch.md` dispatch procedure), and a handful of pure Node scripts (two linters, `closeout-gate`, the scaffold). Zero runtime dependencies.

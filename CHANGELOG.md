@@ -2,7 +2,7 @@
 
 本文件记录 LumioAgentSpec 的版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [Unreleased]
+## [1.1.0]
 
 ### Changed
 
@@ -10,6 +10,15 @@
 - **仓库迁入 LumioGames 组织**(依据 ADR 0005):地址为 `LumioGames/LumioAgentSpec`,清单的 `author` / `homepage` / `repository` 与 marketplace 的 `git-subdir` url 一并指向组织。
 - marketplace 标识 `lumioagent` → `lumioagentspec`;`package.json` name 同步。
 - README 重写为中英双语(`README.md` 英文 + `README.zh-CN.md` 中文):先讲解决什么问题(跨 Agent 切换、单一上下文、机器把关),再讲支持哪些 Agent 与设计理念,附工作流图与技能清单。
+- **默认流程改为并行优先、契约先行**(依据 ADR 0007):`writing-plans` 新增浅拆模式——先把共同依赖(数据结构 / 类型 / API / 协议 / 通用模块 / 规范)剥成 wave 0 契约卡,实现卡按 wave 并行扇出;`subagent-driven-development` 重构为 wave 执行器,**每任务审查取消**,只在全部合入后审一次(红线面卡合入前单审);全量收口门槛只在合入后跑一次。
+- **测试分级**(依据 ADR 0007):任务大小复用 `closeout-gate` 有效行口径——纯文档 / 配置 / 注释 / 删除或有效新增行 < 50 为小任务,免 TDD、不为每处改动加用例;大任务需求先聊清再 TDD 先行。`test-driven-development` 顶部加分级门,`standards/testing.md` 模板同步。修 bug 同此分级:小修复以复现步骤验证症状消失,大修复先写复现测试留作回归。`closeout-gate` 在红线面快审与纯文档 / 配置分支也打印有效行数,供测试分级读取(判定逻辑未改)。
+- `brainstorming` 瘦身到 HARD-GATE + 流程骨架 + 落点规则(140 → 37 行);提问交给宿主原生 plan mode。
+- `rules/dispatch.md` 吸收被删技能的有效规则:「先加载再动手」的规模校准、「收工即验证」的证据要求、「失败处理」的退回意见处理、「并行边界与合入」的原生 worktree 工具与 gitignore 检查;SDD 与 dispatch.md 关于并行的矛盾以 dispatch.md 为准。
+
+### Removed
+
+- **技能 11 → 6**(依据 ADR 0006):下线 `before-you-code`、`verification-before-completion`、`receiving-code-review`、`using-git-worktrees`(内容已由宿主原生能力与 `rules/dispatch.md` 覆盖)与 `task-breakdown`(并入 `writing-plans` 浅拆模式)。`lumio:<name>` 调用这五个名字将失效,无需替代调用——规则由 SessionStart 注入常驻。
+- `agents/reviewer.md` 的「使用的技能」节(唯一条目已下线)。
 
 ### 升级指引
 

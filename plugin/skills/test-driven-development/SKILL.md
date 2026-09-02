@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use when implementing any feature or bugfix, before writing implementation code
+description: Use when implementing a large task (above the small-task threshold in rules/dispatch.md 测试分级) — feature, bugfix or refactor — before writing implementation code
 ---
 
 # Test-Driven Development (TDD)
@@ -15,18 +15,19 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 ## When to Use
 
-**Always:**
+**Size gate first** (single authority: `rules/dispatch.md`「编码约定 · 测试分级」). The iron law below binds **large tasks**: anything that is not pure docs / config data / comments / deletions and adds ≥ 50 effective lines (closeout-gate's line rule). **Small tasks** are exempt — no failing-test-first, no new test per change; the closeout run of lint + existing tests is the check. Estimate at card time; the tool's verdict at closeout wins.
+
+**Large tasks — always:**
 - New features
 - Bug fixes
 - Refactoring
 - Behavior changes
 
-**Exceptions (ask the user):**
+**Exceptions even when large (ask the user):**
 - Throwaway prototypes
 - Generated code
-- Configuration files
 
-Thinking "skip TDD just this once"? Stop. That's rationalization.
+Thinking "skip TDD just this once" on a large task? Stop. That's rationalization.
 
 ## The Iron Law
 
@@ -300,7 +301,7 @@ Can't check all boxes? You skipped TDD. Start over.
 
 ## Debugging Integration
 
-Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.
+Bug found in a large fix? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression. (Small fixes reproduce by steps — size gate above.)
 
 Never fix bugs without a test.
 
