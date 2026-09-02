@@ -32,7 +32,7 @@ function main() {
       hookSpecificOutput: {
         hookEventName: 'SessionStart',
         additionalContext:
-          `<lumio-rules>\n以下是 LumioAgent 框架的常驻规则,每次会话强制在场,优先级高于默认行为。\n` +
+          `<lumio-rules>\n以下是 LumioAgentSpec 框架的常驻规则,每次会话强制在场,优先级高于默认行为。\n` +
           // 规则正文里的 agents/ references/ 等路径相对插件根;给出绝对路径它们才可解析。
           `插件根目录:${pluginRoot}(下文出现的 agents/、references/、skills/ 等路径均相对于它)\n\n` +
           `${rules}\n</lumio-rules>`,

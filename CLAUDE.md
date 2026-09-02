@@ -2,7 +2,7 @@
 
 Claude Code entrypoint.
 
-**本仓库既是 LumioAgent 插件本体,也是使用它的项目(dogfood)。** 两个身份的边界:
+**本仓库既是 LumioAgentSpec 插件本体,也是使用它的项目(dogfood)。** 两个身份的边界:
 
 - **发布面 = `plugin/`**:装进用户机器的就是这个目录的全部内容(`skills/` `agents/` `commands/` `hooks/` `rules/` `references/` `templates/` `tools/` + 清单 + LICENSE)。marketplace 用 `git-subdir` 只拉这一层。
 - **开发面 = 仓库根**:`.spec/`(本仓自己的项目实例)、`tests/`、`package.json`、CI —— **一律不下发**。往 `plugin/` 里放开发文件会被 plugin-lint 拦下。
@@ -12,9 +12,9 @@ Claude Code entrypoint.
 开发本插件时的实时加载:把 `~/.claude/skills/lumio` 软链到本仓的 **`plugin/`**(不是仓库根),即以 `lumio@skills-dir` 自动加载,改动立即生效、无需重装。
 
 <!-- lumio:init -->
-## LumioAgent
+## LumioAgentSpec
 
-本项目使用 LumioAgent 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
+本项目使用 LumioAgentSpec 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
 
 - [`.spec/AGENTS.md`](.spec/AGENTS.md) —— 项目中心文档(先读)
 - [`.spec/knowledge/README.md`](.spec/knowledge/README.md) —— 知识导航

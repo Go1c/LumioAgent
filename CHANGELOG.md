@@ -1,6 +1,18 @@
 # Changelog
 
-本文件记录 LumioAgent 的版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+本文件记录 LumioAgentSpec 的版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+
+## [Unreleased]
+
+### Changed
+
+- **仓库与品牌改名 LumioAgentSpec**(依据 ADR 0004):GitHub 仓库迁至 `Go1c/LumioAgentSpec`,两份插件清单、marketplace.json、模板与工具文案中的名称与 URL 全部更新。插件 id `lumio` 与 `/lumio:init`、`/lumio:lint`、`lumio:<skill>` 调用方式不变。
+- marketplace 标识 `lumioagent` → `lumioagentspec`;`package.json` name 同步。
+- README 重写为中英双语(`README.md` 英文 + `README.zh-CN.md` 中文):先讲解决什么问题(跨 Agent 切换、单一上下文、机器把关),再讲支持哪些 Agent 与设计理念,附工作流图与技能清单。
+
+### 升级指引
+
+- 已按 1.0.0 安装的用户请重新添加 marketplace 并重装:`claude plugin marketplace add Go1c/LumioAgentSpec && claude plugin install lumio@lumioagentspec`。旧 URL 由 GitHub 自动重定向,旧标识 `lumioagent` 不再维护。
 
 ## [1.0.0]
 
@@ -32,4 +44,5 @@
 5. spec-lint 需要 git：非 git 仓库跳过禁根校验，其余 git 失败会显式报错（不再静默）。
 6. 升级后重跑 `/lumio:init` 领取新模板（`plans/README.md` 等；不覆盖既有文件）。
 
-[1.0.0]: https://github.com/Go1c/LumioAgent/releases/tag/lumio--v1.0.0
+[Unreleased]: https://github.com/Go1c/LumioAgentSpec/compare/lumio--v1.0.0...HEAD
+[1.0.0]: https://github.com/Go1c/LumioAgentSpec/releases/tag/lumio--v1.0.0

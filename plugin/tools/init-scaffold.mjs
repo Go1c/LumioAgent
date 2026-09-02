@@ -13,9 +13,9 @@ import { fileURLToPath } from 'node:url'
 export const POINTER_MARKER = '<!-- lumio:init -->'
 
 const POINTER = `${POINTER_MARKER}
-## LumioAgent
+## LumioAgentSpec
 
-本项目使用 LumioAgent 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
+本项目使用 LumioAgentSpec 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
 
 - [\`.spec/AGENTS.md\`](.spec/AGENTS.md) —— 项目中心文档(先读)
 - [\`.spec/knowledge/README.md\`](.spec/knowledge/README.md) —— 知识导航

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * closeout-gate —— 收口审查定级:输入 diff(相对 BASE),输出三态 + 命中理由。
- * 随 LumioAgent 插件分发;主 loop 收口前调用,替代散文白名单的人工判读。
+ * 随 LumioAgentSpec 插件分发;主 loop 收口前调用,替代散文白名单的人工判读。
  * 用法:node tools/closeout-gate.mjs [BASE]
  *   BASE 省略时取 HEAD(定级未提交 + 已暂存改动);传提交号 / 分支名则定级 BASE..工作区。
  *

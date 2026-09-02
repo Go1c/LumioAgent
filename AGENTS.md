@@ -1,4 +1,4 @@
-# LumioAgent Entry
+# LumioAgentSpec Entry
 
 遵循 [AGENTS.md 开放标准](https://agents.md/) 的入口文件,供不读 `CLAUDE.md` 的客户端使用。
 
@@ -11,9 +11,9 @@
 2. [`plugin/rules/dispatch.md`](plugin/rules/dispatch.md) —— 调度核心、编码约定、交回物格式、宿主差异。
 
 <!-- lumio:init -->
-## LumioAgent
+## LumioAgentSpec
 
-本项目使用 LumioAgent 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
+本项目使用 LumioAgentSpec 插件的调度与编码规程。项目自身的定位、收口门槛与知识导航见:
 
 - [`.spec/AGENTS.md`](.spec/AGENTS.md) —— 项目中心文档(先读)
 - [`.spec/knowledge/README.md`](.spec/knowledge/README.md) —— 知识导航

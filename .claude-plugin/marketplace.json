@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "lumioagent",
-  "description": "LumioAgent 官方插件源：通用开发项目管理 Agent 框架——调度、对抗审查、方法论技能与红线规则",
+  "name": "lumioagentspec",
+  "description": "LumioAgentSpec 官方插件源：通用开发项目管理 Agent 框架——调度、对抗审查、方法论技能与红线规则",
   "owner": {
     "name": "Cui",
     "url": "https://github.com/Go1c"
@@ -11,12 +11,12 @@
       "name": "lumio",
       "source": {
         "source": "git-subdir",
-        "url": "https://github.com/Go1c/LumioAgent.git",
+        "url": "https://github.com/Go1c/LumioAgentSpec.git",
         "path": "plugin"
       },
       "description": "通用开发项目管理 Agent 框架：主 loop 调度、reviewer 对抗审查、方法论技能集、强制在场的红线规则",
-      "homepage": "https://github.com/Go1c/LumioAgent",
-      "repository": "https://github.com/Go1c/LumioAgent",
+      "homepage": "https://github.com/Go1c/LumioAgentSpec",
+      "repository": "https://github.com/Go1c/LumioAgentSpec",
       "license": "MIT",
       "category": "workflow",
       "keywords": [

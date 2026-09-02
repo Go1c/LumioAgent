@@ -1,10 +1,10 @@
 ---
-description: 在当前项目释放 LumioAgent 脚手架（.spec/ 骨架 + 宿主入口指针）
+description: 在当前项目释放 LumioAgentSpec 脚手架（.spec/ 骨架 + 宿主入口指针）
 argument-hint: "[--force]"
 allowed-tools: Bash(node:*), Read, Edit
 ---
 
-在当前项目释放 LumioAgent 的项目侧脚手架。
+在当前项目释放 LumioAgentSpec 的项目侧脚手架。
 
 执行：
 

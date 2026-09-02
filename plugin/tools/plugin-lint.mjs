@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * plugin-lint —— **插件自身**的结构一致性校验。只在 LumioAgent 插件仓内跑(CI + /lumio:lint)。
+ * plugin-lint —— **插件自身**的结构一致性校验。只在 LumioAgentSpec 插件仓内跑(CI + /lumio:lint)。
  * 用法:node tools/plugin-lint.mjs [插件根目录]   (省略参数时取本脚本上级目录)
  *
  * 边界:项目实例数据(knowledge / decisions / tasks)由 tools/spec-lint.mjs 校验。

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * spec-lint —— **项目侧** `.spec/` 结构一致性校验。随 LumioAgent 插件分发,
+ * spec-lint —— **项目侧** `.spec/` 结构一致性校验。随 LumioAgentSpec 插件分发,
  * 由 PreToolUse hook 在 git commit 前调用,也可用 /lumio:lint 手动跑。
  * 用法:node tools/spec-lint.mjs [项目根目录]   (省略参数时取 CLAUDE_PROJECT_DIR 或 cwd)
  *

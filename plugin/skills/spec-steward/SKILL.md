@@ -1,6 +1,6 @@
 ---
 name: spec-steward
-description: 维护 LumioAgent 的结构并把改动沉淀进知识库——放对位置（插件资产 vs 项目实例）、校验 frontmatter、同步索引与名册、更新状态。当新增或修改 Agent、Skill、知识或规则，或完成一处改动后需要沉淀时使用。
+description: 维护 LumioAgentSpec 的结构并把改动沉淀进知识库——放对位置（插件资产 vs 项目实例）、校验 frontmatter、同步索引与名册、更新状态。当新增或修改 Agent、Skill、知识或规则，或完成一处改动后需要沉淀时使用。
 ---
 
 # Spec Steward（仓库管家）
@@ -72,7 +72,7 @@ description: 维护 LumioAgent 的结构并把改动沉淀进知识库——放�
 
 - **准入**：在至少一个下游真实项目里验证过的**通用机制**（角色 / 流程 / 校验 / 模板 / 红线）。
 - **不收**：项目名词、技术栈绑定、业务规则——这些留在下游自己的 `.spec/`。
-- 回填 = 改插件仓 + 四方版本号同步 + `claude plugin tag`；跨仓引用某次决策用 `LumioAgent#<提交>`（两仓 ADR 编号空间各自独立）。
+- 回填 = 改插件仓 + 四方版本号同步 + `claude plugin tag`；跨仓引用某次决策用 `LumioAgentSpec#<提交>`（两仓 ADR 编号空间各自独立）。
 - 反方向（插件更新 → 下游吸收）：`claude plugin update` 拿到新版本后，跑一次 `/lumio:init` 补齐新增模板（不覆盖既有文件）。
 
 ## 快速参考

@@ -1,82 +1,163 @@
-# LumioAgent
+<div align="center">
 
-一个**通用的开发项目管理 Agent 框架**，以 Agent 插件分发。主 Agent 负责理解目标、拆解任务、调度、收口，对清晰小改动直接编码；唯一职能子 Agent `reviewer` 负责对抗审查；技能（Skill）是可复用的方法；`.md` 文件是规则。
+# LumioAgentSpec
 
-> 一句话：**主 Agent 调度，子 Agent 执行，Skill 是方法，.md 是规则。**
+**One framework to manage every coding agent.**
 
-## 双标准
+Switch between Claude Code, Codex, Cursor, Grok and the rest. Your project's rules, context and progress stay put.
 
-| 层 | 标准 | 内容 | 谁能用 |
-|---|---|---|---|
-| 可移植层 | [Agent Plugins 1.0.0](https://agent-plugins.org/)（根 `plugin.json`） | `skills/` | Claude Code、Codex CLI、Cursor、GitHub Copilot、VS Code、ChatGPT、Kiro… |
-| 专有层 | Claude Code（`.claude-plugin/plugin.json`） | `agents/`、`commands/`、`hooks/` | 仅 Claude Code |
+[English](README.md) · [简体中文](README.zh-CN.md)
 
-规范 v1 明确把 agents / commands / hooks / rules 排除在可移植层之外，这是标准的边界。**其他客户端只能拿到技能层**；红线规则靠 `/lumio:init` 写进项目入口文件兜底。
+[![Agent Plugins 1.0.0](https://img.shields.io/badge/Agent%20Plugins-1.0.0-2563eb)](https://agent-plugins.org/)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-7c3aed)](https://docs.anthropic.com/en/docs/claude-code)
+[![Version](https://img.shields.io/badge/version-1.0.0-16a34a)](CHANGELOG.md)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
+[![License: MIT](https://img.shields.io/badge/license-MIT-64748b)](LICENSE)
 
-## 安装
+</div>
+
+---
+
+## The problem
+
+There are a lot of coding agents now: Claude Code, Codex CLI, Cursor, GitHub Copilot, Grok, Kiro. Each is good at something different. Using one today and another tomorrow is normal.
+
+But every switch hurts:
+
+- **You re-teach the rules.** What you told Claude Code, Codex has never heard.
+- **You re-feed the context.** What the project is, how far it got, why it was designed this way. A new agent starts from zero.
+- **Every agent works its own way.** How to split tasks, how to review, what "done" means. Different per vendor, and often different per session.
+
+So the more agents there are, the less you dare to switch. And when you do, quality drops.
+
+## What LumioAgentSpec does
+
+**It takes project management away from the agent and gives it to one framework. The agent just does the work.**
+
+In three lines:
+
+1. **Switch agents freely.** Rules, knowledge, decisions and task progress all live in a `.spec/` directory inside the repo, never in any agent's memory. Claude Code today, Codex tomorrow, same view of the project.
+2. **One context, managed once.** LumioAgentSpec decides which rules are mandatory, what to read before touching code, and where to record what you learned. You never write it per agent.
+3. **Quality that does not depend on the agent's mood.** Whoever writes the code does not review it. "Done" is decided by machines (lint, tests, a close-out gate), not by the agent saying so.
+
+## Which agents
+
+| Agent | What it gets |
+|---|---|
+| **Claude Code** | Everything: skills + the `.spec/` project instance + rules injected into every session + the `reviewer` sub-agent + `/lumio:init` and `/lumio:lint` + an automatic pre-commit guard |
+| **Codex CLI · Cursor · GitHub Copilot · Kiro** and other clients that support the [Agent Plugins](https://agent-plugins.org/) standard | Skills + the `.spec/` project instance + an `AGENTS.md` entry pointer that tells the agent which rules to read first |
+| **Grok and any agent that reads `AGENTS.md`** | The `.spec/` project instance + the `AGENTS.md` entry pointer |
+
+Plainly: **the core is identical everywhere** (rules, knowledge, tasks, the review procedure), because it is just files in your repo. Claude Code adds automation on top: you don't have to remind it to read the rules or call for review. Other agents read the entry pointer themselves and follow the same procedure.
+
+## Quick start
+
+Claude Code, from the marketplace:
 
 ```bash
-claude plugin marketplace add Go1c/LumioAgent && claude plugin install lumio@lumioagent
+claude plugin marketplace add Go1c/LumioAgentSpec && claude plugin install lumio@lumioagentspec
 ```
 
-装完在你的项目里跑一次：
+Then, inside your project, once:
 
 ```bash
 /lumio:init
 ```
 
-它会在项目里生成 `.spec/` 脚手架（知识库 / 决策 / 任务卡骨架）并写入宿主入口指针。**默认不覆盖任何已有文件**，可反复跑——升级插件后再跑一次即可补齐新增模板。
+This creates `.spec/` (knowledge base, decision records, task cards, plans) and appends an entry pointer to `CLAUDE.md` / `AGENTS.md`. It never overwrites existing files by default, so re-run it after a plugin upgrade to pick up new templates.
 
-然后填两处空：`.spec/AGENTS.md` 的「项目是什么」与「收口门槛」。不填则收口无从判断。
+Finally fill in two blanks in `.spec/AGENTS.md`: **what the project is** and **the close-out gate command** (your lint + test command, for example). From then on, any agent opening the project knows what it is working on and what "finished" means.
 
-## 它怎么工作
+Other agents need no plugin install. Load this repo's `plugin/skills/` through the Agent Plugins standard, or just let the agent read the project's `AGENTS.md`. That is enough.
 
-- **规则常驻**：`rules/*.md`（硬红线 + 调度规程）由 SessionStart hook 每次会话注入。目录是 glob 的，新增规则文件即生效——没有登记表，也就没有漂移。
-- **提交守卫**：PreToolUse hook 在 `git commit` 前跑项目侧 `spec-lint`，不通过就阻断。项目没有 `.spec/` 时静默放行。
-- **渐进式披露**：常驻的只有 `rules/`；技能、派活模板、审查清单按需下钻。
-- **一致性靠机器**：两支 lint 分别校验插件自身与项目实例，清单以各脚本头部注释为单一权威。
+## Design principles
 
-## 仓库地图
+**The main agent dispatches, sub-agents execute, skills are methods, `.md` is law.**
+The main agent understands the goal, splits it, hands out work and closes out. Sub-agents only execute and never dispatch further. Skills are reusable ways of doing things. Rules are Markdown files that humans and agents both read.
 
-本仓库既是插件本体，也是使用它的项目（dogfood）。
+**Everything goes in the repo, nothing in the agent's memory.**
+What the project is, what was decided, how far it got: all in `.spec/`. Change the agent, the machine or the person, and nothing is lost.
 
-**发布面与开发面严格分开**：用户装到的只有 `plugin/`，marketplace 用 `git-subdir` 只拉这一层。
+**Rules are always present, not left to goodwill.**
+In Claude Code, `rules/*.md` is injected at the start of every session. Adding a rule means adding a file. There is no registry, so nothing can be "forgotten to register".
+
+**The writer never reviews their own work.**
+The only functional sub-agent is `reviewer`. Its job is to assume your delivery is broken and prove it. Self-review is treated as a known degradation, never the default.
+
+**"Done" is decided by a machine.**
+`closeout-gate` looks at the diff and decides whether a review is needed and how deep. `spec-lint` runs before every commit and blocks it on failure. An agent saying "passed" counts for nothing without the command and its output.
+
+**Decisions are appended, never rewritten.**
+One ADR per decision. Overturn it by adding a new one and marking the old as superseded. History stays, and agents stop asking "why was it designed this way" over and over.
+
+**Disclose on demand.**
+Only the rules are resident. Skills, dispatch templates and the review checklist are read when needed. The context stays uncluttered, so the agent has room to think.
+
+## How it runs
+
+```mermaid
+flowchart LR
+  subgraph hooks["Always-on · Claude Code hooks"]
+    direction TB
+    S["SessionStart"] -->|"inject rules/*.md"| R["Rules in context"]
+    P["PreToolUse · git commit"] -->|"spec-lint"| G{"pass?"}
+    G -->|"no"| X["Commit blocked"]
+  end
+
+  subgraph loop["Main loop"]
+    direction LR
+    T["Goal"] --> BS["brainstorming"] --> WP["writing-plans"] --> SDD["subagent-driven-development"]
+    SDD --> W["worker · one task"]
+    W --> RV["reviewer · spec + code quality"]
+    RV -->|"P0 / P1"| W
+    RV -->|"pass"| CG["closeout-gate"]
+    CG -->|"fast-exempt"| D["Deliver with evidence"]
+    CG -->|"quick / deep"| RV2["reviewer · close-out"] --> D
+  end
+```
+
+## What's inside
+
+Eleven skills. Each one is a "when this happens, do it this way":
+
+| Skill | When to use it |
+|---|---|
+| `before-you-code` | Before touching code: read what matters, decide how deep to go. |
+| `brainstorming` | Building something new: get intent, requirements and design clear first. |
+| `writing-plans` | Design is settled: write the step-by-step implementation plan. |
+| `task-breakdown` | The goal is too big or vague: split it into non-overlapping task cards with acceptance criteria. |
+| `subagent-driven-development` | Work through the plan one task at a time, reviewing after each. |
+| `test-driven-development` | Any feature or fix. No production code without a failing test first. |
+| `systematic-debugging` | Hit a bug: find the root cause, no fixes before that. |
+| `using-git-worktrees` | Isolated workspaces, then merging and cleaning up. |
+| `verification-before-completion` | About to say "done": run the verification commands first. |
+| `receiving-code-review` | Got review feedback: verify it before acting on it. |
+| `spec-steward` | Finished a change: record new knowledge and conventions in `.spec/`. |
+
+Plus: one review sub-agent (`reviewer`), two commands (`/lumio:init`, `/lumio:lint`), two hooks (inject rules, guard commits), two resident rule files (`system.md` hard red lines, `dispatch.md` dispatch procedure), and a handful of pure Node scripts (two linters, `closeout-gate`, the scaffold). Zero runtime dependencies.
+
+## Repository layout
+
+This repo is both the plugin and a project that uses it. Users install `plugin/` only.
 
 ```
-LumioAgent/
-├── plugin/                   # ★ 发布面——装进用户机器的就是这个目录
-│   ├── plugin.json           #   Agent Plugins 1.0.0 清单（可移植层）
-│   ├── .claude-plugin/       #   Claude Code 清单
-│   ├── skills/               #   技能库，一个技能一个目录
-│   ├── agents/               #   子 Agent（仅 reviewer）
-│   ├── commands/             #   /lumio:init、/lumio:lint
-│   ├── hooks/hooks.json      #   SessionStart 注入规则 + PreToolUse 拦提交
-│   ├── rules/                #   每次会话注入：system.md 红线 + dispatch.md 调度规程
-│   ├── references/           #   按需下钻：派活 prompt 骨架
-│   ├── templates/            #   /lumio:init 的释放源
-│   └── tools/                #   两支 lint + hook 脚本 + 脚手架脚本
-├── .claude-plugin/           # marketplace.json（留仓库根，供 marketplace add 发现）
-├── tests/                    # 全部测试——开发面，不下发
-└── .spec/                    # 本仓自己的项目实例数据（= init 的产出），不下发
+LumioAgentSpec/
+├── plugin/            # ★ Publish surface: skills/ agents/ commands/ hooks/ rules/ templates/ tools/
+├── .claude-plugin/    # marketplace.json
+├── tests/             # Development surface, never shipped
+└── .spec/             # This repo's own project instance, never shipped
 ```
 
-plugin-lint 有一条专门的校验：`plugin/` 里出现 `tests`、`.spec`、`package.json` 等开发文件即报错——因为那会被原样装进每个用户的机器。
-
-## 怎么扩展
-
-- **加 / 改技能、职能或知识** → 用 `spec-steward` 技能：它保证放对位置、frontmatter 合规、索引 / 名册同步。
-- **加一条硬规则** → 丢进 `rules/`，自动进入每次会话，无需登记。
-- **决策** → 一律落项目 `.spec/decisions/` 新 ADR，不改写旧决策。
-- 改完跑 `/lumio:lint`；发版四方版本号同步后用 `claude plugin tag` 打 `lumio--v<version>`。
-
-## 开发
+## Development
 
 ```bash
-node --test tests/*.test.mjs && node plugin/tools/plugin-lint.mjs && node plugin/tools/spec-lint.mjs && claude plugin validate . --strict
+node plugin/tools/plugin-lint.mjs && node plugin/tools/spec-lint.mjs && node --test tests/*.test.mjs && claude plugin validate . --strict
 ```
 
-开发期实时加载：把 `~/.claude/skills/lumio` 软链到本仓的 **`plugin/`**，即以 `lumio@skills-dir` 自动加载，改动立即生效。
+Live reload while developing: symlink `~/.claude/skills/lumio` to this repo's `plugin/`. Edits take effect immediately.
+
+Add a rule by dropping a file into `rules/`. Add a skill with `spec-steward`. Record a decision as a new ADR. Run `/lumio:lint` when done.
 
 ## License
 
-MIT
+[MIT](LICENSE)

@@ -1,11 +1,11 @@
 # 项目中心文档
 
-本项目使用 [LumioAgent](https://github.com/Go1c/LumioAgent) 插件提供的调度与编码规程。
+本项目使用 [LumioAgentSpec](https://github.com/Go1c/LumioAgentSpec) 插件提供的调度与编码规程。
 **通用规程(调度核心 / 编码约定 / 交回物格式 / 宿主差异)由插件在每次会话注入,本文件不复述**——这里只写本项目独有的东西。
 
 ## 项目是什么
 
-LumioAgent —— 通用开发项目管理 Agent 框架,以**双标准 Agent 插件**分发:根 `plugin.json` 遵循 Agent Plugins 1.0.0(技能层跨客户端可移植),`.claude-plugin/` 承载 Claude Code 专有的子 Agent、slash command 与 hook。
+LumioAgentSpec —— 通用开发项目管理 Agent 框架,以**双标准 Agent 插件**分发:根 `plugin.json` 遵循 Agent Plugins 1.0.0(技能层跨客户端可移植),`.claude-plugin/` 承载 Claude Code 专有的子 Agent、slash command 与 hook。
 
 零运行时依赖,纯 Node 内置模块 + Markdown。**不做**业务运行时代码——本仓只产出规范、技能定义与校验脚本。
 
