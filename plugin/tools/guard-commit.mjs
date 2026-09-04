@@ -28,6 +28,12 @@ export function isGitCommit(command) {
     )
 }
 
+/** 项目接入了自定义 lint 时优先使用项目侧实现,否则回退插件默认实现。 */
+export function resolveLintPath(projectDir, pluginRoot) {
+  const projectLint = join(projectDir, '.spec', 'tools', 'spec-lint.mjs')
+  return existsSync(projectLint) ? projectLint : join(pluginRoot, 'tools', 'spec-lint.mjs')
+}
+
 function main() {
   let raw = ''
   process.stdin.on('data', (chunk) => (raw += chunk))
@@ -43,7 +49,7 @@ function main() {
     const projectDir = process.env.CLAUDE_PROJECT_DIR || process.cwd()
     const pluginRoot =
       process.env.CLAUDE_PLUGIN_ROOT ?? dirname(dirname(fileURLToPath(import.meta.url)))
-    const lint = join(pluginRoot, 'tools', 'spec-lint.mjs')
+    const lint = resolveLintPath(projectDir, pluginRoot)
     if (!existsSync(lint)) process.exit(0)
 
     try {

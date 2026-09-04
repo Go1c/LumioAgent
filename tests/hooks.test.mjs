@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { buildRulesContext } from '../plugin/tools/inject-rules.mjs'
-import { isGitCommit } from '../plugin/tools/guard-commit.mjs'
+import { isGitCommit, resolveLintPath } from '../plugin/tools/guard-commit.mjs'
 
 function fixture(rules) {
   const root = mkdtempSync(join(tmpdir(), 'lumio-hooks-'))
@@ -86,4 +86,33 @@ describe('guard-commit:提交前拦截的命中判定', () => {
   for (const cmd of MISSES) {
     test(`不命中:${JSON.stringify(cmd)}`, () => assert.equal(isGitCommit(cmd), false))
   }
+})
+
+describe('guard-commit:lint 路径选择', () => {
+  test('项目有自己的 spec-lint 时优先使用项目侧实现', () => {
+    const root = mkdtempSync(join(tmpdir(), 'lumio-hook-lint-'))
+    try {
+      const projectLint = join(root, '.spec', 'tools', 'spec-lint.mjs')
+      const pluginLint = join(root, 'plugin', 'tools', 'spec-lint.mjs')
+      mkdirSync(join(root, '.spec', 'tools'), { recursive: true })
+      mkdirSync(join(root, 'plugin', 'tools'), { recursive: true })
+      writeFileSync(projectLint, '')
+      writeFileSync(pluginLint, '')
+      assert.equal(resolveLintPath(root, join(root, 'plugin')), projectLint)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
+
+  test('项目没有自己的 spec-lint 时回退插件侧实现', () => {
+    const root = mkdtempSync(join(tmpdir(), 'lumio-hook-lint-'))
+    try {
+      const pluginLint = join(root, 'plugin', 'tools', 'spec-lint.mjs')
+      mkdirSync(join(root, 'plugin', 'tools'), { recursive: true })
+      writeFileSync(pluginLint, '')
+      assert.equal(resolveLintPath(root, join(root, 'plugin')), pluginLint)
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
+  })
 })
