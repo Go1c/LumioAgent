@@ -8,9 +8,22 @@
  * 三态与判定顺序(先命中先生效;本注释是判定规则的单一权威):
  *   0. 空 diff(无已跟踪改动且无未跟踪文件) → 快速豁免
  *   1. 红线面被触碰 → 有效行 ≥ 100 深审,否则快审;永不豁免(一票取消豁免)。
- *      红线名单:路径段 rules / hooks / .claude(嵌套的 .claude/ 同样算——Claude Code 会读子目录配置);
- *      路径前缀 .github/workflows/、.circleci/;文件名 hooks.json、.gitlab-ci.yml。
- *      鉴权 / 安全面机器判不了,不在本工具内——靠人工与 reviewer。
+ *      【红线名单权威表】
+ *      一、机器判别子集(一票取消豁免,触碰即不可快速豁免):
+ *        - 规则与可执行配置:
+ *          - 路径段: rules / hooks / .claude(嵌套的 .claude/ 同样算——Claude Code 会读子目录配置)
+ *          - 路径前缀: .github/workflows/、.circleci/
+ *          - 文件名: hooks.json、.gitlab-ci.yml
+ *        - 语义红线机器判别子集:
+ *          - 路径段: wire / abi (如 wire/ 或 abi/)
+ *          - 文件名模式: *.schema.json、*snapshot*、*ledger*、*budget*、*migration* (不区分大小写)
+ *      二、人工判别子集(机器无法可靠判别,由开发者与 reviewer 兜底把关,触碰即至少快审):
+ *        - 鉴权 / 安全面
+ *        - 存储 stride 与数据内存/物理布局
+ *        - 发布原子性与提交点
+ *        - 事务回放
+ *        - generation 与实例身份
+ *        - 物理边界与精度
  *      package.json 等含脚本的配置不在红线名单,落在配置数据豁免面——需要更严时人工升级。
  *   2. BASE..HEAD 全部提交主题以 revert 开头(后接 : ( 或空格) → 快速豁免
  *   3. 存在未跟踪的**非文档/数据类**文件、或未跟踪的**红线面**文件(哪怕是文档)
@@ -81,10 +94,22 @@ const isDocOrData = (f) => DOC_EXT.has(extname(f)) || DATA_EXT.has(extname(f))
 
 const RED_PREFIX = ['.github/workflows/', '.circleci/']
 const RED_BASENAME = new Set(['hooks.json', '.gitlab-ci.yml'])
+const SEMANTIC_PATH_SEGS = new Set(['wire', 'abi'])
+const SEMANTIC_PATTERNS = [
+  /\.schema\.json$/i,
+  /snapshot/i,
+  /ledger/i,
+  /budget/i,
+  /migration/i,
+]
 const isRed = (f) => {
   const segs = f.split('/')
+  const base = basename(f)
   return segs.includes('rules') || segs.includes('hooks') || segs.includes('.claude') ||
-    RED_BASENAME.has(basename(f)) || RED_PREFIX.some((p) => f.startsWith(p))
+    segs.some((s) => SEMANTIC_PATH_SEGS.has(s)) ||
+    RED_BASENAME.has(base) ||
+    RED_PREFIX.some((p) => f.startsWith(p)) ||
+    SEMANTIC_PATTERNS.some((re) => re.test(base))
 }
 
 let totalEffective = 0

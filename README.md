@@ -10,7 +10,7 @@ Switch between Claude Code, Codex, Cursor, Grok and the rest. Your project's rul
 
 [![Agent Plugins 1.0.0](https://img.shields.io/badge/Agent%20Plugins-1.0.0-2563eb)](https://agent-plugins.org/)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-7c3aed)](https://docs.anthropic.com/en/docs/claude-code)
-[![Version](https://img.shields.io/badge/version-1.1.0-16a34a)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.1-16a34a)](CHANGELOG.md)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-64748b)](LICENSE)
 

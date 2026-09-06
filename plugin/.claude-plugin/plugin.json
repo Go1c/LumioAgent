@@ -1,6 +1,6 @@
 {
   "name": "lumio",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "通用开发项目管理 Agent 框架：主 loop 调度、reviewer 对抗审查、方法论技能集、强制在场的红线规则",
   "author": {
     "name": "LumioGames",

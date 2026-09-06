@@ -283,3 +283,78 @@ test('.gitlab-ci.yml 计入红线面', () => {
   assert.match(output, /closeout-gate: 快审/)
   assert.match(output, /红线面/)
 })
+
+// ——— 语义红线面机器判别子集(wire/abi/schema/snapshot/ledger/budget/migration) ———
+
+test('触碰 wire 路径的 3 行 diff 不得判为快速豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'engine/wire/voxel-world.json', '{\n  "version": 2\n}\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面被触碰/)
+})
+
+test('触碰 abi 路径的 3 行 diff 不得判为快速豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'crates/abi/mod.rs', 'pub const ABI: u32 = 1;\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面被触碰/)
+})
+
+test('触碰 *.schema.json 的 3 行 diff 不得判为快速豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'config/player.schema.json', '{\n  "title": "Player"\n}\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面被触碰/)
+})
+
+test('触碰 *snapshot* 文件的 3 行 diff 不得判为快速豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'crates/world/src/snapshot_closure.rs', 'pub struct Snapshot;\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面被触碰/)
+})
+
+test('触碰 *ledger* 文件的 3 行 diff 不得判为快速豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'src/tx_ledger.ts', 'export const ledger = [];\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面被触碰/)
+})
+
+test('触碰 *budget* 文件的 3 行 diff 不得判为快速豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'src/resource-budget.rs', 'pub const BUDGET: usize = 64;\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面被触碰/)
+})
+
+test('触碰 *migration* 文件的 3 行 diff 不得判为快速豁免 → 快审', () => {
+  const r = repo()
+  write(r, 'db/001_initial_migration.sql', 'CREATE TABLE test (id INT);\n')
+  g(r, 'add', '-A')
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /红线面被触碰/)
+})
+
+test('未跟踪的语义红线文件(如 wire/foo.json)一票阻断快速豁免', () => {
+  const r = repo()
+  write(r, 'engine/wire/delta.json', '{\n  "delta": true\n}\n')
+  // 不 git add,保持未跟踪
+  const { output } = gate(r)
+  assert.match(output, /closeout-gate: 快审/)
+  assert.match(output, /未跟踪的非文档类或红线面文件/)
+})
+

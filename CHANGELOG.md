@@ -2,6 +2,16 @@
 
 本文件记录 LumioAgentSpec 的版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.1]
+
+### Added
+
+- **快速模式「语义红线面」与机器判别子集**:
+  - `rules/dispatch.md`「快速模式」段明确语义红线面定义：数据布局 / 存储 stride、公共语义与 ABI/FFI（wire、abi、schema 文件）、发布原子性与提交点、事务回放与回执账本、快照 / 迁移 / 存档格式、generation 与实例身份、资源预算与容量常量、物理边界与精度——触碰即至少快审，不因有效行数小而豁免。
+  - `tools/closeout-gate.mjs` 头注释确立「红线名单权威表」，区分机器判别子集与人工判别子集；机器实现一票取消豁免清单追加路径段 `wire`、`abi`（匹配 `**/wire/**`、`**/abi/**`）与文件名模式 `*.schema.json`、`*snapshot*`、`*ledger*`、`*budget*`、`*migration*`。
+  - `rules/dispatch.md`「并行边界与合入」段补充约束：文件集不重叠但共享同一数据不变量（存储、快照、物理读取）的改动，必须声明一条共同的集成验收链。
+  - `tests/closeout-gate.test.mjs` 补充覆盖用例：触碰上述语义路径/模式的 3 行小 diff 均一票定级为快审，未跟踪语义红线文件亦直接阻断快速豁免。
+
 ## [1.1.0]
 
 ### Changed
